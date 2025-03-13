@@ -1,0 +1,35 @@
+{
+    "welcomeFile": "/index.html",
+    "authenticationMethod": "route",
+    "logout": {
+      "logoutEndpoint": "/do/logout"
+    },
+    "routes": [
+      {
+        "authenticationType": "none",
+        "csrfProtection": false,
+        "source": "^/gfexs42Destination/(.*)$",
+        "destination": "S42",
+        "target": "$1"
+      },
+      {
+        "source": "^/user-api(.*)",
+        "target": "$1",
+        "service": "sap-approuter-userapi"
+      },
+      {
+        "source": "^/gfexCAPDestination/(.*)$",
+        "target": "$1",
+        "destination": "gfexcap",
+        "authenticationType": "none",
+        "csrfProtection": false
+      },
+      {
+        "source": "^(.*)$",
+        "target": "$1",
+        "service": "html5-apps-repo-rt",
+        "authenticationType": "xsuaa"
+      }
+    ]
+  }
+  
