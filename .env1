@@ -1,1 +1,1 @@
-destinations=[{"name":"S42","url":"http://S42.dest","proxyHost":"http://127.0.0.1","proxyPort":"8887"},{"name":"gfexcap","url":"https://gfexcap.dest","proxyHost":"http://127.0.0.1","proxyPort":"8887"}]
+destinations=[{"name":"S42","url":"http://S42.dest","proxyHost":"http://127.0.0.1","proxyPort":"8887"},{"name":"gfexcap","url":"https://gfexcap.dest","proxyHost":"http://127.0.0.1","proxyPort":"8887"},{"name":"gfexCAPDestination","url":"https://gfexcap.dest","proxyHost":"http://127.0.0.1","proxyPort":"8887"}]

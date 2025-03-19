@@ -1,7 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Typography } from "@material-ui/core";
-import logoIcon from "assets/logo.svg";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -20,12 +19,7 @@ export default function AppMainBar() {
 
   return (
     <AppBar position="static">
-      <Toolbar>
-        <img width={40} src={logoIcon} alt="Logo" />
-        <Typography variant="h4" className={classes.title}>
-          {"dashboardgfex"}
-        </Typography>
-      </Toolbar>
+     
     </AppBar>
   );
 }

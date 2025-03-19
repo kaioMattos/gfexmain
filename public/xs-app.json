@@ -20,7 +20,7 @@
       {
         "source": "^/gfexCAPDestination/(.*)$",
         "target": "$1",
-        "destination": "gfexcap",
+        "destination": "gfexCAPDestination",
         "authenticationType": "none",
         "csrfProtection": false
       },

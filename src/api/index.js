@@ -20,14 +20,14 @@ export const getTableData = async (params = { $top: 100, $skip: 0, $filter:'' })
 };
 
 export const getTableCount = async (params = { $filter:'' }) => {
-  const { data } = await instance.get("/ConsumerMaterial/$count",{
+  const { data } = await instance.get("/ConsumerMaterial/$count?sap-client=220",{
     params
   });
   return data;
 };
 
 export const getCountIndicator = async (params) => {
-  const { data } = await instance.get("/ConsumerMaterial/$count", {
+  const { data } = await instance.get("/ConsumerMaterial/$count?sap-client=220", {
     params
   });
 

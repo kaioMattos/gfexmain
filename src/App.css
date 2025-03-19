@@ -21,8 +21,9 @@ img {
 }
 
 .body {
-  padding-top: 5%;
+  padding-top: 2%;
   padding-inline: 3%;
+  font-family: "PetrobrasSans_Rg"; 
 }
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -52,4 +53,14 @@ img {
   to {
     transform: rotate(360deg);
   }
+}
+
+@font-face {
+  font-family: "PetrobrasSans_Rg";   /*Can be any text*/
+  src: local("PetrobrasSans_Rg"),
+    url("./fonts/PetrobrasSans/PetrobrasSans_Rg.ttf") format("truetype");
+}
+
+.font-face-ptRg {
+  font-family: "PetrobrasSans_Rg";
 }

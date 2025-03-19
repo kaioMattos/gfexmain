@@ -1,0 +1,42 @@
+PARA INSTALAR AS FONTES:
+------------------------
+É necessário o privilégio de administrador para instalar as fontes. Na Petrobras, solicite a instalação via 881. 
+
+IMPORTANTE: Arrastar os arquivos para a pasta de fontes não funciona. Siga as instruções abaixo: 
+
+PC:
+No Windows XP, abra o Painel de Controle e clique no ícone Fontes. Use a opção Instalar Nova Fonte, no menu Arquivo.
+No Windows 7, clique com o botão direito sobre os arquivos e selecione a opção instalar. 
+
+MAC:
+Abra o aplicativo Catálogo de Fontes (Font Catalog) e use a opção Adicionar Fontes, no menu Arquivo.
+
+
+
+LISTA DE ARQUIVOS:
+------------------
+Os arquivos correspondem aos seguintes pesos e estilos:
+
+PetrobrasSans_Rg.ttf	- Petrobras Sans Regular
+PetrobrasSans_It.ttf	- Petrobras Sans Italic
+
+PetrobrasSans_Bd.ttf	- Petrobras Sans Bold 
+PetrobrasSans_BdIt	- Petrobras Sans Bold Italic
+
+PetrobrasSans_Lt.ttf	- Petrobras Sans Light
+PetrobrasSans_LtIt.ttf	- Petrobras Sans Light Italic
+
+PetrobrasSans_XBd.ttf	- Petrobras Sans Extra Bold
+PetrobrasSans_XBdIt.ttf	- Petrobras Sans Extra Bold Italic
+
+
+
+OBSERVAÇÃO:
+-----------
+Alguns softwares, como o Microsoft Office, mostram apenas três opções no menu de escolha de fontes: Petrobras Sans, Petrobras Sans Light e Petrobras Sans XBold. 
+
+Isso ocorre porque o aplicativo agrupa as fontes da seguinte forma:
+
+- Petrobras Sans Bold é utilizada quando se se aplica negrito ao texto que está em Petrobras Sans (Regular).
+- A fonte Petrobras Sans Bold Italic é ativada quando se aplica negrito e itálico ao texto em Petrobras Sans (Regular)
+- As demais fontes Italic são ativadas quando se aplica Itálico ao texto usando a fonte normal correspondente.

@@ -2,11 +2,23 @@ import React, { useEffect, useState } from "react";
 import { Container, Box } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
 import { getTableData, getTableCount, getUserHana } from "api";
+import BasicFilterDemo from "../components/table/mainTable";
+import MainTableMaterial from "../components/table/mainTableMaterial";
+
+import 'primeicons/primeicons.css';
+import 'primeflex/primeflex.css';
+import 'primereact/resources/primereact.css';
+import 'primereact/resources/themes/lara-light-indigo/theme.css';
+import { PrimeReactProvider } from 'primereact/api';
+
+import '../index.css';
+import '../flags.css';
+
 
 const columns = [
-  { field: "matnr", headerName: "matnr", width: 250 },
-  { field: "maktx", headerName: "maktx", flex: 1 },
-  { field: "mfrpn", headerName: "mfrpn", flex: 1 }
+  { field: "matnr", headerName: "Material", width: 250 },
+  { field: "maktx", headerName: "Descrição", flex: 1 },
+  { field: "classDesc", headerName: "Classe", flex: 1 }
 ];
 const _assembleFilterGeneric = (propFilter, value) => (` ${propFilter} eq '${value}'`);
 
@@ -30,10 +42,11 @@ export default function MasterPage() {
     try {
       setItems([]);
       setLoading(true);
-      const usersS4 = await getUserHana({$filter: `documentId eq '03680252000105'`});
-      const sFiltersClasses = _assembleOrFilterGeneric(usersS4,'classDesc', 'class');
-      const sFiltersManufactureres = _assembleOrFilterGeneric(usersS4,'mfrnr', 'manufacturer');
-      const sFilter = ` fornecedorInex eq '10097577'and (${sFiltersClasses}) and (${sFiltersManufactureres})`
+      // const usersS4 = await getUserHana({$filter: `documentId eq '03680252000105'`});
+      // const sFiltersClasses = _assembleOrFilterGeneric(usersS4,'classDesc', 'class');
+      // const sFiltersManufactureres = _assembleOrFilterGeneric(usersS4,'mfrnr', 'manufacturer');
+      // const sFilter = ` fornecedorInex eq '10097577'and (${sFiltersClasses}) and (${sFiltersManufactureres})`
+      const sFilter = ` fornecedorInex eq '10097577'`
       if (isFirstLoad) {
         const count = await getTableCount({$filter: sFilter});
         setRowCount(count);
@@ -66,7 +79,9 @@ export default function MasterPage() {
   return (
     <Container disableGutters>
       <Box height="80vh" py={5}>
-        <DataGrid
+        <PrimeReactProvider> <MainTableMaterial/></PrimeReactProvider>
+     
+        {/* <DataGrid
           loading={loading}
           rows={items}
           columns={columns}
@@ -74,8 +89,10 @@ export default function MasterPage() {
           paginationMode="server"
           rowCount={rowCount}
           onPageChange={handlePageChanged}
-        />
+        /> */}
       </Box>
     </Container>
   );
 }
+
+
