@@ -10,7 +10,7 @@
         "csrfProtection": false,
         "source": "^/gfexs42Destination/(.*)$",
         "destination": "S42",
-        "target": "$1"
+        "target": "/$1"
       },
       {
         "source": "^/user-api(.*)",
@@ -19,8 +19,8 @@
       },
       {
         "source": "^/gfexCAPDestination/(.*)$",
-        "target": "$1",
-        "destination": "gfexCAPDestination",
+        "target": "/$1",
+        "destination": "gfexcap",
         "authenticationType": "none",
         "csrfProtection": false
       },

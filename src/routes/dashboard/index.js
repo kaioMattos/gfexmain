@@ -19,7 +19,7 @@ const _assembleOrFilterGeneric =  (objHana, propOfilter, propObjHana) => {
     console.log(aFiltersValues)
   return aFiltersValues.join('').slice(0, -3);
 };
-const Indicators = () => {
+const Indicators = ({recog, notRecog, priceATA, tecInfo}) => {
   const [countIndicators, setCountIndicators] = useState({
     recog: 0,
     notRecog: 0,
@@ -41,16 +41,16 @@ const Indicators = () => {
           // const sFilter = ` and fornecedorInex eq '10097577'and (${sFiltersClasses}) and (${sFiltersManufactureres})`
           const sFilter = ` and fornecedorInex eq '10097577'`
           const countRecog = await getCountIndicator({
-            $filter: `NmReconhecido eq 'SIM'${sFilter}`
+            $filter: `NmReconhecido eq 'Comercializo'${sFilter}`
           });
           const countNotRecog = await getCountIndicator({
-            $filter: `NmReconhecido eq 'NÃO'${sFilter}`
+            $filter: `NmReconhecido eq 'Não Comercializo'${sFilter}`
           });
           const countPriceAta = await getCountIndicator({
-            $filter: `AtaPrecoPreenchida eq 'SIM'${sFilter}`
+            $filter: `AtaPrecoPreenchida eq 'true'${sFilter}`
           });
           const countTecInfo = await getCountIndicator({
-            $filter: `InformacoesTecnicas eq 'SIM'${sFilter}`
+            $filter: `InformacoesTecnicas eq 'true'${sFilter}`
           });
           setCountIndicators({
             recog:countRecog,
@@ -67,37 +67,37 @@ const Indicators = () => {
     };
   useEffect(() => {
     // when component mounted
-    loadData(true);
+    // loadData(true);
   }, []);
   return (
     <Box sx={{ padding: '10px' }}>
       <Grid container spacing={3}>
         <Grid size={3} item >
           <IndicatorCard
-            linkClick="https://devcfpb.launchpad.cfapps.br10.hana.ondemand.com/1ee5b575-1ffa-4017-8514-451331d4a4d5.gfexpetrobrasmaterialgfex.gfexpetrobrasmaterialgfex-0.0.4/index.html#/Products"
-            title="Reconhecidos"
-            total={countIndicators.recog}
+            linkClick="https://devcfpb.launchpad.cfapps.br10.hana.ondemand.com/1ee5b575-1ffa-4017-8514-451331d4a4d5.gfexpetrobrasmaterialgfex.gfexpetrobrasmaterialgfex-0.0.5/index.html#/Products"
+            title="Comercializados"
+            total={recog}
             icon={<PiMedalDuotone style={{color: 'rgb(0,133,66)'}} size={40} />}
           />
         </Grid>
         <Grid size={3} item >
           <IndicatorCard
-            linkClick="https://devcfpb.launchpad.cfapps.br10.hana.ondemand.com/1ee5b575-1ffa-4017-8514-451331d4a4d5.gfexpetrobrasmaterialgfex.gfexpetrobrasmaterialgfex-0.0.4/index.html#/Products/materialNotRecog"
-            title="Não Reconhecidos"
-            total={countIndicators.notRecog}
+            linkClick="https://devcfpb.launchpad.cfapps.br10.hana.ondemand.com/1ee5b575-1ffa-4017-8514-451331d4a4d5.gfexpetrobrasmaterialgfex.gfexpetrobrasmaterialgfex-0.0.5/index.html#/Products/materialNotRecog"
+            title="Não Comercializados"
+            total={notRecog}
             icon={<MdNotInterested style={{color: 'rgb(0,133,66)'}} size={40} />}
           /></Grid>
         <Grid size={3} item >
           <IndicatorCard
             title="Ata de Preço Preenchida"
-            total={countIndicators.priceATA}
+            total={priceATA}
             icon={<MdPriceCheck style={{color: 'rgb(0,133,66)'}} size={40} />}
           /></Grid>
         <Grid size={3} item >
           <IndicatorCard
           linkClick="https://devcfpb.launchpad.cfapps.br10.hana.ondemand.com/a730eef0-e757-4cf3-85ea-548427d39a43.tecnicalinfogfex.tecnicalinfogfex-0.0.1/index.html"
-            title="Informações Tecnicas"
-            total={countIndicators.tecInfo}
+            title="Informações Técnicas Validadas"
+            total={tecInfo}
             color="warning"
             icon={<IoNewspaperOutline style={{color: 'rgb(0,133,66)'}} size={40} />}
           /></Grid>
