@@ -35,11 +35,11 @@ const Indicators = ({recog, notRecog, priceATA, tecInfo}) => {
         // if (isFirstLoad) {
           // const user = await getUserLogged();
           // const usersS4 = await getUsersS4Data();
-          // const usersS4 = await getUserHana({$filter: `documentId eq '03680252000105'`});
-          // const sFiltersClasses = _assembleOrFilterGeneric(usersS4,'classDesc', 'class');
-          // const sFiltersManufactureres = _assembleOrFilterGeneric(usersS4,'mfrnr', 'manufacturer');
-          // const sFilter = ` and fornecedorInex eq '10097577'and (${sFiltersClasses}) and (${sFiltersManufactureres})`
-          const sFilter = ` and fornecedorInex eq '10097577'`
+          const usersS4 = await getUserHana({$filter: `documentId eq '03680252000105'`});
+          const sFiltersClasses = _assembleOrFilterGeneric(usersS4,'classDesc', 'class');
+          const sFiltersManufactureres = _assembleOrFilterGeneric(usersS4,'mfrnr', 'manufacturer');
+          const sFilter = ` and fornecedorInex eq '10097577'and (${sFiltersClasses}) and (${sFiltersManufactureres})`
+          // const sFilter = ` and fornecedorInex eq '10097577'`
           const countRecog = await getCountIndicator({
             $filter: `NmReconhecido eq 'Comercializo'${sFilter}`
           });

@@ -369,7 +369,6 @@ export default function MainTableMaterial({materials, loading, loadData}) {
   };
   const recogBodyTemplate = (rowData, prop) => {
     return <Tag onClick={() => { setoOpenDialogRecog(true) }} style={{ width: '150px', cursor: 'pointer', }} value={rowData[prop]} icon={getICon(rowData[prop])} severity={getSeverity(rowData[prop])} >
-      <ModalCustom open={openDialogRecog} onClose={() => setoOpenDialogRecog(false)} />
     </Tag>
   };
   const infoTecBodyTemplate = (rowData) => {
@@ -403,6 +402,7 @@ export default function MainTableMaterial({materials, loading, loadData}) {
         <Typography variant="h5" component="h6" sx={{ textAlign: 'left', paddingBottom: '1%', color: '#4d4d4d' }}>
           Lista de Materiais
         </Typography>
+        <ModalCustom open={openDialogRecog} onClose={() => handleClose()} />
         <PrimeReactProvider>
           <div className="card">
             <DataTable size='small' value={materials} paginator rows={10} loading={loading} dataKey="id"
