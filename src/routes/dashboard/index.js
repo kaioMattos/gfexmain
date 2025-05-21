@@ -1,24 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
-
-
 import IndicatorCard from '../../components/dashboard/IndicatorCard';
 import { PiMedalDuotone } from "react-icons/pi";
 import { MdNotInterested, MdPriceCheck } from "react-icons/md";
 import { IoNewspaperOutline } from "react-icons/io5";
 import { getCountIndicator, getUserLogged, getUsersS4Data, getUserHana } from "../../api";
+import { _assembleFilterGeneric, _assembleOrFilterGeneric } from '../../utils';
+
 
 // ==============================|| INDICATORS ||============================== //
-const _assembleFilterGeneric = (propFilter, value) => (` ${propFilter} eq '${value}'`);
 
-const _assembleOrFilterGeneric =  (objHana, propOfilter, propObjHana) => {
-  const aValues = JSON.parse(objHana[propObjHana]);
-  const aFiltersValues = aValues.filter((item) => (item.status))
-    .map((item) => (`${_assembleFilterGeneric(propOfilter, item[propObjHana])} or`));
-    console.log(aFiltersValues)
-  return aFiltersValues.join('').slice(0, -3);
-};
 const Indicators = ({recog, notRecog, priceATA, tecInfo}) => {
   const [countIndicators, setCountIndicators] = useState({
     recog: 0,

@@ -2,12 +2,15 @@ import React from "react";
 import ReactDOM from "react-dom";
 import './index.css';
 import './flags.css';
+import { DashboardContextProvider } from './useContext';
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <DashboardContextProvider>
+      <App />
+    </DashboardContextProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
