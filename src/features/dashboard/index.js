@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { CircularProgress, Typography, Box, AppBar } from '@mui/material';
-import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Button } from '@material-ui/core';
+import { CircularProgress, Typography, Box, Grid } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import IndicatorMkt from '../indicator/Marketing';
 import IndicatorTechInfo from '../indicator/TechInfo';
 import IndicatorContractMinute from '../indicator/ContractualMinute';
 import IndicatorPriceAta from '../indicator/PriceAta';
 import { getCountIndicator, getTableData } from "api";
 import { useDashboard } from '../../useContext';
-import MainTableMaterial from "../../components/table/mainTableDashboard";
+import MainTableMaterial from "../../components/table/TableHome";
 import { _assembleOrFilterGeneric } from '../../utils';
 import Header from '../../components/header';
 
@@ -25,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'rgb(0,142,145)',
     color: '#fff',
     // marginTop: theme.spacing(3),
-    marginLeft: theme.spacing(2),
+    marginLeft: '1rem',
     // padding: '8px',
     borderRadius: '6px',
     '&:hover': {
@@ -65,17 +64,29 @@ const Dashboard = () => {
         const countNotIdentify = await getCountIndicator({
           $filter: `${sFilter} and (NmReconhecido ne 'Não Comercializo' and NmReconhecido ne 'Comercializo')`
         });
+
         const countPriceAta = await getCountIndicator({
-          $filter: `${sFilter} and AtaPrecoPreenchida eq 'true'`
+          $filter: `${sFilter} and AtaPrecoPreenchida eq 'Preenchido' and NmReconhecido eq 'Comercializo'`
         });
+
+        const countPriceAtaNeedToFill = await getCountIndicator({
+          $filter: `${sFilter} and AtaPrecoPreenchida eq 'Preencher' and NmReconhecido eq 'Comercializo'`
+        });
+
+
         const countTecInfo = await getCountIndicator({
-          $filter: `${sFilter} and InformacoesTecnicas eq 'true'`
+          $filter: `${sFilter} and InformacoesTecnicas eq 'validada'`
+        });
+        const countTecInfoNeedToFill = await getCountIndicator({
+          $filter: `${sFilter} and InformacoesTecnicas eq 'Validar'`
         });
         setCountIndicators({
           recog: countRecog,
           notRecog: countNotRecog,
           priceATA: countPriceAta,
+          priceATAFill: countPriceAtaNeedToFill,
           tecInfo: countTecInfo,
+          tecInfoFill:countTecInfoNeedToFill,
           notIdentify: countNotIdentify
         });
 
@@ -100,20 +111,22 @@ const Dashboard = () => {
     recog: 0,
     notRecog: 0,
     priceATA: 0,
+    priceATAFill: 0,
     tecInfo: 0,
+    tecInfoFill:0,
     notIdentify: 0
   });
   const [materials, setMaterials] = useState(null);
   const classes = useStyles();
-    const Highlight = ({ children, className }) => (
-      <span className={className}>
-        {children}
-      </span>
-    );
+  const Highlight = ({ children, className }) => (
+    <span className={className}>
+      {children}
+    </span>
+  );
   useEffect(() => {
     loadData();
   }, []);
-  
+
   return (
     <>
 
@@ -140,102 +153,98 @@ const Dashboard = () => {
           </Typography> */}
             </Box>
           </Grid>
-          <Grid container spacing={2} style={{marginTop:'0.5%'}}>
-            <Grid item xs={6} style={{
-              paddingBottom: '2%'
-            }} >
-              <Grid item xs={12}>
-                <Box style={{
-                  backgroundColor: 'rgb(0,142,145)',
-                  borderRadius: '6px 6px 0px 0px'
-                }}>
-                  <Typography sx={{ color: 'white', textAlign: 'left', padding: '8px' }}>
-                    Comercialização
-                  </Typography>
-                </Box>
-              </Grid>
-
-              <Grid item xs={12} style={{ border: '1px solid rgb(0,142,145)', minHeight: '90%' }}>
-                <Typography sx={{ textAlign: 'left', padding: '8px', color: 'inherit' }}>
-                  Reconhecer ou não um material
-                </Typography>
-                <Grid style={{ padding: '1%' }}>
-                  <IndicatorMkt recog={countIndicators.recog} notRecog={countIndicators.notRecog}
-                    notIdentify={countIndicators.notIdentify} />
+          
+          <Grid container spacing={3} style={{ marginTop: '0.5%' }}>
+            <Grid item size={6} >
+              <Grid style={{
+                backgroundColor: 'white',
+                padding: '1%',
+                borderRadius: '6px',
+                minHeight:'100%'
+              }} >
+                <Grid item size={12}>
+                  <Box>
+                    <Typography sx={{ color: 'black', textAlign: 'left', padding: '8px' }}>
+                      Comercialização
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item size={12} style={{ borderTop: '3px solid rgb(0,142,145)', minHeight: '90%' }}>
+                  <Grid style={{ padding: '1%' }}>
+                    <IndicatorMkt recog={countIndicators.recog} notRecog={countIndicators.notRecog}
+                      notIdentify={countIndicators.notIdentify} />
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={6} style={{
-              paddingBottom: '2%'
-            }}>
-              <Grid item xs={12}>
-                <Box style={{
-                  backgroundColor: 'rgb(0,142,145)',
-                  borderRadius: '6px 6px 0px 0px'
-                }}>
-                  <Typography component="div" sx={{ color: 'white', textAlign: 'left', padding: '8px' }}>
-                    Minuta Contratual
-                  </Typography>
-                </Box>
-              </Grid>
-
-              <Grid item xs={12} style={{ border: '1px solid rgb(0,142,145)', minHeight: '90%' }}>
-                <Typography sx={{ textAlign: 'left', padding: '8px', color: 'inherit' }}>
-                  Atribuir ou retirar materiais da minuta contratual
-                </Typography>
-                <Grid style={{ padding: '1%' }}>
-                  <IndicatorContractMinute agree={countIndicators.tecInfo} notAgree={countIndicators.tecInfo} notIdentify={countIndicators.tecInfo} />
+            <Grid item size={6} >
+              <Grid style={{
+                backgroundColor: 'white',
+                padding: '1%',
+                borderRadius: '6px',
+                minHeight:'100%'
+              }} >
+                <Grid item size={12}>
+                  <Box>
+                    <Typography sx={{ color: 'black', textAlign: 'left', padding: '8px' }}>
+                      Minuta Contratual
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item size={12} style={{ borderTop: '3px solid rgb(0,142,145)', minHeight: '90%' }}>
+                  <Grid style={{ padding: '1%' }}>
+                    <IndicatorContractMinute agree={countIndicators.tecInfo} notAgree={countIndicators.tecInfo} notIdentify={countIndicators.tecInfo} />
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
-          <Grid container spacing={2}>
-            <Grid item xs={8} >
-              <Grid item xs={12}>
-                <Box style={{
-                  backgroundColor: 'rgb(0,142,145)',
-                  borderRadius: '6px 6px 0px 0px'
-                }}>
-                  <Typography component="div" sx={{ color: 'white', textAlign: 'left', padding: '8px' }}>
+          <Grid container spacing={3} style={{ marginTop: '1.5%' }}>
+            <Grid item size={8} >
+              <Grid style={{
+                backgroundColor: 'white',
+                padding: '1%',
+                borderRadius: '6px',
+                minHeight:'100%'
+              }} >
+                <Grid item size={12}>
+                  <Box>
+                    <Typography sx={{ color: 'black', textAlign: 'left', padding: '8px' }}>
                     Informações Técnicas
-                  </Typography>
-                </Box>
-              </Grid>
-
-              <Grid item xs={12} style={{ border: '1px solid rgb(0,142,145)', minHeight: '90%' }}>
-                <Typography sx={{ textAlign: 'left', padding: '8px', color: 'inherit' }}>
-                  Listar materiais que são possíveis alterar as informações técnicas
-                </Typography>
-                <Grid style={{ padding: '1%' }}>
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item size={12} style={{ borderTop: '3px solid rgb(0,142,145)', minHeight: '90%' }}>
+                  <Grid style={{ padding: '1%' }}>
                   <IndicatorTechInfo approved={countIndicators.tecInfo} revision={countIndicators.tecInfo}
-                    notIdentify={countIndicators.tecInfo} />
+                      notIdentify={countIndicators.tecInfoFill} />
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={4} >
-              <Grid item xs={12}>
-                <Box style={{
-                  backgroundColor: 'rgb(0,142,145)',
-                  borderRadius: '6px 6px 0px 0px'
-                }}>
-                  <Typography component="div" sx={{ color: 'white', textAlign: 'left', padding: '8px' }}>
+            <Grid item size={4} >
+              <Grid style={{
+                backgroundColor: 'white',
+                padding: '1%',
+                borderRadius: '6px',
+                minHeight:'100%'
+              }} >
+                <Grid item size={12}>
+                  <Box>
+                    <Typography sx={{ color: 'black', textAlign: 'left', padding: '8px' }}>
                     Ata de Preço
-                  </Typography>
-                </Box>
-              </Grid>
-
-              <Grid item xs={12} style={{ border: '1px solid rgb(0,142,145)', minHeight: '90%' }}>
-                <Typography sx={{ textAlign: 'left', padding: '8px', color: 'inherit' }}>
-                  Materiais Comercializados
-                </Typography>
-                <Grid style={{ padding: '1%' }}>
-                  <IndicatorPriceAta filled={countIndicators.tecInfo} notIdentify={countIndicators.tecInfo} />
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item size={12} style={{ borderTop: '3px solid rgb(0,142,145)', minHeight: '90%' }}>
+                  <Grid style={{ padding: '1%' }}>
+                  <IndicatorPriceAta filled={countIndicators.priceATA} notIdentify={countIndicators.priceATAFill} />
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
-          {/* <Indicators recog={countIndicators.recog} notRecog={countIndicators.notRecog}
-        priceATA={countIndicators.priceATA} tecInfo={countIndicators.tecInfo} /> */}
+          
           <MainTableMaterial materials={materials} loading={loadingPage} loadData={loadData} />
         </div>)}</>
   );

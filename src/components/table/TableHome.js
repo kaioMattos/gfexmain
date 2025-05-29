@@ -7,30 +7,19 @@ import { InputText } from 'primereact/inputtext';
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { Dropdown } from 'primereact/dropdown';
-import { InputNumber } from 'primereact/inputnumber';
 import { Button } from 'primereact/button';
-import { Calendar } from 'primereact/calendar';
-import { Slider } from 'primereact/slider';
 import { Tag } from 'primereact/tag';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import { getTableData, getTableCount, getUserHana, postRecogMaterial } from "api";
-import { BsClipboardCheck } from "react-icons/bs";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { MdDoNotDisturb } from "react-icons/md";
-import { PiSealQuestionLight } from "react-icons/pi";
 import { IoMdInformationCircleOutline } from "react-icons/io";
-import { PiSealWarningLight } from "react-icons/pi";
-import { TbFileInfo } from "react-icons/tb";
 import { BsClipboard2Check } from "react-icons/bs";
 import { BsClipboard2Minus } from "react-icons/bs";
-import { AppBar, Box, Toolbar, Typography, Alert, Collapse, CardHeader, Container } from '@mui/material';
+import {  Box, Typography, Collapse, Grid } from '@mui/material';
 import { LuFilePen } from "react-icons/lu";
 import { AiOutlineFileSearch } from "react-icons/ai";
 import { TfiSave } from "react-icons/tfi";
-import { RiFileCloseLine } from "react-icons/ri";
-import { HiOutlineDocumentMagnifyingGlass } from "react-icons/hi2";
-import Grid from '@mui/material/Grid2';
-import ModalCustom from '../modal';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import 'primereact/resources/primereact.css';
@@ -38,13 +27,13 @@ import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import { PrimeReactProvider } from 'primereact/api';
 
 export default function MainTableMaterial({materials, loading, loadData}) {
-  // const [materials, setMaterials] = useState(null);
   const [filters, setFilters] = useState(null);
-  // const [loading, setLoading] = useState(false);
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [rowCount, setRowCount] = useState(0);
   const [selectedMaterials, setSelectedMaterials] = useState(null);
   const [statuses] = useState(['Comercializo', 'Não Comercializo', 'Falta Identificação']);
+  const [statusAtaPrice] = useState(['Preenchido', 'Não Aplicável', 'Preencher', 'Aguardando Identificação']);
+  const [statusInfoTec] = useState(['Validado', 'Não Aplicável', 'Validar', 'Aguardando Identificação']);
   const [selectedAction, setSelectedAction] = useState(null);
   const massActions = ['Comercializo', 'Não Comercializo'];
   const [openDialogRecog, setoOpenDialogRecog] = useState(false);
@@ -106,9 +95,12 @@ export default function MainTableMaterial({materials, loading, loadData}) {
   const getSeverity = (status) => {
     switch (status) {
       case 'Não Comercializo':
+      case 'Não Aplicável':
         return 'danger';
 
       case 'Comercializo':
+      case 'Preenchido':
+      case 'Validado':
         return 'success';
 
       default:
@@ -139,53 +131,18 @@ export default function MainTableMaterial({materials, loading, loadData}) {
   const getICon = (status) => {
     switch (status) {
       case 'Não Comercializo':
+      case 'Não Aplicável':
         return <MdDoNotDisturb size={20} />;
-
       case 'Comercializo':
+      case 'Preenchido':
+      case 'Validado':
         return <IoMdCheckmarkCircleOutline size={20} />;
-
       default:
         return <IoMdInformationCircleOutline size={20} />;
     }
   };
 
-  const ataPriceBodyTemplate = (status) => {
-    switch (status) {
-      case 'Não Aplicável':
-        return <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant='subtitle1' sx={{ color: 'red' }}>
-            {status}
-          </Typography>
-          {/* <Button icon={<RiFileCloseLine size={20} />} rounded text aria-label="Filter" severity="danger"  /> */}
-          {/* <Button icon={<AiOutlineFileSearch   size={20} />} rounded outlined severity="success" aria-label="Search" /> */}
-
-        </Box>
-
-      case 'Preenchido':
-        return <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant='subtitle1' sx={{ color: 'green' }}>
-            {status}
-          </Typography>
-          <Button icon={<AiOutlineFileSearch size={20} />} rounded text severity="success" aria-label="Search" />
-        </Box>
-      case 'Preencher':
-        return <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant='subtitle1' sx={{ color: 'rgb(14, 165, 233)' }}>
-            {status}
-          </Typography>
-          <Button icon={<LuFilePen size={20} />} rounded text severity="info" aria-label="Search" />
-        </Box>
-      default:
-        return <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant='subtitle1' sx={{ color: 'rgb(99, 99, 99)' }}>
-            {status}
-          </Typography>
-          {/* <Button icon={<HiOutlineDocumentMagnifyingGlass size={20} />} rounded text aria-label="Filter" /> */}
-          {/* <Button icon={<AiOutlineFileSearch   size={20} />} rounded outlined severity="success" aria-label="Search" /> */}
-
-        </Box>
-    }
-  };
+  
   const getTextTemplateInfoTec = (status) => {
     switch (status) {
       case 'Não Aplicável':
@@ -272,8 +229,9 @@ export default function MainTableMaterial({materials, loading, loadData}) {
       mfrpn: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
       classDesc: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
       mfrnr: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-      NmReconhecido: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] }
-
+      NmReconhecido: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+      AtaPrecoPreenchida: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+      InformacoesTecnicas: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] }
     });
 
     setGlobalFilterValue('');
@@ -322,7 +280,7 @@ export default function MainTableMaterial({materials, loading, loadData}) {
               </IconField>
             </Grid>
             <Grid>
-              <Button type="button" icon="pi pi-file-excel" style={{ marginLeft: '10px' }} label="Excel" severity="success" onClick={exportExcel} data-pr-tooltip="XLS" />
+              <Button type="button" icon="pi pi-file-excel" style={{ marginLeft: '10px' }} label="Exportar" severity="success" onClick={exportExcel} data-pr-tooltip="XLS" />
             </Grid>
           </Grid>
         </Grid>
@@ -363,7 +321,92 @@ export default function MainTableMaterial({materials, loading, loadData}) {
     return <Tag onClick={() => { setoOpenDialogRecog(true) }} style={{ width: '150px', cursor: 'pointer', }} value={rowData[prop]} icon={getICon(rowData[prop])} severity={getSeverity(rowData[prop])} >
     </Tag>
   };
-  const infoTecBodyTemplate = (rowData) => {
+  const ataPricFilterTemplate = (options) => {
+    return <Dropdown value={options.value} options={statusAtaPrice}
+      onChange={(e) => options.filterCallback(e.value, options.index)}
+      itemTemplate={ataPricItemTemplate} placeholder="Select One"
+      className="p-column-filter" showClear
+    />;
+  };
+  const ataPricItemTemplate = (status) => {
+    switch (status) {
+      case 'Não Aplicável':
+      case 'Preenchido':
+      case 'Preencher':
+        return <Tag
+        style={{ width: '150px', cursor: 'pointer', }} value={status}
+        icon={getICon(status)} severity={getSeverity(status)} >
+        </Tag>
+      case 'Aguardando Identificação':
+        return <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant='subtitle1' sx={{ color: 'rgb(99, 99, 99)' }}>
+            {status}
+          </Typography>
+        </Box>
+    }
+    
+  };
+  const infoTecFilterTemplate = (options) => {
+    return <Dropdown value={options.value} options={statusInfoTec}
+      onChange={(e) => options.filterCallback(e.value, options.index)}
+      itemTemplate={infoTecItemTemplate} placeholder="Select One"
+      className="p-column-filter" showClear
+    />;
+  };
+  const infoTecItemTemplate = (status) => {
+    switch (status) {
+      case 'Não Aplicável':
+      case 'Validado':
+      case 'Validar':
+        return <Tag
+        style={{ width: '150px', cursor: 'pointer', }} value={status}
+        icon={getICon(status)} severity={getSeverity(status)} >
+        </Tag>
+      case 'Aguardando Identificação':
+        return <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant='subtitle1' sx={{ color: 'rgb(99, 99, 99)' }}>
+            {status}
+          </Typography>
+        </Box>
+    }
+    
+  };
+  const infoTecBodyTemplate = (status, prop) => {
+    switch (status) {
+      case 'Não Aplicável':
+      case 'Validar':
+      case 'Validado':
+        return <Tag onClick={() => { setoOpenDialogRecog(true) }}
+        style={{ width: '150px', cursor: 'pointer', }} value={status}
+        icon={getICon(status)} severity={getSeverity(status)} >
+        </Tag>
+      default:
+        return <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant='subtitle1' sx={{ color: 'rgb(99, 99, 99)' }}>
+            {status}
+          </Typography>
+        </Box>
+    }
+  };
+  const ataPricBodyTemplate = (status, prop) => {
+    switch (status) {
+      case 'Não Aplicável':
+      case 'Preenchido':
+      case 'Preencher':
+        return <Tag onClick={() => { setoOpenDialogRecog(true) }}
+        style={{ width: '150px', cursor: 'pointer', }} value={status}
+        icon={getICon(status)} severity={getSeverity(status)} >
+        </Tag>
+      default:
+        return <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant='subtitle1' sx={{ color: 'rgb(99, 99, 99)' }}>
+            {status}
+          </Typography>
+        </Box>
+    }
+    
+  };
+  const infoTecBodyTemplate_ = (rowData) => {
     return getTextTemplateInfoTec(rowData);
     // return <Tag style={{width:'150px'}} value={getValueInfoTec(rowData)} icon={getIConTec(rowData)} severity={getSeverityTec(rowData)} />;
   };
@@ -376,7 +419,7 @@ export default function MainTableMaterial({materials, loading, loadData}) {
   };
 
 
-  const infoTecFilterTemplate = (options) => {
+  const infoTecFilterTemplate_ = (options) => {
     return (
       <div className="flex align-items-center gap-2">
         <label htmlFor="verified-filter" className="font-bold">
@@ -399,14 +442,14 @@ export default function MainTableMaterial({materials, loading, loadData}) {
               emptyMessage="Materiais não encontrados" onFilter={(e) => setFilters(e.filters)}
               onSelectionChange={(e) => setSelectedMaterials(e.value)} selection={selectedMaterials}
               scrollable  selectionMode='checkbox' >             
-              <Column field="matnr" header="Material" filter filterPlaceholder="Pesquisar por N° Mat" style={{ minWidth: '10rem' }} />
+              <Column field="matnr" header="Material" filter filterPlaceholder="Pesquisar por N° Mat" style={{ minWidth: '8rem' }} />
               <Column field="maktx" header="Descrição" filter filterPlaceholder="Pesquisar por Descrição" style={{ minWidth: '10rem' }} />              
               <Column field="classDesc" header="Classe" filter filterPlaceholder="Pesquisar por Classe" style={{ minWidth: '15rem' }} />
               <Column field="mfrpn" header="N° peça fabricante" filter filterPlaceholder="Pesquisar por peça fabricante" style={{ minWidth: '10rem' }} />
               <Column field="mfrnr" header="Fabricante" filter filterPlaceholder="Pesquisar por Fabricante" style={{ minWidth: '8rem' }} />              
-              <Column field="NmReconhecido" header="Reconhecido" filterMenuStyle={{ width: '10rem' }} body={(e) => recogBodyTemplate(e, 'NmReconhecido')} filter filterElement={recogFilterTemplate} style={{ minWidth: '12rem' }} />
-              <Column field="AtaPrecoPreenchida" header="Ata de Preço" body={(e) => ataPriceBodyTemplate(e.AtaPrecoPreenchida)} filter style={{ minWidth: '12rem' }} />
-              <Column field="InformacoesTecnicas" header="Informações Técnicas" body={(e) => infoTecBodyTemplate(e.InformacoesTecnicas)} filter style={{ minWidth: '12rem' }} />
+              <Column field="NmReconhecido" header="Comercializado" filterMenuStyle={{ width: '10rem' }} body={(e) => recogBodyTemplate(e, 'NmReconhecido')} filter filterElement={recogFilterTemplate} style={{ minWidth: '12rem' }} />
+              <Column field="AtaPrecoPreenchida" header="Ata de Preço" filterMenuStyle={{ width: '10rem' }} body={(e) => ataPricBodyTemplate(e.AtaPrecoPreenchida)} filter filterElement={ataPricFilterTemplate}  style={{ minWidth: '12rem' }} />
+              <Column field="InformacoesTecnicas" header="Informações Técnicas" filterMenuStyle={{ width: '10rem' }} body={(e) => infoTecBodyTemplate(e.InformacoesTecnicas)} filter filterElement={infoTecFilterTemplate}  style={{ minWidth: '12rem' }} />
             </DataTable>
           </div>
       </Box>

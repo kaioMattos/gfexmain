@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
-import IndicatorCard from '../../components/dashboard/IndicatorCard';
+import IndicatorCard from '../../components/indicator/IndicatorCard';
 import { PiMedalDuotone } from "react-icons/pi";
 import { MdNotInterested, MdPriceCheck } from "react-icons/md";
 import { IoNewspaperOutline } from "react-icons/io5";

@@ -1,32 +1,36 @@
 import * as React from 'react';
 import { Typography , Breadcrumbs, Link} from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-
-function handleClick(event) {
-  event.preventDefault();
-  console.info('You clicked a breadcrumb.');
-}
+import {  useLocation, useNavigate } from "react-router-dom";
+import { IoHomeOutline } from "react-icons/io5";
 
 export default function NavLink() {
+  const location = useLocation();
+  const navigate = useNavigate();
   return (
-    <div role="presentation" onClick={handleClick}>
-      <Breadcrumbs aria-label="breadcrumb">
+    
+    <div >
+      {!location.pathname.includes("/index.html") && (
+      <Breadcrumbs aria-label="breadcrumb" sx={{marginBottom:'0.5%'}}>
+     
         <Link
+          onClick={() => navigate('/dashboardgfex/index.html')}
           underline="hover"
           sx={{ display: 'flex', alignItems: 'center' }}
           color="inherit"
-          href="/"
+          href="#"
         >
-          <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+          <IoHomeOutline sx={{ mr: 0.5 }} fontSize="inherit" />
           Home
         </Link>
-        <Typography
-          sx={{ color: 'text.primary', display: 'flex', alignItems: 'center' }}
-        >      
-          Dashboard
-        </Typography>
+    
+        {location.pathname.includes("/TecInfo") && (
+          <>
+            <Typography sx={{ color: 'text.primary' }}>Informações Técnicas</Typography>                        
+          </>
+        )}
       </Breadcrumbs>
+       )}
     </div>
+ 
   );
 }

@@ -2,6 +2,13 @@
   text-align: center;
 }
 
+.body {
+  padding-top: 0.5%;
+  padding-inline: 3%;
+  font-family: PetrobrasSans_Rg, serif;
+  background: #f4f4f4;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -14,17 +21,8 @@
   width: 100%;
 }
 
-.body {
-  padding-top: 0.5%;
-  padding-inline: 3%;
-  font-family: PetrobrasSans_Rg, serif;
-  background: #f4f4f4;
-}
 
-.initLoading {
-  padding-top: 15%;
-  padding-inline: 6%;
-}
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

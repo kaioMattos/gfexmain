@@ -1,15 +1,13 @@
 import * as React from 'react';
-import { AppBar, Box, Toolbar, Typography, Button, CardHeader } from '@mui/material';
-import logoPetro from '../../assets/PetroIcone.png';
+import { AppBar, Box, Toolbar } from '@mui/material';
 import logopetrobras from '../../assets/logopetrobras.png';
 import logoGFEX from '../../assets/logoGFEX.png';
-import { LuUser } from "react-icons/lu";
-import NavLink from '../breadcrumbs';
+import BasicMenu from './navigation'
 
-export default function Header({ totalMaterial }) {
+export default function Header() {
 
   return (
-    <Box sx={{ flexGrow: 1, marginLeft: '-35px', paddingInlineEnd: '2%', paddingBottom:'0.5%' }}>
+    <Box sx={{ flexGrow: 1, marginLeft: '-35px', paddingBottom:'0.5%' }}>
       <AppBar elevation={0} position="static" sx={{
         backgroundColor: 'rgb(255, 255, 255)'
       }}>
@@ -23,14 +21,17 @@ export default function Header({ totalMaterial }) {
         </Toolbar>
 
       </AppBar>
-      <AppBar elevation={0} position="static" sx={{
-        paddingInline: '5%',
-        backgroundColor: 'rgb(255, 255, 255)'
+      <div style={{height:'1px', backgroundColor:'rgba(84, 84, 84, 0.1)',
+         marginLeft:'3%', marginRight:'1%'}}>
+      </div>
+      <AppBar  elevation={0} position="static" sx={{
+        paddingInline: '4%',
+        backgroundColor: 'rgb(255, 255, 255)',
+        textAlign:'left',
+        boxShadow:'17px 15px 11px -18px #111'
       }}>
-        <NavLink />
+        <BasicMenu />
       </AppBar>
-      
-
     </Box>
   );
 }
