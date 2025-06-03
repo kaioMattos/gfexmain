@@ -6,7 +6,9 @@ import { useDashboard } from 'useContext';
 import Header from 'components/header';
 import NavLink from 'components/breadcrumbs';
 import Home from 'pages/Home';
+import Marketing from 'pages/Marketing';
 import TecInfo from 'pages/TecInfo';
+import ValidarTecInfo from 'pages/TecInfo/ValidarTecInfo';
 import TelaErroPermissao from 'pages/NotPermission'
 import "./App.css";
 
@@ -45,7 +47,9 @@ const MainRoutes = () => {
             <NavLink />
             <Routes>
               <Route path='/dashboardgfex/index.html' element={<Home />} />
-              <Route path='/dashboardgfex/TecInfo' element={<TecInfo />} />
+              <Route path='/dashboardgfex/TecInfo' element={<TecInfo />}></Route> 
+                <Route path='dashboardgfex/ValidarDadosTec' element={<ValidarTecInfo />} />
+              <Route path='/dashboardgfex/Marketing' element={<Marketing />} />
             </Routes>
           </div>
         </>

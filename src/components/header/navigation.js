@@ -3,7 +3,7 @@ import Menu from '@mui/material/Menu';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
 import { FiMenu } from "react-icons/fi";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 export default function BasicMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -45,7 +45,7 @@ export default function BasicMenu() {
         }}
       >
         <MenuItem onClick={() => navigatePage('/dashboardgfex/index.html')}>Home</MenuItem>
-        <MenuItem onClick={() => navigatePage('a')}>Comercializar</MenuItem>
+        <MenuItem onClick={() => navigatePage('/dashboardgfex/Marketing')}>Comercialização</MenuItem>
         <MenuItem onClick={() => navigatePage('/dashboardgfex/TecInfo')}>Aprovar Ficha Técnica</MenuItem>
         <MenuItem onClick={() => navigatePage('a')}>Minuta Contratual</MenuItem>        
       </Menu>

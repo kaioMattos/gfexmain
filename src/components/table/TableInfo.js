@@ -16,7 +16,7 @@ import { MdDoNotDisturb } from "react-icons/md";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { BsClipboard2Check } from "react-icons/bs";
 import { BsClipboard2Minus } from "react-icons/bs";
-import {  Box, Typography, Collapse, Grid } from '@mui/material';
+import { Box, Typography, Collapse, Grid } from '@mui/material';
 import { LuFilePen } from "react-icons/lu";
 import { AiOutlineFileSearch } from "react-icons/ai";
 import 'primeicons/primeicons.css';
@@ -24,13 +24,14 @@ import 'primeflex/primeflex.css';
 import 'primereact/resources/primereact.css';
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import Highlight from 'components/Highlight';
+import { useDashboard } from 'useContext';
 import "./styles.css";
 
-export default function TableInfo({materials, loading, loadData, HeaderTable, sActionHeader}) {
+export default function TableInfo({ materials, loading, loadData, HeaderTable, sActionHeader }) {
   const [filters, setFilters] = useState(null);
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [rowCount, setRowCount] = useState(0);
-  const [selectedMaterials, setSelectedMaterials] = useState(null);
+  const { selectedMaterials, setSelectedMaterialsContext } = useDashboard();
   const [statuses] = useState(['Comercializo', 'Não Comercializo', 'Falta Identificação']);
   const [statusAtaPrice] = useState(['Preenchido', 'Não Aplicável', 'Preencher', 'Aguardando Identificação']);
   const [statusInfoTec] = useState(['Validado', 'Não Aplicável', 'Validar', 'Aguardando Identificação']);
@@ -142,7 +143,7 @@ export default function TableInfo({materials, loading, loadData, HeaderTable, sA
     }
   };
 
-  
+
   const getTextTemplateInfoTec = (status) => {
     switch (status) {
       case 'Não Aplicável':
@@ -202,7 +203,7 @@ export default function TableInfo({materials, loading, loadData, HeaderTable, sA
   };
   const PAGE_SIZE = 200000;
 
-  
+
   useEffect(() => {
     // loadData(true);
     initFilters();
@@ -284,26 +285,26 @@ export default function TableInfo({materials, loading, loadData, HeaderTable, sA
             </Grid>
           </Grid>
         </Grid>
-        
+
         <Grid size={12} item >
           <Grid container sx={{ justifyContent: 'flex-start', alignItems: 'center' }} >
-              <Grid>
-                <Typography>Selecionar Materiais para <Highlight className="destTextHeaderTable">{sActionHeader}</Highlight></Typography>
-              </Grid>             
+            <Grid>
+              <Typography>Selecionar Materiais para <Highlight className="destTextHeaderTable">{sActionHeader}</Highlight></Typography>
             </Grid>
-            </Grid>
-            <Grid size={12} item >
-          {/* <Collapse in={selectedMaterials !== null && selectedMaterials.length > 1 ? true : false}> */}          
-          
+          </Grid>
+        </Grid>
+        <Grid size={12} item >
+          {/* <Collapse in={selectedMaterials !== null && selectedMaterials.length > 1 ? true : false}> */}
+
           <Grid container sx={{ justifyContent: 'flex-start', alignItems: 'center' }} >
-                <Grid>
-                  <Typography>
-                    Materiais selecionados: <Highlight>{selectedMaterials !== null && selectedMaterials.length > 0 ? selectedMaterials.length : 0}</Highlight>
-                  </Typography>
-                </Grid>
-                {HeaderTable}
-              </Grid>
-            {/* <Grid container sx={{ justifyContent: 'flex-start', alignItems: 'center' }} >
+            <Grid>
+              <Typography>
+                Materiais selecionados: <Highlight>{selectedMaterials !== null && selectedMaterials.length > 0 ? selectedMaterials.length : 0}</Highlight>
+              </Typography>
+            </Grid>
+            {HeaderTable}
+          </Grid>
+          {/* <Grid container sx={{ justifyContent: 'flex-start', alignItems: 'center' }} >
               <Grid>
                 <Typography>Identificação em massa:</Typography>
               </Grid>
@@ -350,8 +351,8 @@ export default function TableInfo({materials, loading, loadData, HeaderTable, sA
       case 'Preenchido':
       case 'Preencher':
         return <Tag
-        style={{ width: '150px', cursor: 'pointer', }} value={status}
-        icon={getICon(status)} severity={getSeverity(status)} >
+          style={{ width: '150px', cursor: 'pointer', }} value={status}
+          icon={getICon(status)} severity={getSeverity(status)} >
         </Tag>
       case 'Aguardando Identificação':
         return <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -360,7 +361,7 @@ export default function TableInfo({materials, loading, loadData, HeaderTable, sA
           </Typography>
         </Box>
     }
-    
+
   };
   const infoTecFilterTemplate = (options) => {
     return <Dropdown value={options.value} options={statusInfoTec}
@@ -375,8 +376,8 @@ export default function TableInfo({materials, loading, loadData, HeaderTable, sA
       case 'Validado':
       case 'Validar':
         return <Tag
-        style={{ width: '150px', cursor: 'pointer', }} value={status}
-        icon={getICon(status)} severity={getSeverity(status)} >
+          style={{ width: '150px', cursor: 'pointer', }} value={status}
+          icon={getICon(status)} severity={getSeverity(status)} >
         </Tag>
       case 'Aguardando Identificação':
         return <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -385,7 +386,7 @@ export default function TableInfo({materials, loading, loadData, HeaderTable, sA
           </Typography>
         </Box>
     }
-    
+
   };
   const infoTecBodyTemplate = (status, prop) => {
     switch (status) {
@@ -393,8 +394,8 @@ export default function TableInfo({materials, loading, loadData, HeaderTable, sA
       case 'Validar':
       case 'Validado':
         return <Tag onClick={() => { setoOpenDialogRecog(true) }}
-        style={{ width: '150px', cursor: 'pointer', }} value={status}
-        icon={getICon(status)} severity={getSeverity(status)} >
+          style={{ width: '150px', cursor: 'pointer', }} value={status}
+          icon={getICon(status)} severity={getSeverity(status)} >
         </Tag>
       default:
         return <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -410,8 +411,8 @@ export default function TableInfo({materials, loading, loadData, HeaderTable, sA
       case 'Preenchido':
       case 'Preencher':
         return <Tag onClick={() => { setoOpenDialogRecog(true) }}
-        style={{ width: '150px', cursor: 'pointer', }} value={status}
-        icon={getICon(status)} severity={getSeverity(status)} >
+          style={{ width: '150px', cursor: 'pointer', }} value={status}
+          icon={getICon(status)} severity={getSeverity(status)} >
         </Tag>
       default:
         return <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -420,7 +421,7 @@ export default function TableInfo({materials, loading, loadData, HeaderTable, sA
           </Typography>
         </Box>
     }
-    
+
   };
   const infoTecBodyTemplate_ = (rowData) => {
     return getTextTemplateInfoTec(rowData);
@@ -448,24 +449,32 @@ export default function TableInfo({materials, loading, loadData, HeaderTable, sA
   const header = renderHeader();
 
   return (
-      <Box style={{ padding: '5% 0 0 0',  }}>
-        <Typography variant="h5" component="h6" sx={{ textAlign: 'left', paddingBottom: '1%', color: '#4d4d4d' }}>
-          Lista de Materiais
-        </Typography>
-          <div className="card">
-            <DataTable className='font-face-ptRg' size='small' value={materials} paginator rows={10} loading={loading} dataKey="id"
-              filters={filters} globalFilterFields={['matnr', 'maktx', 'classDesc', 'mfrnr', 'mfrpn']} header={header}
-              emptyMessage="Materiais não encontrados" onFilter={(e) => setFilters(e.filters)}
-              onSelectionChange={(e) => setSelectedMaterials(e.value)} selection={selectedMaterials}
-              scrollable  selectionMode='checkbox' > 
-              <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>            
-              <Column field="matnr" header="Material" filter filterPlaceholder="Pesquisar por N° Mat" style={{ minWidth: '8rem' }} />
-              <Column field="maktx" header="Descrição" filter filterPlaceholder="Pesquisar por Descrição" style={{ minWidth: '10rem' }} />              
-              <Column field="classDesc" header="Classe" filter filterPlaceholder="Pesquisar por Classe" style={{ minWidth: '15rem' }} />
-              <Column field="mfrpn" header="N° peça fabricante" filter filterPlaceholder="Pesquisar por peça fabricante" style={{ minWidth: '10rem' }} />
-              <Column field="mfrnr" header="Fabricante" filter filterPlaceholder="Pesquisar por Fabricante" style={{ minWidth: '8rem' }} />                            
-            </DataTable>
-          </div>
-      </Box>
+    <Box style={{ padding: '5% 0 0 0', }}>
+      <Typography variant="h5" component="h6" sx={{ textAlign: 'left', paddingBottom: '1%', color: '#4d4d4d' }}>
+        Lista de Materiais
+      </Typography>
+      <div className="card">
+        <DataTable className='font-face-ptRg' size='small' value={materials} paginator rows={10} loading={loading} dataKey="id"
+          filters={filters} globalFilterFields={['matnr', 'maktx', 'classDesc', 'mfrnr', 'mfrpn']} header={header}
+          emptyMessage="Materiais não encontrados" onFilter={(e) => setFilters(e.filters)}
+          onSelectionChange={async (e) => await setSelectedMaterialsContext(e.value)} selection={selectedMaterials}
+          scrollable selectionMode='checkbox' >
+          <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
+          <Column field="matnr" header="Material" filter filterPlaceholder="Pesquisar por N° Mat" style={{ minWidth: '8rem' }} />
+          <Column field="maktx" header="Descrição" filter filterPlaceholder="Pesquisar por Descrição" style={{ minWidth: '10rem' }} />
+          <Column field="classDesc" header="Classe" filter filterPlaceholder="Pesquisar por Classe" style={{ minWidth: '15rem' }} />
+          <Column field="mfrpn" header="N° peça fabricante" filter filterPlaceholder="Pesquisar por peça fabricante" style={{ minWidth: '10rem' }} />
+          <Column field="mfrnr" header="Fabricante" filter filterPlaceholder="Pesquisar por Fabricante" style={{ minWidth: '8rem' }} />
+          {sActionHeader.includes('Identificar') && (
+            <Column field="NmReconhecido" header="Comercializado" filterMenuStyle={{ width: '10rem' }} body={(e) => recogBodyTemplate(e, 'NmReconhecido')} filter filterElement={recogFilterTemplate} style={{ minWidth: '12rem' }} />
+          )}
+          {sActionHeader.includes('Identificar') && (
+            <Column field="AtaPrecoPreenchida" header="Ata de Preço" filterMenuStyle={{ width: '10rem' }} body={(e) => ataPricBodyTemplate(e.AtaPrecoPreenchida)} filter filterElement={ataPricFilterTemplate} style={{ minWidth: '12rem' }} />
+          )}
+
+
+        </DataTable>
+      </div>
+    </Box>
   )
 }

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { CircularProgress, Typography, Box, Grid } from '@mui/material';
-import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import Head from 'components/head';
 import IndicatorTechInfo from './indicators/TechInfo';
@@ -10,11 +9,13 @@ import TableInfo from 'components/table/TableInfo';
 import { _assembleOrFilterGeneric } from 'utils';
 import { LuSearchCheck } from "react-icons/lu";
 import Highlight from 'components/Highlight';
+import { useNavigate } from 'react-router-dom';
 import "./styles.css";
 
 const PAGE_SIZE = 200000;
 
 const TecInfo = () => {
+  
   const loadData = async () => {
     setMaterials([]);
     try {
@@ -58,7 +59,7 @@ const TecInfo = () => {
       setLoadingPage(false);
     }
   }
-
+  const navigate = useNavigate();
   const { supplier, setLoadingPage, loadingPage } = useDashboard();
   const [countIndicators, setCountIndicators] = useState({
     recog: 0,
@@ -71,7 +72,8 @@ const TecInfo = () => {
   const GridHeaderTable = () => (
    
     <Grid>
-      <Button style={{ marginLeft: '10px' }} label="Validar"
+      <Button style={{ marginLeft: '10px' }} label="Validar" 
+      onClick={() => navigate('/dashboardgfex/ValidarDadosTec')}
       icon={<LuSearchCheck size={20} />} outlined severity="info" aria-label="Search" />
     </Grid>
   );
