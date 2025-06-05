@@ -23,7 +23,7 @@ export default function BasicMenu() {
   return (
     <div>
         <IconButton
-        style={{fontSize:'1.3rem'}}
+        style={{fontSize:'1.3rem', marginLeft:'2rem'}}
         aria-label="more"
         id="basic-button"
         aria-controls={open ? 'basic-menu' : undefined}

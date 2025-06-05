@@ -21,3 +21,20 @@
   grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr));
   gap: 2;
 }
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0px 15px 15px 0px
+}
+
+.button {
+  background-color: rgb(0,142,145);
+  color: #fff;
+  margin-left: 1rem;
+  border-radius: 6px;
+  &:hover{
+    background-color: rgb(0, 98, 152);
+
+  }
+}
