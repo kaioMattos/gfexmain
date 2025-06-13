@@ -1,0 +1,9 @@
+.simpleHeader{
+    padding: 1rem 2rem 0rem 1rem;
+    justify-content: space-between;
+}
+
+.homeHeader{
+    justify-content: space-between;
+    padding-right: 2rem;
+}

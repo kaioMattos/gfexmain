@@ -1,0 +1,51 @@
+.App {
+  text-align: center;
+}
+
+.body {
+  padding-top: 0.5%;
+  padding-inline: 3%;
+  font-family: PetrobrasSans_Rg, serif;
+  background: #f4f4f4;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 50px 1fr 50px;
+  height: 100%;
+  width: 100%;
+}
+
+
+
+
+
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+
+.css-14dl35y{
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.css-1fei0dn{
+  box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.2),0px 0px 0px 0px rgba(0,0,0,0.14),0px 0px 0px 0px rgba(0,0,0,0.12) !important;
+}
