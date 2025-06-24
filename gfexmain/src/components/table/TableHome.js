@@ -10,7 +10,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
-import { getTableData, getTableCount, getUserHana, postRecogMaterial } from "api";
+import { getTableData, getTableCount, getUserHana, postRecogMaterial } from "../../api";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { MdDoNotDisturb } from "react-icons/md";
 import { IoMdInformationCircleOutline } from "react-icons/io";

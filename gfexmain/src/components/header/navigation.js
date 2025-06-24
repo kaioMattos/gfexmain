@@ -23,7 +23,7 @@ export default function BasicMenu() {
   return (
     <div>
         <IconButton
-        style={{fontSize:'1.3rem', marginLeft:'2rem'}}
+        style={{fontSize: '1rem', fontFamily: 'PetrobrasSans_Bd', marginLeft:'2rem'}}
         aria-label="more"
         id="basic-button"
         aria-controls={open ? 'basic-menu' : undefined}
@@ -31,7 +31,7 @@ export default function BasicMenu() {
         aria-haspopup="true"
         onClick={handleClick}
       >
-        <FiMenu style={{marginRight:'5%', fontSize:'1.8rem'}}/>
+        <FiMenu style={{marginRight:'5%', fontSize:'1.3rem'}}/>
         Navegar
       </IconButton>
       

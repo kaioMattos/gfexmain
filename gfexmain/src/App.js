@@ -1,21 +1,28 @@
 import { Route, Routes } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { getUserHana } from "api";
-import { useDashboard } from 'useContext';
-import Header from 'components/header';
-import NavLink from 'components/breadcrumbs';
-import Home from 'pages/Home';
-import Marketing from 'pages/Marketing';
-import TecInfo from 'pages/TecInfo';
-import ValidarTecInfo from 'pages/TecInfo/ValidarTecInfo';
-import TelaErroPermissao from 'pages/NotPermission'
+import { getUserHana } from "./api";
+import { useDashboard } from './useContext';
+import Header from './components/header';
+import NavLink from './components/breadcrumbs';
+import Home from './pages/Home';
+import Marketing from './pages/Marketing';
+import TecInfo from './pages/TecInfo';
+import ValidarTecInfo from './pages/TecInfo/ValidarTecInfo';
+import TelaErroPermissao from './pages/NotPermission';
 import "./App.css";
 
 const theme = createTheme({
   typography: {
-    fontFamily: 'PetrobrasSans_Rg'
+    fontFamily: 'PetrobrasSans_Rg',
   },
+  palette: {
+    colorSystem: {
+      blue: 'rgb(0,142,145)',
+      yellow:'rgb(207, 160, 30)'
+    }
+  }
+
 });
 
 const App = () => {
@@ -47,8 +54,8 @@ const App = () => {
             <NavLink />
             <Routes>
               <Route path='/gfexmain/index.html' element={<Home />} />
-              <Route path='/gfexmain/TecInfo' element={<TecInfo />}></Route> 
-                <Route path='gfexmain/ValidarDadosTec' element={<ValidarTecInfo />} />
+              <Route path='/gfexmain/TecInfo' element={<TecInfo />}></Route>
+              <Route path='gfexmain/ValidarDadosTec' element={<ValidarTecInfo />} />
               <Route path='/gfexmain/Marketing' element={<Marketing />} />
             </Routes>
           </div>

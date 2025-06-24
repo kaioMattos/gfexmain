@@ -10,7 +10,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
-import { getTableData, getTableCount, getUserHana, postRecogMaterial } from "api";
+import { getTableData, getTableCount, getUserHana, postRecogMaterial } from "../../api";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { MdDoNotDisturb } from "react-icons/md";
 import { IoMdInformationCircleOutline } from "react-icons/io";
@@ -23,8 +23,8 @@ import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import 'primereact/resources/primereact.css';
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
-import Highlight from 'components/Highlight';
-import { useDashboard } from 'useContext';
+import Highlight from '../../components/Highlight';
+import { useDashboard } from '../../useContext';
 import "./styles.css";
 
 export default function TableInfo({ materials, loading, loadData, HeaderTable, sActionHeader }) {

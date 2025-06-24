@@ -13,7 +13,7 @@ import { Calendar } from 'primereact/calendar';
 import { Slider } from 'primereact/slider';
 import { Tag } from 'primereact/tag';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
-import { getTableData, getTableCount, getUserHana, postRecogMaterial } from "api";
+import { getTableData, getTableCount, getUserHana, postRecogMaterial } from "../../api";
 import { BsClipboardCheck } from "react-icons/bs";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { MdDoNotDisturb } from "react-icons/md";

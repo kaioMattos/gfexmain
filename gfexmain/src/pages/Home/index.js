@@ -1,88 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { CircularProgress, Typography, Box, Grid } from '@mui/material';
-import Head from 'components/head';
+import Head from '../../components/head';
 import IndicatorMkt from './indicators/Marketing';
 import IndicatorTechInfo from './indicators/TechInfo';
 import IndicatorContractMinute from './indicators/ContractualMinute';
 import IndicatorPriceAta from './indicators/PriceAta';
-import { getCountIndicator, getTableData } from "api";
-import { useDashboard } from 'useContext';
-import MainTableMaterial from 'components/table/TableHome';
-import { _assembleOrFilterGeneric } from 'utils';
+import { useDashboard } from '../../useContext';
+import MainTableMaterial from '../../components/table/TableHome';
+
 import "./styles.css";
 
-const PAGE_SIZE = 200000;
-
 const Home = () => {
-  const loadData = async () => {
-    setMaterials([]);
+  const { loadingPage, countIndicators, materials, loadData } = useDashboard();
 
-    try {
-      setLoadingPage(true);
-      if (supplier !== undefined) {
-        const sFiltersClasses = _assembleOrFilterGeneric(supplier, 'classDesc', 'class', 'class');
-        const sFiltersManufactureres = _assembleOrFilterGeneric(supplier, 'mfrnr', 'manufacturer', 'text');
-        const sFilter = `fornecedorInex eq '10097577'and (${sFiltersClasses}) and (${sFiltersManufactureres})`
-        const countRecog = await getCountIndicator({
-          $filter: `${sFilter} and NmReconhecido eq 'Comercializo'`
-        });
-        const countNotRecog = await getCountIndicator({
-          $filter: `${sFilter} and NmReconhecido eq 'Não Comercializo'`
-        });
-        const countNotIdentify = await getCountIndicator({
-          $filter: `${sFilter} and (NmReconhecido ne 'Não Comercializo' and NmReconhecido ne 'Comercializo')`
-        });
-
-        const countPriceAta = await getCountIndicator({
-          $filter: `${sFilter} and AtaPrecoPreenchida eq 'Preenchido' and NmReconhecido eq 'Comercializo'`
-        });
-
-        const countPriceAtaNeedToFill = await getCountIndicator({
-          $filter: `${sFilter} and AtaPrecoPreenchida eq 'Preencher' and NmReconhecido eq 'Comercializo'`
-        });
-        const countTecInfo = await getCountIndicator({
-          $filter: `${sFilter} and InformacoesTecnicas eq 'validada'`
-        });
-        const countTecInfoNeedToFill = await getCountIndicator({
-          $filter: `${sFilter} and InformacoesTecnicas eq 'Validar'`
-        });
-        setCountIndicators({
-          recog: countRecog,
-          notRecog: countNotRecog,
-          priceATA: countPriceAta,
-          priceATAFill: countPriceAtaNeedToFill,
-          tecInfo: countTecInfo,
-          tecInfoFill: countTecInfoNeedToFill,
-          notIdentify: countNotIdentify
-        });
-
-        const _items = await getTableData({
-          $top: PAGE_SIZE,
-          $filter: sFilter
-        });
-        const itemsWithIds = _items.map((item, index) => {
-          item.id = index;
-          return item;
-        });
-        setMaterials(itemsWithIds);
-
-      }
-    } finally {
-      setLoadingPage(false);
-    }
-  }
-
-  const { supplier, setLoadingPage, loadingPage } = useDashboard();
-  const [countIndicators, setCountIndicators] = useState({
-    recog: 0,
-    notRecog: 0,
-    priceATA: 0,
-    priceATAFill: 0,
-    tecInfo: 0,
-    tecInfoFill: 0,
-    notIdentify: 0
-  });
-  const [materials, setMaterials] = useState(null);
   const Highlight = ({ children, className }) => (
     <span className={className}>
       {children}
@@ -94,7 +24,7 @@ const Home = () => {
 
   return (
     <>
-     <Head title="Gfex" description="Página principal" />
+      <Head title="Gfex" description="Página principal" />
       {loadingPage ? (
         <div className="initLoading">
           <CircularProgress disableShrink={loadingPage} />
@@ -210,7 +140,9 @@ const Home = () => {
             </Grid>
           </Grid>
           <MainTableMaterial materials={materials} loading={loadingPage} loadData={loadData} />
-        </>)}</>
+        </>
+      )}
+    </>
   );
 };
 

@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { CircularProgress, Typography, Box, Grid } from '@mui/material';
 import { Button } from 'primereact/button';
-import Head from 'components/head';
+import Head from '../../components/head';
 import IndicatorTechInfo from './indicators/TechInfo';
-import { getCountIndicator, getTableData } from "api";
-import { useDashboard } from 'useContext';
-import TableInfo from 'components/table/TableInfo';
-import { _assembleOrFilterGeneric } from 'utils';
+import { useDashboard } from '../../useContext';
+import TableInfo from '../../components/table/TableInfo';
+import { _assembleOrFilterGeneric } from '../../utils';
 import { LuSearchCheck } from "react-icons/lu";
-import Highlight from 'components/Highlight';
+import Highlight from '../../components/Highlight';
 import { useNavigate } from 'react-router-dom';
 import "./styles.css";
 
@@ -16,58 +15,10 @@ const PAGE_SIZE = 200000;
 
 const TecInfo = () => {
   
-  const loadData = async () => {
-    setMaterials([]);
-    try {
-      setLoadingPage(true);
-      if (supplier !== undefined) {
-
-        const sFiltersClasses = _assembleOrFilterGeneric(supplier, 'classDesc', 'class', 'class');
-        const sFiltersManufactureres = _assembleOrFilterGeneric(supplier, 'mfrnr', 'manufacturer', 'text');
-        const sFilter = `fornecedorInex eq '10097577'and (${sFiltersClasses}) and (${sFiltersManufactureres})`
-        const countRecog = await getCountIndicator({
-          $filter: `${sFilter} and NmReconhecido eq 'Comercializo'`
-        });
-        const countNotIdentify = await getCountIndicator({
-          $filter: `${sFilter} and (NmReconhecido ne 'Não Comercializo' and NmReconhecido ne 'Comercializo')`
-        });
-        const countTecInfo = await getCountIndicator({
-          $filter: `${sFilter} and InformacoesTecnicas eq 'validada'`
-        });
-        const countTecInfoNeedToFill = await getCountIndicator({
-          $filter: `${sFilter} and InformacoesTecnicas eq 'Validar'`
-        });
-        setCountIndicators({
-          recog: countRecog,
-          tecInfo: countTecInfo,
-          tecInfoFill: countTecInfoNeedToFill,
-          notIdentify: countNotIdentify
-        });
-
-        const _items = await getTableData({
-          $top: PAGE_SIZE,
-          $filter: `${sFilter} and NmReconhecido eq 'Comercializo'`
-        });
-        const itemsWithIds = _items.map((item, index) => {
-          item.id = index;
-          return item;
-        });
-        setMaterials(itemsWithIds);
-
-      }
-    } finally {
-      setLoadingPage(false);
-    }
-  }
+  
   const navigate = useNavigate();
-  const { supplier, setLoadingPage, loadingPage } = useDashboard();
-  const [countIndicators, setCountIndicators] = useState({
-    recog: 0,
-    tecInfo: 0,
-    tecInfoFill: 0,
-    notIdentify: 0
-  });
-  const [materials, setMaterials] = useState(null);
+  const { loadingPage, countIndicators, materials } = useDashboard();
+  
 
   const GridHeaderTable = () => (
    
@@ -78,7 +29,7 @@ const TecInfo = () => {
     </Grid>
   );
   useEffect(() => {
-    loadData();
+    // loadData();
   }, []);
 
   return (
@@ -127,7 +78,7 @@ const TecInfo = () => {
               </Grid>
             </Grid>
           </Grid>
-          <TableInfo materials={materials} loading={loadingPage} loadData={loadData}
+          <TableInfo materials={materials.filter(item=>(item.NmReconhecido === 'Comercializo'))} loading={loadingPage} 
           sActionHeader='validar Informações Técnicas'
            HeaderTable={<GridHeaderTable/>}/>
         </>)}</>

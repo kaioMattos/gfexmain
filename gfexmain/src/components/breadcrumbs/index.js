@@ -10,7 +10,7 @@ export default function NavLink() {
 
     <div >
       {!location.pathname.includes("/index.html") && (
-        <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: '0.5%' }}>
+        <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: '0.5%', fontSize:'1rem' }}>
 
           <Link
             onClick={() => navigate('/gfexmain/index.html')}
@@ -19,7 +19,7 @@ export default function NavLink() {
             color="inherit"
             href="#"
           >
-            <IoHomeOutline sx={{ mr: 0.5 }} fontSize="inherit" />
+            <IoHomeOutline sx={{ mr: 0.5 }}/>
             Home
           </Link>
 
