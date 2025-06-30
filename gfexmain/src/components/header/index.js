@@ -30,7 +30,7 @@ export default function Header() {
            
          
           <div className="" style={{alignContent:'center'}}>
-            <img src={logopetrobras} style={{ height: '40px' }} />
+            <img src={logopetrobras} style={{ height: '30px' }} />
           </div>
           </Grid>
         </Grid>

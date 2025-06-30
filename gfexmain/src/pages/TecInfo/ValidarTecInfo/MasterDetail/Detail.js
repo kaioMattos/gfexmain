@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Box, Grid, Button, TextField, CircularProgress } from '@mui/material';
+import { Typography, Box, Grid, Button, TextField, IconButton  } from '@mui/material';
 import { useDashboard } from '../../../../useContext';
 import { MdOutlineListAlt } from "react-icons/md";
 // import ListValueModal from './components/modal/ListValue_Modal';
 import AutoCompleteInfoTec from '../../../../components/modal/AutoCompleteInfoTec';
 import { putInfoTec, postInfoTec, putMaterial } from '../../../../api';
-
+import FileUploadComponent from '../../../../components/input/FileUpload'
+import { CgAttachment } from "react-icons/cg";
+import CustomizedTables from '../../../../components/table/InfoTecCarac';
 
 export default function Detail() {
   const [open, setOpen] = useState(false);
@@ -68,11 +70,12 @@ export default function Detail() {
           </Grid>
         </Grid>
         <Grid item size={12} sx={{ padding: '1rem' }}>
-
-          <Grid container spacing={2} sx={{ color: 'rgb(0,136,66)' }}>
-            <Grid item size={3} ><Typography sx={{ fontSize: '1rem', fontFamily: 'PetrobrasSans_Bd' }}>Caracteristica</Typography></Grid>
-            {/* <Grid item size={4} ><Typography sx={{ fontSize: '1rem', fontFamily: 'PetrobrasSans_Bd' }}>Valor</Typography></Grid> */}
+          
+        <CustomizedTables data={selectedMaterialsMastDet.fields}/>
+          {/* <Grid container spacing={2} sx={{ color: 'rgb(0,136,66)' }}>
+            <Grid item size={3} ><Typography sx={{ fontSize: '1rem', fontFamily: 'PetrobrasSans_Bd' }}>Caracteristica</Typography></Grid>            
             <Grid item size={4} ><Typography sx={{ fontSize: '1rem', fontFamily: 'PetrobrasSans_Bd' }}>Valor Proposto</Typography></Grid>
+            <Grid item size={3} ><Typography sx={{ fontSize: '1rem', fontFamily: 'PetrobrasSans_Bd' }}>Anexar Evidencia</Typography></Grid>
           </Grid>
           <Box className="divDetailField" component="form">
 
@@ -89,8 +92,7 @@ export default function Detail() {
                   <Grid sx={{ alignContent: 'center', color: 'rgb(105,105,105)', margin: '4px 3px 0px' }}>
                     <Typography sx={{ fontSize: '0.8rem' }}>{item.Valor === '' ? 'N/A' : item.Valor}</Typography>
                   </Grid>
-                </Grid>
-                {/* <Grid item size={4} sx={{ alignContent: 'center', color: 'rgb(105,105,105)' }}><Typography sx={{ fontSize: '0.9rem' }}>{item.Valor}</Typography></Grid> */}
+                </Grid>                
                 <Grid item size={4} sx={{ alignContent: 'center' }}>
                   {item.Caracteristica === 'PartNumber' || item.Caracteristica === 'Fabricante' ? (
                     <TextField
@@ -99,19 +101,23 @@ export default function Detail() {
                       defaultValue=""
                       variant="outlined"
                       size="small"
-                      sx={{ width: 250 }}
+                      sx={{ width: '80%' }}
                       onChange={(event) => handleInput(item.Caracteristica, event)}
                     />) : (<AutoCompleteInfoTec data={item} />)}
 
                 </Grid>
+                <Grid item size={3} sx={{ alignContent: 'center', color: 'rgb(105,105,105)' }}>
+                  <IconButton><CgAttachment/></IconButton>
+                </Grid>
+
               </Grid>
             ))}
-          </Box>
+          </Box> */}
           {/* <ListValueModal handleClose={() => handleClose()} open={open} data={dialogValues} /> */}
           <div className="buttons">
             <Button
               variant="contained" type="submit" className="button" onClick={saveTecInfo}>
-              Aprovar
+              Enviar
             </Button>
           </div>
         </Grid>

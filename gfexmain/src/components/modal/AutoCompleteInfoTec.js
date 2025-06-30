@@ -116,7 +116,7 @@ export default function FreeSoloCreateOption({ data }) {
         );
       }}
       renderInput={(params) => (
-        <TextField sx={{width: 250}}{...params} placeholder="Pesquisar" />
+        <TextField sx={{width: '80%'}}{...params} placeholder="Pesquisar" />
       )}
     />
   );
