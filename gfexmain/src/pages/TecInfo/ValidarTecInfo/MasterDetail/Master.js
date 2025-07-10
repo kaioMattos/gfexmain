@@ -23,8 +23,8 @@ const { setSelectedMaterialsMastDet } = useDashboard();
     setSelectedMaterialsMastDet({
       matnr:item.matnr,
       fields:[
-        {Caracteristica:'PartNumber',PosCarac:'998',Valor:'',Classe:item.class},
-        {Caracteristica:'Fabricante',PosCarac:'999',Valor:'',Classe:item.class},
+        {Carac:'PartNumber',PosCarac:'998',Valor:'',Classe:item.class},
+        {Carac:'Fabricante',PosCarac:'999',Valor:'',Classe:item.class},
         ...infoMaterial
       ], 
       InformacoesTecnicas:item.InformacoesTecnicas

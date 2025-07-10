@@ -24,7 +24,7 @@ const TecInfo = () => {
    
     <Grid>
       <Button style={{ marginLeft: '10px' }} label="Validar" 
-      onClick={() => navigate('/gfexmain/ValidarDadosTec')}
+      onClick={() => navigate('/ValidarDadosTec')}
       icon={<LuSearchCheck size={20} />} outlined severity="info" aria-label="Search" />
     </Grid>
   );
@@ -33,7 +33,7 @@ const TecInfo = () => {
   }, []);
 
   return (
-    <>
+    <div className='bodyPage'>
       <Head title="Informações Técnicas - Gfex" description="Informações Técnicas" />
       {loadingPage ? (
         <div className="initLoading">
@@ -47,7 +47,7 @@ const TecInfo = () => {
                 Olá EMERSON,
               </Typography>
               <Typography sx={{ color: 'rgb(0,142,145)', textAlign: 'left' }}>
-                Materiais comercializados <Highlight className="destTotalMat">{countIndicators.recog}</Highlight>.
+                Materiais comercializados <Highlight className="destTotalMat">{countIndicators.comercializacao.total}</Highlight>.
               </Typography>
             </Box>
           </Grid>
@@ -70,8 +70,8 @@ const TecInfo = () => {
                   </Grid>
                   <Grid item size={12} style={{ borderTop: '3px solid rgb(0,142,145)', minHeight: '90%' }}>
                     <Grid style={{ padding: '1%' }}>
-                      <IndicatorTechInfo approved={countIndicators.tecInfo} revision={countIndicators.tecInfo}
-                        notIdentify={countIndicators.tecInfoFill} />
+                      <IndicatorTechInfo approved={countIndicators.informacoesTecnicas.approved} revision={countIndicators.informacoesTecnicas.awaitApproval}
+                        notIdentify={countIndicators.informacoesTecnicas.notIdentify} />
                     </Grid>
                   </Grid>
                 </Grid>
@@ -81,7 +81,7 @@ const TecInfo = () => {
           <TableInfo materials={materials.filter(item=>(item.NmReconhecido === 'Comercializo'))} loading={loadingPage} 
           sActionHeader='validar Informações Técnicas'
            HeaderTable={<GridHeaderTable/>}/>
-        </>)}</>
+        </>)}</div>
   );
 };
 

@@ -10,7 +10,7 @@ const ValidarTecInfo = () => {
   const { selectedMaterials, loadingPage } = useDashboard();
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1 }} className='bodyPage'>
       <Head title="Validar Dados Materiais - Gfex" description="Validar Informações Técnicas" />
       <Grid container style={{ paddingTop: '20px' }}>
         <Grid item size={12}>

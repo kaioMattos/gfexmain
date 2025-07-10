@@ -9,14 +9,17 @@ import AutoCompleteInfoTec from '../modal/AutoCompleteInfoTec';
 import CustomUISwitch from '../input/Switch'
 import FileUploadComponent from '../input/FileUpload';
 import { IoIosAttach } from "react-icons/io";
+import { MdDelete } from "react-icons/md";
 import { IoDuplicateOutline } from "react-icons/io5";
 import SelectFile from '../modal/SelectFile';
+import SelectCarac from '../modal/SelectCarac';
+import { useDashboard } from '../../useContext';
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: 'aliceblue',
-    color: 'rgb(0,136,66)',
-    fontFamily: 'PetrobrasSans_Bd'
+    color: 'rgb(0,136,66)'
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
@@ -49,25 +52,47 @@ const label = { inputProps: { 'aria-label': 'Color switch demo' } };
 
 export default function CustomizedTables({ data }) {
   const [openDialogRecog, setoOpenDialogRecog] = useState(false);
+  const [openDialogSelecCarac, setopenDialogSelecCarac] = useState(false);
+  const { selectedMaterialsMastDet, setFieldValueMatSelect, loadingPage } = useDashboard();
+
+  const [rowSelected, setRowSelected] = useState({});
   const handleClose = () => {
     setoOpenDialogRecog(false);
   };
+  const handleCloseDialogCarac = () => {
+    setopenDialogSelecCarac(false);
+  };
+  const setOpenDialogCarac = (data) => {
+    setopenDialogSelecCarac(true);
+    setRowSelected(data)
+  }
+  const setOpenDialog = (data) => {
+    setoOpenDialogRecog(true);
+    setRowSelected(data)
+  }
+  const deleteFile = (row) => {
+    const oValue = selectedMaterialsMastDet.fields
+    .filter((item) => item.PosCarac === row.PosCarac)[0];
+    oValue['fileName'] = '';
+    setFieldValueMatSelect(oValue);
+
+  }
   return (
     <>
       <Grid container >
-        <Grid item size={12}><Typography>Operações em Massa</Typography></Grid>
-        <Grid item size={12} container><Typography>Aprovar todos ?</Typography> <CustomUISwitch /></Grid>
+        <Grid item size={12} container><Typography>Concordar com todos ?</Typography> <CustomUISwitch data='all' dataRow={false} /></Grid>
         {/* <Grid item size={12} container><Typography>Replicar Evidências</Typography> <FileUploadComponent /></Grid> */}
       </Grid>
-      <SelectFile open={openDialogRecog} onClose={() => handleClose()} />
+      <SelectCarac open={openDialogSelecCarac} onClose={() => handleCloseDialogCarac()} data={rowSelected} />
+      <SelectFile open={openDialogRecog} onClose={() => handleClose()} data={rowSelected} />
       <TableContainer sx={{ minWidth: 700, maxHeight: 310 }} >
         <Table aria-label="customized table" stickyHeader >
           <TableHead >
             <TableRow>
               <StyledTableCell align="left" sx={{ padding: '10px 6px' }}>Característica</StyledTableCell>
               {/* <StyledTableCell align="left" sx={{ padding: '10px 6px' }}>Valor</StyledTableCell> */}
-              <StyledTableCell align="left" sx={{ padding: '10px 6px' }}>Aprovado ?</StyledTableCell>
-              <StyledTableCell align="left" sx={{ padding: '10px 6px' }}>Valor Proposto(Se necessário)</StyledTableCell>
+              <StyledTableCell align="left" sx={{ padding: '10px 6px' }}>Concordar ?</StyledTableCell>
+              <StyledTableCell align="left" sx={{ padding: '10px 6px' }}>Valor Proposto (Se necessário)</StyledTableCell>
               <StyledTableCell align="left" sx={{ padding: '10px 6px' }}>Evidências</StyledTableCell>
             </TableRow>
           </TableHead>
@@ -77,7 +102,7 @@ export default function CustomizedTables({ data }) {
                 <TableCell align="left" sx={{ padding: '7px' }}>
                   <Grid item sx={{ alignContent: 'center', color: 'rgb(0,136,66)' }}>
                     <Grid>
-                      <Typography sx={{ fontSize: '0.9rem' }}>{row.Caracteristica}</Typography>
+                      <Typography sx={{ fontSize: '0.9rem' }}>{row.Carac}</Typography>
                     </Grid>
                     <Grid sx={{ alignContent: 'center', color: 'rgb(105,105,105)', margin: '4px 3px 0px' }}>
                       <Typography sx={{ fontSize: '0.8rem' }}>{row.Valor === '' ? 'N/A' : row.Valor}</Typography>
@@ -86,10 +111,10 @@ export default function CustomizedTables({ data }) {
                 </TableCell >
                 {/* <TableCell align="left" sx={{padding: '7px'}}>{row.Valor === '' ? 'N/A' : row.Valor}</TableCell > */}
                 <TableCell align="left" sx={{ padding: '7px' }}>
-                  <CustomUISwitch />
+                  <CustomUISwitch data='unic' dataRow={row}  />
                 </TableCell >
                 <TableCell align="left" sx={{ padding: '7px' }}>
-                  {row.Caracteristica === 'PartNumber' || row.Caracteristica === 'Fabricante' ? (
+                  {row.Carac === 'PartNumber' || row.Carac === 'Fabricante' ? (
                     <TextField
                       required
                       id="outlined-hidden-label-normal"
@@ -102,16 +127,26 @@ export default function CustomizedTables({ data }) {
                 </TableCell >
                 <TableCell align="left" sx={{ padding: '7px' }}>
                   <Tooltip title="Escolher Arquivo">
-                    <IconButton onClick={() => { setoOpenDialogRecog(true) }}>
+                    <IconButton onClick={() => { setOpenDialog(row) }}>
                       <IoIosAttach />
                     </IconButton>
                   </Tooltip>
                   {/* <FileUploadComponent/> */}
-                  <Tooltip title="Replicar Arquivo" color="primary">
-                    <IconButton >
+                  <Tooltip title="Duplicar Arquivo" color="primary">
+                    <IconButton disabled={row.fileName !== '' && row.fileName !== undefined ? false : true} onClick={() => { setOpenDialogCarac(row) }}>
                       <IoDuplicateOutline />
                     </IconButton>
                   </Tooltip>
+                  {row.fileName}
+                  {row.fileName !== undefined && row.fileName !== '' ? (
+                    <>
+                      <Tooltip title="Deletar Arquivo">
+                        <IconButton onClick={() => { deleteFile(row) }} color="error">
+                          <MdDelete />
+                        </IconButton>
+                      </Tooltip>
+                    </>
+                  ):(<></>)}
 
                 </TableCell >
               </TableRow >

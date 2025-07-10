@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
+import { useDashboard } from '../../useContext';
 
 const TextSwitch = styled(Switch)(({ theme }) => ({
-  width: 70,
+  width: 75,
   height: 34,
   padding: 7,
   '& .MuiSwitch-switchBase': {
@@ -14,7 +15,7 @@ const TextSwitch = styled(Switch)(({ theme }) => ({
       transform: 'translateX(36px)',
       color: '#fff',
       '& + .MuiSwitch-track': {
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: 'rgb(0,142,145)',
         opacity: 1,
         border: 0,
       },
@@ -31,7 +32,7 @@ const TextSwitch = styled(Switch)(({ theme }) => ({
     opacity: 1,
     position: 'relative',
     '&::before, &::after': {
-      content: '"Não"',
+      content: '"Sim"',
       position: 'absolute',
       top: '50%',
       transform: 'translateY(-50%)',
@@ -39,7 +40,7 @@ const TextSwitch = styled(Switch)(({ theme }) => ({
       color: '#fff',
     },
     '&::after': {
-      content: '"Sim"',
+      content: '"Não"',
       right: 6,
     },
     '&::before': {
@@ -48,14 +49,28 @@ const TextSwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-export default function SwitchWithText() {
-  const [checked, setChecked] = React.useState(false);
-
+export default function SwitchWithText({data, dataRow}) {
+  let check = dataRow?.Agreed
+  const { selectedMaterialsMastDet, setAFieldsValueMatSelect,setFieldValueMatSelect } = useDashboard();
+  
   const handleChange = (event) => {
-    setChecked(event.target.checked);
+    console.log(check)
+    if(data === 'all'){
+      selectedMaterialsMastDet.fields
+      .map((item)=>(setFieldValueMatSelect({...item,Agreed: event.target.checked})));
+      check =  event.target.checked
+      // setAFieldsValueMatSelect(aEntry);
+    }else{
+      console.log(data, selectedMaterialsMastDet.fields)
+      const oValue = selectedMaterialsMastDet.fields
+      .filter((item) => item.PosCarac === dataRow.PosCarac)[0];
+      oValue['Agreed'] = event.target.checked;
+      setFieldValueMatSelect(oValue);
+    }
+    // setChecked(event.target.checked);
   };
 
   return (
-    <TextSwitch checked={checked} onChange={handleChange} />
+    <TextSwitch checked={check} onChange={handleChange} />
   );
 }

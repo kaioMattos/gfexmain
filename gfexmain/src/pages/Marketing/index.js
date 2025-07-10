@@ -15,55 +15,55 @@ import "./styles.css";
 const PAGE_SIZE = 200000;
 
 const Marketing = () => {
-  const loadData = async () => {
-    setMaterials([]);
-    await setSelectedMaterialsContext([])
-    try {
-      setLoadingPage(true);
-      if (supplier !== undefined) {
-        const sFiltersClasses = _assembleOrFilterGeneric(supplier, 'classDesc', 'class', 'class');
-        const sFiltersManufactureres = _assembleOrFilterGeneric(supplier, 'mfrnr', 'manufacturer', 'text');
-        const sFilter = `fornecedorInex eq '10097577'and (${sFiltersClasses}) and (${sFiltersManufactureres})`
-        const countRecog = await getCountIndicator({
-          $filter: `${sFilter} and NmReconhecido eq 'Comercializo'`
-        });
-        const countNotRecog = await getCountIndicator({
-          $filter: `${sFilter} and NmReconhecido eq 'Não Comercializo'`
-        });
-        const countNotIdentify = await getCountIndicator({
-          $filter: `${sFilter} and (NmReconhecido ne 'Não Comercializo' and NmReconhecido ne 'Comercializo')`
-        });
+  // const loadData = async () => {
+  //   setMaterials([]);
+  //   await setSelectedMaterialsContext([])
+  //   try {
+  //     setLoadingPage(true);
+  //     if (supplier !== undefined) {
+  //       const sFiltersClasses = _assembleOrFilterGeneric(supplier, 'classDesc', 'class', 'class');
+  //       const sFiltersManufactureres = _assembleOrFilterGeneric(supplier, 'mfrnr', 'manufacturer', 'text');
+  //       const sFilter = `fornecedorInex eq '10097577'and (${sFiltersClasses}) and (${sFiltersManufactureres})`
+  //       const countRecog = await getCountIndicator({
+  //         $filter: `${sFilter} and NmReconhecido eq 'Comercializo'`
+  //       });
+  //       const countNotRecog = await getCountIndicator({
+  //         $filter: `${sFilter} and NmReconhecido eq 'Não Comercializo'`
+  //       });
+  //       const countNotIdentify = await getCountIndicator({
+  //         $filter: `${sFilter} and (NmReconhecido ne 'Não Comercializo' and NmReconhecido ne 'Comercializo')`
+  //       });
 
-        const countPriceAta = await getCountIndicator({
-          $filter: `${sFilter} and AtaPrecoPreenchida eq 'Preenchido' and NmReconhecido eq 'Comercializo'`
-        });
+  //       const countPriceAta = await getCountIndicator({
+  //         $filter: `${sFilter} and AtaPrecoPreenchida eq 'Preenchido' and NmReconhecido eq 'Comercializo'`
+  //       });
 
-        const countPriceAtaNeedToFill = await getCountIndicator({
-          $filter: `${sFilter} and AtaPrecoPreenchida eq 'Preencher' and NmReconhecido eq 'Comercializo'`
-        });
-        setCountIndicators({
-          recog: countRecog,
-          notRecog: countNotRecog,
-          priceATA: countPriceAta,
-          priceATAFill: countPriceAtaNeedToFill,
-          notIdentify: countNotIdentify
-        });
+  //       const countPriceAtaNeedToFill = await getCountIndicator({
+  //         $filter: `${sFilter} and AtaPrecoPreenchida eq 'Preencher' and NmReconhecido eq 'Comercializo'`
+  //       });
+  //       setCountIndicators({
+  //         recog: countRecog,
+  //         notRecog: countNotRecog,
+  //         priceATA: countPriceAta,
+  //         priceATAFill: countPriceAtaNeedToFill,
+  //         notIdentify: countNotIdentify
+  //       });
 
-        const _items = await getTableData({
-          $top: PAGE_SIZE,
-          $filter: sFilter
-        });
-        const itemsWithIds = _items.map((item, index) => {
-          item.id = index;
-          return item;
-        });
-        setMaterials(itemsWithIds);
+  //       const _items = await getTableData({
+  //         $top: PAGE_SIZE,
+  //         $filter: sFilter
+  //       });
+  //       const itemsWithIds = _items.map((item, index) => {
+  //         item.id = index;
+  //         return item;
+  //       });
+  //       setMaterials(itemsWithIds);
 
-      }
-    } finally {
-      setLoadingPage(false);
-    }
-  }
+  //     }
+  //   } finally {
+  //     setLoadingPage(false);
+  //   }
+  // }
 
   const recogMaterial = async () => {
       let aPromises = [];
@@ -91,15 +91,8 @@ const Marketing = () => {
       loadData(false);
     }
 
-  const { supplier, setLoadingPage, loadingPage, selectedMaterials, setSelectedMaterialsContext } = useDashboard();
-  const [countIndicators, setCountIndicators] = useState({
-    recog: 0,
-    notRecog: 0,
-    priceATA: 0,
-    priceATAFill: 0,
-    notIdentify: 0
-  });
-  const [materials, setMaterials] = useState(null);
+  const { countIndicators, loadData, materials, loadingPage, selectedMaterials, setSelectedMaterialsContext } = useDashboard();
+ 
   const [selectedAction, setSelectedAction] = useState(null);
   const massActions = ['Comercializo', 'Não Comercializo'];
 
@@ -123,11 +116,11 @@ const Marketing = () => {
     </span>
   );
   useEffect(() => {
-    loadData();
+    // loadData();
   }, []);
 
   return (
-    <>
+    <div className='bodyPage'>
       <Head title="Comercialização - Gfex" description="Comercializar Material" />
       {loadingPage ? (
         <div className="initLoading">
@@ -141,7 +134,7 @@ const Marketing = () => {
                 Olá EMERSON,
               </Typography>
               <Typography sx={{ color: 'rgb(0,142,145)', textAlign: 'left' }}>
-                Materiais encontrados <Highlight className="destTotalMat">{countIndicators.recog + countIndicators.notRecog + countIndicators.notIdentify}</Highlight>.
+                Materiais encontrados <Highlight className="destTotalMat">{countIndicators.comercializacao.total}</Highlight>.
               </Typography>
             </Box>
           </Grid>
@@ -163,8 +156,9 @@ const Marketing = () => {
                   </Grid>
                   <Grid item size={12} style={{ borderTop: '3px solid rgb(0,142,145)', minHeight: '90%' }}>
                     <Grid style={{ padding: '1%' }}>
-                      <IndicatorMkt recog={countIndicators.recog} notRecog={countIndicators.notRecog}
-                        notIdentify={countIndicators.notIdentify} />
+                      <IndicatorMkt recog={countIndicators.comercializacao.recog} 
+                        notRecog={countIndicators.comercializacao.notRecog} 
+                        notIdentify={countIndicators.comercializacao.notIdentify} />
                     </Grid>
                   </Grid>
                 </Grid>
@@ -185,7 +179,7 @@ const Marketing = () => {
                   </Grid>
                   <Grid item size={12} style={{ borderTop: '3px solid rgb(0,142,145)', minHeight: '90%' }}>
                     <Grid style={{ padding: '1%' }}>
-                      <IndicatorPriceAta filled={countIndicators.priceATA} notIdentify={countIndicators.priceATAFill} />
+                      <IndicatorPriceAta filled={countIndicators.ataPreco.filled} notIdentify={countIndicators.ataPreco.notFilled} />
                     </Grid>
                   </Grid>
                 </Grid>
@@ -195,7 +189,7 @@ const Marketing = () => {
           <TableInfo materials={materials} loading={loadingPage} loadData={loadData}
             sActionHeader='Identificar'
             HeaderTable={<GridHeaderTable />} />
-        </>)}</>
+        </>)}</div>
   );
 };
 

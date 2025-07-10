@@ -47,7 +47,7 @@ export default function Detail() {
   }
   const handleInput = (data, event) => {
     const oValue = selectedMaterialsMastDet.fields
-      .filter((item) => item.Caracteristica === data)[0]
+      .filter((item) => item.Carac === data)[0]
     oValue['NovoValor'] = event.target.value;
     setFieldValueMatSelect(oValue);
   }
@@ -73,7 +73,7 @@ export default function Detail() {
           
         <CustomizedTables data={selectedMaterialsMastDet.fields}/>
           {/* <Grid container spacing={2} sx={{ color: 'rgb(0,136,66)' }}>
-            <Grid item size={3} ><Typography sx={{ fontSize: '1rem', fontFamily: 'PetrobrasSans_Bd' }}>Caracteristica</Typography></Grid>            
+            <Grid item size={3} ><Typography sx={{ fontSize: '1rem', fontFamily: 'PetrobrasSans_Bd' }}>Carac</Typography></Grid>            
             <Grid item size={4} ><Typography sx={{ fontSize: '1rem', fontFamily: 'PetrobrasSans_Bd' }}>Valor Proposto</Typography></Grid>
             <Grid item size={3} ><Typography sx={{ fontSize: '1rem', fontFamily: 'PetrobrasSans_Bd' }}>Anexar Evidencia</Typography></Grid>
           </Grid>
@@ -87,14 +87,14 @@ export default function Detail() {
 
                 <Grid item size={3} sx={{ alignContent: 'center', color: 'rgb(0,136,66)' }}>
                   <Grid>
-                    <Typography sx={{ fontSize: '0.9rem' }}>{item.Caracteristica}</Typography>
+                    <Typography sx={{ fontSize: '0.9rem' }}>{item.Carac}</Typography>
                   </Grid>
                   <Grid sx={{ alignContent: 'center', color: 'rgb(105,105,105)', margin: '4px 3px 0px' }}>
                     <Typography sx={{ fontSize: '0.8rem' }}>{item.Valor === '' ? 'N/A' : item.Valor}</Typography>
                   </Grid>
                 </Grid>                
                 <Grid item size={4} sx={{ alignContent: 'center' }}>
-                  {item.Caracteristica === 'PartNumber' || item.Caracteristica === 'Fabricante' ? (
+                  {item.Carac === 'PartNumber' || item.Carac === 'Fabricante' ? (
                     <TextField
                       required
                       id="outlined-hidden-label-normal"
@@ -102,7 +102,7 @@ export default function Detail() {
                       variant="outlined"
                       size="small"
                       sx={{ width: '80%' }}
-                      onChange={(event) => handleInput(item.Caracteristica, event)}
+                      onChange={(event) => handleInput(item.Carac, event)}
                     />) : (<AutoCompleteInfoTec data={item} />)}
 
                 </Grid>
@@ -116,7 +116,7 @@ export default function Detail() {
           {/* <ListValueModal handleClose={() => handleClose()} open={open} data={dialogValues} /> */}
           <div className="buttons">
             <Button
-              variant="contained" type="submit" className="button" onClick={saveTecInfo}>
+              variant="contained" type="submit" className="buttonOldDesign" onClick={saveTecInfo}>
               Enviar
             </Button>
           </div>

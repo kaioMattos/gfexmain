@@ -17,16 +17,16 @@ export default function FreeSoloCreateOption({ data }) {
   const handleClickOpen = async (bool, oEntry) => {
     setLoading(true);
     if (bool) {
-      let findedInCache = cacheFieldValues.find((item) => (item.field === oEntry.Caracteristica));
+      let findedInCache = cacheFieldValues.find((item) => (item.field === oEntry.Carac));
       if (!findedInCache) {
-        const filter = `Nm eq '${oEntry.Nm}' and Caracteristica eq '${oEntry.Caracteristica}'`
+        const filter = `Nm eq '${oEntry.Nm}' and Carac eq '${oEntry.Carac}'`
         const valuesFieldTec = await getTecInfoMaterial({
           $filter: filter,
-          $expand: 'to_Char4Class'
+          $expand: 'toChar4Class'
         });
         findedInCache = {
-          field: oEntry.Caracteristica,
-          values: [...valuesFieldTec[0]?.to_Char4Class.results || valuesFieldTec]
+          field: oEntry.Carac,
+          values: [...valuesFieldTec[0]?.toChar4Class.results || valuesFieldTec]
         }
         setCacheFieldValues([...cacheFieldValues, findedInCache])
       }
@@ -70,7 +70,7 @@ export default function FreeSoloCreateOption({ data }) {
           valuePropous = newValue;
         }
         const oValue = selectedMaterialsMastDet.fields
-        .filter((item)=>item.Caracteristica === data.Caracteristica && item.PosCarac === data.PosCarac)[0]
+        .filter((item)=>item.Carac === data.Carac && item.PosCarac === data.PosCarac)[0]
         oValue['NovoValor'] = valuePropous.Valor
         setFieldValueMatSelect(oValue);
 

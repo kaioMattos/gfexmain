@@ -9,6 +9,14 @@
   background: #f4f4f4;
 }
 
+.bodyPage{
+  padding-inline: 3%;
+}
+
+.buttonOldDesign{
+  background-color: rgb(0,142,145) !important;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

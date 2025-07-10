@@ -5,6 +5,7 @@
   "homepage": "./",
   "dependencies": {
     "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.2.0",
     "@mui/joy": "^5.0.0-beta.52",
     "@mui/material": "^7.1.0",
     "@mui/styles": "^6.4.11",
@@ -29,7 +30,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build && npm run zip",
-    "buildBTP": "BUILD_PATH='../a11089-ysmm-gfex-main-approuter-approuter/buildgfexmain' react-scripts build ",
+    "buildBTP": "BUILD_PATH='../a11089-ysmm-gfex-main-approuter/buildgfexmain' react-scripts build ",
     "watch": "npm-watch",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

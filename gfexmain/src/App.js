@@ -1,33 +1,25 @@
 import { Route, Routes } from 'react-router-dom';
 import React, { useEffect } from 'react';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { getUserHana } from "./api";
 import { useDashboard } from './useContext';
 import Header from './components/header';
+import NewHeader from './pages/components/Header'
 import NavLink from './components/breadcrumbs';
-import Home from './pages/Home';
+import Home from './pages/Main';
 import Marketing from './pages/Marketing';
 import TecInfo from './pages/TecInfo';
 import ValidarTecInfo from './pages/TecInfo/ValidarTecInfo';
 import TelaErroPermissao from './pages/NotPermission';
 import "./App.css";
-
-const theme = createTheme({
-  typography: {
-    fontFamily: 'PetrobrasSans_Rg',
-  },
-  palette: {
-    colorSystem: {
-      blue: 'rgb(0,142,145)',
-      yellow:'rgb(207, 160, 30)'
-    }
-  }
-
-});
+import theme from './StylesTheme';
+import { CssBaseline, Box, CircularProgress } from "@mui/material";
+import MaterialManagementPlatform from './pages/Home';
+import InformacoesTecnicas from './pages/InfoTec';
 
 const App = () => {
 
-  const loadData = async (isFirstLoad) => {
+  const loadInitData = async (isFirstLoad) => {
     setLoadingPage(true);
     // const user = await getUserLogged();
     // const usersS4 = await getUsersS4Data();
@@ -35,36 +27,75 @@ const App = () => {
     const usersS4 = await getUserHana({ $filter: `documentId eq '${process.env.REACT_APP_SUPPLIER_TEST}'` });
     try {
       if (isFirstLoad) {
-        setSupplierContext(usersS4);
+        await setSupplierContext(usersS4);
       }
     } finally {
       setLoadingPage(false);
     }
   }
   useEffect(() => {
-    loadData(true);
+    loadInitData(true);
   }, []);
-  const { supplier, setSupplierContext, loadingPage, setLoadingPage } = useDashboard();
+
+  const { supplier, setSupplierContext, loadingPage, setLoadingPage, loadData } = useDashboard();
+  useEffect(() => {
+    loadData();
+  }, [supplier]);
+  
   return (
     <ThemeProvider theme={theme}>
+
       {supplier.validatedPetro === 'concluido' ? (
         <>
-          <Header />
-          <div className="body">
-            <NavLink />
-            <Routes>
-              <Route path='/gfexmain/index.html' element={<Home />} />
-              <Route path='/gfexmain/TecInfo' element={<TecInfo />}></Route>
-              <Route path='gfexmain/ValidarDadosTec' element={<ValidarTecInfo />} />
-              <Route path='/gfexmain/Marketing' element={<Marketing />} />
-            </Routes>
-          </div>
+          {process.env.REACT_APP_APP_ACTIVE === 'OLD' ? (
+            <>
+              <Header />
+              {loadingPage ? (
+                <div className="initLoading">
+                  <CircularProgress disableShrink={loadingPage} />
+                </div>
+              ) : (
+                <div className="body">
+                  <NavLink />
+                  <Routes>
+                    <Route path='/gfexmain/index.html' element={<Home />} />
+                    <Route path='/gfexmain/TecInfo' element={<TecInfo />}></Route>
+                    <Route path='gfexmain/ValidarDadosTec' element={<ValidarTecInfo />} />
+                    <Route path='/gfexmain/Marketing' element={<Marketing />} />
+                  </Routes>
+                </div>)}
+            </>
+
+          ) : (
+            <>
+              <CssBaseline />
+              <Box sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh" }}>
+                {/* Header */}
+                <NewHeader />
+                {loadingPage ? (
+                  <div className="initLoading">
+                    <CircularProgress disableShrink={loadingPage} />
+                  </div>
+                ) : (
+                  <>
+                    <Routes>
+                      <Route path='/index.html' element={<MaterialManagementPlatform />} />
+                      <Route path='/gfexmain/TecInfo' element={<TecInfo />} />
+                      <Route path='/ValidarDadosTec' element={<ValidarTecInfo />} />
+                      <Route path='/Marketing' element={<Marketing />} />
+                    </Routes>
+                  </>)}
+              </Box>
+            </>
+          )}
         </>
       ) : (
         <TelaErroPermissao />
       )}
     </ThemeProvider>
+
   )
+
 };
 
 export default App;

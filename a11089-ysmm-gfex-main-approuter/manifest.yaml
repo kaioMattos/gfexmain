@@ -1,0 +1,9 @@
+---
+applications:
+- name: ysmm-gfex
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack
+  random-route: true
+  services:
+  - gfex-xsuaa
+  - gfexs42Destination
+  - gfexs42Connectivity
