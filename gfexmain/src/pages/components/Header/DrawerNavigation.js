@@ -1,29 +1,43 @@
-import * as React from 'react';
+import React ,{ useState, useEffect } from "react"
 import {
   Typography, Box, MenuItem as MenuItemComponent, Drawer,
   List, ListItem, ListItemButton, ListItemIcon, ListItemText,
 } from "@mui/material"
 import {
   Menu as MenuIcon,
-  Dashboard, Inventory, Assignment, Engineering, Business,
+  Dashboard, Inventory, Assignment, Engineering, Business, TableChart
 } from "@mui/icons-material";
 import { useNavigate } from 'react-router-dom';
+import { useDashboard } from '../../../useContext';
 
 export default function DrawerNavigation( {value:{drawerOpen, setDrawerOpen, currentPage, setCurrentPage}} ) {
   // Itens do menu de navegação
   const navigate = useNavigate();
-  const navigationItems = [
-    { text: "Dashboard", icon: <Dashboard />, path: "/index.html" },
-    { text: "Comercialização", icon: <Inventory />, path: "/gfexmain/Marketing" },
-    { text: "Minuta Contratual", icon: <Assignment />, path: "/contratos" },
-    { text: "Info. Técnicas", icon: <Engineering />, path: "/gfexmain/TecInfo" }
-  ]
+    const [navigationItems, setNavigationItems] = useState([])
+    const { supplier } = useDashboard();
+  
   const handleNavigationClick = (item) => {
     setCurrentPage(item.text);
     setDrawerOpen(false);
     navigate(item.path);
   }
-
+  const getItemsDrawer = ()=>{
+    let items = []
+    if(supplier.userPetro){
+      items = [{ text: "Relatório", icon: <TableChart />, path: "/Report" }]
+    }else{
+      items = [
+        { text: "Dashboard", icon: <Dashboard />, path: "/index.html" },
+        { text: "Comercialização", icon: <Inventory />, path: "/Marketing" },
+        { text: "Minuta Contratual", icon: <Assignment />, path: "/contratos" },
+        { text: "Info. Técnicas", icon: <Engineering />, path: "/TecInfo" }
+      ]
+    }
+    setNavigationItems(items)
+  }
+  useEffect(() => {
+    getItemsDrawer(true);
+  }, []);
   return (
     <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
       <Box sx={{ width: 280 }}>

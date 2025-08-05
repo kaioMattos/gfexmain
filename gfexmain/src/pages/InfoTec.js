@@ -40,31 +40,38 @@ import {
   Engineering,
   Assignment,
 } from "@mui/icons-material"
+import { useDashboard } from '../useContext';
+import { getTecInfoMaterial } from "../api";
+
 
 // Dados mockados
-const technicalMaterials = Array.from({ length: 2500 }, (_, i) => ({
+const infoMaterials_ = Array.from({ length: 2500 }, (_, i) => ({
   id: i + 1,
-  codigo: `MAT${String(i + 1).padStart(6, "0")}`,
-  nome: `Material Técnico ${i + 1}`,
-  categoria: ["Cimento", "Aço", "Madeira", "Cerâmica"][i % 4],
-  status: ["pending", "approved", "rejected"][i % 3],
-  caracteristicas: [
-    { nome: "Resistência à Compressão", valor: `${20 + (i % 30)} MPa`, unidade: "MPa" },
-    { nome: "Densidade", valor: `${2.1 + (i % 10) * 0.1} g/cm³`, unidade: "g/cm³" },
-    { nome: "Absorção de Água", valor: `${1 + (i % 5)}%`, unidade: "%" },
-    { nome: "Resistência à Flexão", valor: `${5 + (i % 15)} MPa`, unidade: "MPa" },
-    { nome: "Módulo de Elasticidade", valor: `${25000 + (i % 5000)} MPa`, unidade: "MPa" },
-    { nome: "Coeficiente de Dilatação", valor: `${8 + (i % 4)} x 10⁻⁶/°C`, unidade: "x 10⁻⁶/°C" },
-    { nome: "Resistência ao Fogo", valor: `${60 + (i % 120)} min`, unidade: "min" },
-    { nome: "Condutividade Térmica", valor: `${0.1 + (i % 20) * 0.01} W/mK`, unidade: "W/mK" },
-    { nome: "pH", valor: `${7 + (i % 7)}`, unidade: "" },
-    { nome: "Tempo de Cura", valor: `${7 + (i % 21)} dias`, unidade: "dias" },
-    { nome: "Resistência Química", valor: ["Excelente", "Boa", "Regular"][i % 3], unidade: "" },
-    { nome: "Durabilidade", valor: `${20 + (i % 30)} anos`, unidade: "anos" },
-  ],
+  matnr: `MAT${String(i + 1).padStart(6, "0")}`,
+  maktx: `Material Técnico ${i + 1}`,
+  classDesc: ["Cimento", "Aço", "Madeira", "Cerâmica"][i % 4],
+  status: ["Validar", "Validada", "loadPetro"][i % 3],
+  // fields: [
+  //   { Carac: "Resistência à Compressão", Valor: `${20 + (i % 30)} MPa` },
+  //   { Carac: "Densidade", Valor: `${2.1 + (i % 10) * 0.1} g/cm³`},
+  //   { Carac: "Absorção de Água", Valor: `${1 + (i % 5)}%`},
+  //   { Carac: "Resistência à Flexão", Valor: `${5 + (i % 15)} MPa` },
+  //   { Carac: "Módulo de Elasticidade", Valor: `${25000 + (i % 5000)} MPa`},
+  //   { Carac: "Coeficiente de Dilatação", Valor: `${8 + (i % 4)} x 10⁻⁶/°C`},
+  //   { Carac: "Resistência ao Fogo", Valor: `${60 + (i % 120)} min`},
+  //   { Carac: "Condutividade Térmica", Valor: `${0.1 + (i % 20) * 0.01} W/mK`},
+  //   { Carac: "pH", Valor: `${7 + (i % 7)}`},
+  //   { Carac: "Tempo de Cura", Valor: `${7 + (i % 21)} dias`},
+  //   { Carac: "Resistência Química", Valor: ["Excelente", "Boa", "Regular"][i % 3] },
+  //   { Carac: "Durabilidade", Valor: `${20 + (i % 30)} anos` },
+  // ],
 }))
 
 export default function InformacoesTecnicas() {
+  const { loadingPage, countIndicators, materials } = useDashboard();
+  
+  const infoMaterials = materials.filter(item=>(item.NmReconhecido === 'Comercializo'));
+  console.log(infoMaterials)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(25)
   const [selectedMaterial, setSelectedMaterial] = useState(null)
@@ -89,9 +96,27 @@ export default function InformacoesTecnicas() {
     setRowsPerPage(Number.parseInt(event.target.value, 10))
     setPage(0)
   }
+const loadDataDetail = async (item) => {
+    const infoMaterial = await getTecInfoMaterial({      
+      filter: `Nm eq '${item.matnr}'`,
+      expand:''
+    })
+    setSelectedMaterial({
+      matnr:item.matnr,
+      maktx:item.maktx,
+      fields:[
+        {Carac:'PartNumber',PosCarac:'998',Valor:'',Classe:item.class},
+        {Carac:'Fabricante',PosCarac:'999',Valor:'',Classe:item.class},
+        ...infoMaterial
+      ], 
+      InformacoesTecnicas:item.InformacoesTecnicas
+    })
 
-  const handleSelectMaterial = (material) => {
-    setSelectedMaterial(material)
+  }
+  const handleSelectMaterial = async (material) => {
+
+    loadDataDetail(material);
+    // setSelectedMaterial(material);
     // Resetar estados quando selecionar novo material
     setProposedValues({})
     setAttachments({})
@@ -206,7 +231,6 @@ export default function InformacoesTecnicas() {
   }
 
   const handleSubmitProposal = () => {
-    console.log("Enviando proposta:", { proposedValues, attachments, agreements })
     alert("Avaliação enviada com sucesso!")
     // Resetar estados após envio
     setProposedValues({})
@@ -215,13 +239,13 @@ export default function InformacoesTecnicas() {
   }
 
   // Filtrar materiais
-  const filteredMaterials = technicalMaterials.filter((material) => {
+  const filteredMaterials = infoMaterials.filter((material) => {
     const matchesSearch =
-      material.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      material.codigo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      material.categoria.toLowerCase().includes(searchTerm.toLowerCase())
+      material.maktx.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      material.matnr.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      material.classDesc.toLowerCase().includes(searchTerm.toLowerCase())
 
-    const matchesStatus = statusFilter === "all" || material.status === statusFilter
+    const matchesStatus = statusFilter === "all" || material.InformacoesTecnicas === statusFilter
 
     return matchesSearch && matchesStatus
   })
@@ -229,7 +253,7 @@ export default function InformacoesTecnicas() {
   const paginatedMaterials = filteredMaterials.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
   // Verificar se todas as características foram validadas
-  const totalCharacteristics = selectedMaterial?.caracteristicas?.length || 0
+  const totalCharacteristics = selectedMaterial?.fields?.length || 0
   const validatedCharacteristics = Object.keys(agreements).length
   const allValidated = validatedCharacteristics === totalCharacteristics
 
@@ -253,11 +277,11 @@ export default function InformacoesTecnicas() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "approved":
+      case "Validada":
         return "success"
-      case "rejected":
+      case "loadPetro":
         return "error"
-      case "pending":
+      case "Validar":
         return "warning"
       default:
         return "default"
@@ -266,19 +290,19 @@ export default function InformacoesTecnicas() {
 
   const getStatusText = (status) => {
     switch (status) {
-      case "approved":
+      case "Validada":
         return "Aprovado"
-      case "rejected":
-        return "Rejeitado"
-      case "pending":
+      case "loadPetro":
+        return "Em Validação Petro"
+      case "Validar":
         return "Pendente"
       default:
         return "Pendente"
     }
   }
 
-  const getCategoryIcon = (categoria) => {
-    switch (categoria) {
+  const getCategoryIcon = (classDesc) => {
+    switch (classDesc) {
       case "Cimento":
         return "🏗️"
       case "Aço":
@@ -293,12 +317,12 @@ export default function InformacoesTecnicas() {
   }
 
   return (
-      <Box sx={{ p: 2, height: "calc(100vh - 80px)", display: "flex", flexDirection: "column" }}>
+      <Box sx={{ p: 2, height: "calc(100vh - 60px)", display: "flex", flexDirection: "column" }}>
         {/* Header */}
         <Box sx={{ mb: 2 }}>
-          <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
+          {/* <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
             Informações Técnicas
-          </Typography>
+          </Typography> */}
           <Typography variant="body2" color="text.secondary">
             Revise e aprove as informações técnicas dos materiais
           </Typography>
@@ -315,7 +339,7 @@ export default function InformacoesTecnicas() {
                   Materiais
                 </Typography>
                 <Chip
-                  label={`${technicalMaterials.filter((m) => m.status === "pending").length}`}
+                  label={`${infoMaterials.filter((m) => m.InformacoesTecnicas === "Validar").length}`}
                   color="warning"
                   size="small"
                 />
@@ -345,18 +369,18 @@ export default function InformacoesTecnicas() {
                   </Button>
                   <Button
                     size="small"
-                    variant={statusFilter === "pending" ? "contained" : "outlined"}
+                    variant={statusFilter === "Validar" ? "contained" : "outlined"}
                     color="warning"
-                    onClick={() => setStatusFilter("pending")}
+                    onClick={() => setStatusFilter("Validar")}
                     sx={{ fontSize: "0.75rem", minWidth: "auto", px: 1 }}
                   >
                     Pendentes
                   </Button>
                   <Button
                     size="small"
-                    variant={statusFilter === "approved" ? "contained" : "outlined"}
+                    variant={statusFilter === "Validada" ? "contained" : "outlined"}
                     color="success"
-                    onClick={() => setStatusFilter("approved")}
+                    onClick={() => setStatusFilter("Validada")}
                     sx={{ fontSize: "0.75rem", minWidth: "auto", px: 1 }}
                   >
                     Aprovados
@@ -382,33 +406,28 @@ export default function InformacoesTecnicas() {
                           borderRightColor: "primary.main",
                         },
                       }}
-                    >
-                      <ListItemIcon sx={{ minWidth: 36 }}>
-                        <Avatar sx={{ width: 28, height: 28, fontSize: "0.875rem" }}>
-                          {getCategoryIcon(material.categoria)}
-                        </Avatar>
-                      </ListItemIcon>
+                    >              
                       <ListItemText
                         primary={
                           <Typography variant="body2" fontWeight="medium" noWrap sx={{ fontSize: "0.875rem" }}>
-                            {material.nome}
+                            {material.maktx}
                           </Typography>
                         }
                         secondary={
                           <Box>
                             <Typography variant="caption" color="text.secondary" fontFamily="monospace" display="block">
-                              {material.codigo}
+                              {material.matnr}
                             </Typography>
                             <Box display="flex" justifyContent="space-between" alignItems="center" mt={0.5}>
                               <Chip
-                                label={material.categoria}
+                                label={material.classDesc}
                                 size="small"
                                 variant="outlined"
                                 sx={{ fontSize: "0.65rem", height: 18 }}
                               />
                               <Chip
-                                label={getStatusText(material.status)}
-                                color={getStatusColor(material.status)}
+                                label={getStatusText(material.InformacoesTecnicas)}
+                                color={getStatusColor(material.InformacoesTecnicas)}
                                 size="small"
                                 sx={{ fontSize: "0.65rem", height: 18 }}
                               />
@@ -444,23 +463,20 @@ export default function InformacoesTecnicas() {
           </Card>
 
           {/* DETAIL - Características do Material */}
-          <Card sx={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+          <Card sx={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0}}>
             {selectedMaterial ? (
               <>
                 {/* Header Compacto */}
-                <CardContent sx={{ pb: 1 }}>
-                  <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={1.5}>
+                <CardContent sx={{ pb: 0.5 }}>
+                  <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={0.5}>
                     <Box sx={{ minWidth: 0, flex: 1 }}>
-                      <Typography variant="h5" fontWeight="bold" gutterBottom noWrap>
-                        {selectedMaterial.nome}
-                      </Typography>
                       <Typography variant="body2" color="text.secondary" noWrap>
-                        {selectedMaterial.codigo} • {selectedMaterial.categoria}
+                        {selectedMaterial.maktx}
                       </Typography>
                     </Box>
                     <Chip
-                      label={getStatusText(selectedMaterial.status)}
-                      color={getStatusColor(selectedMaterial.status)}
+                      label={getStatusText(selectedMaterial.InformacoesTecnicas)}
+                      color={getStatusColor(selectedMaterial.InformacoesTecnicas)}
                       size="medium"
                     />
                   </Box>
@@ -474,10 +490,10 @@ export default function InformacoesTecnicas() {
                 <Box sx={{ flex: 1, overflow: "auto", p: 1.5 }}>
 
                   <Grid container spacing={1.5}>
-                    {selectedMaterial.caracteristicas.map((char, index) => {
-                      const agreement = agreements[char.nome]
-                      const hasProposal = proposedValues[char.nome]
-                      const hasAttachment = attachments[char.nome]?.length > 0
+                    {selectedMaterial.fields.map((char, index) => {
+                      const agreement = agreements[char.Carac]
+                      const hasProposal = proposedValues[char.Carac]
+                      const hasAttachment = attachments[char.Carac]?.length > 0
 
                       return (
                         <Grid item xs={12} xl={6} key={index}>
@@ -500,9 +516,9 @@ export default function InformacoesTecnicas() {
                               "&:hover": { boxShadow: 1 },
                             }}
                           >
-                            <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 } }}>
-                              <Typography variant="body2" fontWeight="bold" gutterBottom color="primary.main" noWrap>
-                                {char.nome}
+                            <CardContent sx={{ p: 1.5, "&:last-child": { pb: 0.5 } }}>
+                              <Typography variant="body2" gutterBottom color="primary.main" noWrap>
+                                {char.Carac}
                               </Typography>
 
                               {/* Valor Atual Compacto */}
@@ -510,22 +526,18 @@ export default function InformacoesTecnicas() {
                                 sx={{
                                   mb: 1.5,
                                   p: 1,
-                                  background: "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
+                                  // background: "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
                                   borderRadius: 1,
-                                  textAlign: "center",
+                                  // textAlign: "center",
                                 }}
                               >
-                                <Typography variant="caption" color="text.secondary" display="block">
-                                  💎 Atual
+                                {/* <Typography variant="caption" color="text.secondary" display="block">
+                                  Atual
+                                </Typography> */}
+                                <Typography variant="caption" fontWeight="bold" color="primary.main">
+                                  {char.Valor === '' ? 'N/A' : char.Valor}
                                 </Typography>
-                                <Typography variant="subtitle1" fontWeight="bold" color="primary.main">
-                                  {char.valor}
-                                </Typography>
-                                {char.unidade && (
-                                  <Typography variant="caption" color="text.secondary">
-                                    {char.unidade}
-                                  </Typography>
-                                )}
+                                
                               </Box>
 
                               {/* Botões Compactos */}
@@ -535,7 +547,7 @@ export default function InformacoesTecnicas() {
                                   color="success"
                                   size="small"
                                   startIcon={<ThumbUp sx={{ fontSize: 14 }} />}
-                                  onClick={() => handleAgree(char.nome)}
+                                  onClick={() => handleAgree(char.Carac)}
                                   sx={{ flex: 1, fontSize: "0.7rem", py: 0.5 }}
                                 >
                                   OK
@@ -545,7 +557,7 @@ export default function InformacoesTecnicas() {
                                   color="error"
                                   size="small"
                                   startIcon={<ThumbDown sx={{ fontSize: 14 }} />}
-                                  onClick={() => handleDisagree(char.nome)}
+                                  onClick={() => handleDisagree(char.Carac)}
                                   sx={{ flex: 1, fontSize: "0.7rem", py: 0.5 }}
                                 >
                                   Não
@@ -575,17 +587,10 @@ export default function InformacoesTecnicas() {
                                   <TextField
                                     fullWidth
                                     size="small"
-                                    placeholder={char.valor}
-                                    value={proposedValues[char.nome] || ""}
-                                    onChange={(e) => handleProposedValueChange(char.nome, e.target.value)}
-                                    InputProps={{
-                                      endAdornment: char.unidade && (
-                                        <Typography variant="caption" color="text.secondary">
-                                          {char.unidade}
-                                        </Typography>
-                                      ),
-                                      sx: { bgcolor: "white", fontSize: "0.8rem" },
-                                    }}
+                                    placeholder={char.Valor}
+                                    value={proposedValues[char.Carac] || ""}
+                                    onChange={(e) => handleProposedValueChange(char.Carac, e.target.value)}
+                                   
                                   />
 
                                   {/* Anexo Compacto */}
@@ -596,7 +601,7 @@ export default function InformacoesTecnicas() {
                                         startIcon={<CloudUpload sx={{ fontSize: 14 }} />}
                                         size="small"
                                         fullWidth
-                                        onClick={() => handleOpenAttachmentModal(char.nome)}
+                                        onClick={() => handleOpenAttachmentModal(char.Carac)}
                                         sx={{
                                           color: "#ff9800",
                                           borderColor: "#ff9800",
@@ -610,7 +615,7 @@ export default function InformacoesTecnicas() {
                                       {/* Lista de anexos compacta */}
                                       {hasAttachment && (
                                         <Box sx={{ mt: 0.5 }}>
-                                          {attachments[char.nome].map((file) => (
+                                          {attachments[char.Carac].map((file) => (
                                             <Box
                                               key={file.id}
                                               sx={{
@@ -633,7 +638,7 @@ export default function InformacoesTecnicas() {
                                                 <IconButton
                                                   size="small"
                                                   color="secondary"
-                                                  onClick={() => handleOpenReplicationModal(file, char.nome)}
+                                                  onClick={() => handleOpenReplicationModal(file, char.Carac)}
                                                   sx={{ p: 0.25 }}
                                                 >
                                                   <ContentCopy sx={{ fontSize: 12 }} />
@@ -641,7 +646,7 @@ export default function InformacoesTecnicas() {
                                                 <IconButton
                                                   size="small"
                                                   color="error"
-                                                  onClick={() => handleRemoveAttachment(char.nome, file.id)}
+                                                  onClick={() => handleRemoveAttachment(char.Carac, file.id)}
                                                   sx={{ p: 0.25 }}
                                                 >
                                                   <Delete sx={{ fontSize: 12 }} />
@@ -657,7 +662,7 @@ export default function InformacoesTecnicas() {
                               )}
 
                               {/* Status Compacto */}
-                              {agreement && (
+                              {/* {agreement && (
                                 <Alert
                                   severity={agreement === "agree" ? "success" : "warning"}
                                   sx={{ py: 0.5 }}
@@ -674,12 +679,12 @@ export default function InformacoesTecnicas() {
                                       ? "✅ Aprovado"
                                       : hasProposal
                                         ? hasAttachment
-                                          ? `✅ ${proposedValues[char.nome]} ${char.unidade}`
-                                          : `⚠️ ${proposedValues[char.nome]} ${char.unidade} (anexo)`
+                                          ? `✅ ${proposedValues[char.Carac]} `
+                                          : `⚠️ ${proposedValues[char.Carac]}  (anexo)`
                                         : "⚠️ Aguardando valor"}
                                   </Typography>
                                 </Alert>
-                              )}
+                              )} */}
                             </CardContent>
                           </Card>
                         </Grid>
@@ -690,10 +695,10 @@ export default function InformacoesTecnicas() {
 
                 {/* Footer Compacto */}
                 <Divider />
-                <CardContent sx={{ py: 1.5 }}>
+                <CardContent sx={{ py: 0.5 }}>
                   {/* Alerta compacto */}
                   {characteristicsNeedingAttachment.length > 0 && (
-                    <Alert severity="warning" sx={{ mb: 1.5, py: 0.5 }}>
+                    <Alert severity="warning" sx={{ mb: 0.5, py: 0.5 }}>
                       <Typography variant="caption" fontWeight="bold">
                         📎 {characteristicsNeedingAttachment.length} característica(s) precisam de anexo
                       </Typography>

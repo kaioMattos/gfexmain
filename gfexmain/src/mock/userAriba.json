@@ -1,0 +1,4 @@
+{
+    "@odata.context": "$metadata#Edm.String",
+    "value": "{\"email\":\"TesteBoxfileS4D@Petro.com\",\"attributes\":{\"xs.rolecollections\":[\"ysyard-criaragendfornecedor\",\"satre-fornecedor-display-rc\",\"YSARB-CONSULTANTE-BTP-EXT\",\"ysfg-pleito-Supplier\",\"palma-fornecedor-display-rc\",\"GestaoPleitosFornecedor\",\"ysyard-anexardoctostecnicos\",\"ysyard-criartransportadora\",\"ysyard-administracao-producao\",\"Ariba Supplier\"]}}"
+}

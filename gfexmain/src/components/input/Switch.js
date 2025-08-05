@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
-import Switch from '@mui/material/Switch';
+import {Switch,Box} from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { useDashboard } from '../../useContext';
 
 const TextSwitch = styled(Switch)(({ theme }) => ({
@@ -15,7 +17,7 @@ const TextSwitch = styled(Switch)(({ theme }) => ({
       transform: 'translateX(36px)',
       color: '#fff',
       '& + .MuiSwitch-track': {
-        backgroundColor: 'rgb(0,142,145)',
+        backgroundColor: 'success',
         opacity: 1,
         border: 0,
       },
@@ -32,7 +34,7 @@ const TextSwitch = styled(Switch)(({ theme }) => ({
     opacity: 1,
     position: 'relative',
     '&::before, &::after': {
-      content: '"Sim"',
+      content: '""',
       position: 'absolute',
       top: '50%',
       transform: 'translateY(-50%)',
@@ -40,7 +42,7 @@ const TextSwitch = styled(Switch)(({ theme }) => ({
       color: '#fff',
     },
     '&::after': {
-      content: '"Não"',
+      content: '""',
       right: 6,
     },
     '&::before': {
@@ -49,19 +51,17 @@ const TextSwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-export default function SwitchWithText({data, dataRow}) {
+export default function CustomUISwitch({data, dataRow}) {
   let check = dataRow?.Agreed
   const { selectedMaterialsMastDet, setAFieldsValueMatSelect,setFieldValueMatSelect } = useDashboard();
   
   const handleChange = (event) => {
-    console.log(check)
     if(data === 'all'){
       selectedMaterialsMastDet.fields
       .map((item)=>(setFieldValueMatSelect({...item,Agreed: event.target.checked})));
       check =  event.target.checked
       // setAFieldsValueMatSelect(aEntry);
     }else{
-      console.log(data, selectedMaterialsMastDet.fields)
       const oValue = selectedMaterialsMastDet.fields
       .filter((item) => item.PosCarac === dataRow.PosCarac)[0];
       oValue['Agreed'] = event.target.checked;
@@ -71,6 +71,12 @@ export default function SwitchWithText({data, dataRow}) {
   };
 
   return (
-    <TextSwitch checked={check} onChange={handleChange} />
+    <Box display="flex" alignItems="center" gap={0.3}>
+            <CancelIcon color={!check ? 'error' : 'disabled'} />
+
+      <TextSwitch checked={check} onChange={handleChange} />
+      <CheckCircleIcon color={check ? 'success' : 'disabled'} />
+
+    </Box>
   );
 }

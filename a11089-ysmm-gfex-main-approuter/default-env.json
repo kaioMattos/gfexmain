@@ -1,0 +1,45 @@
+{
+    "VCAP_SERVICES": {
+      "xsuaa": [
+    {
+      "name": "ysmm-gfex-xsuaa",
+      "instance_name": "ysmm-gfex-xsuaa",
+      "label": "xsuaa",
+      "tags": [
+        "xsuaa",
+        "endpoint:https://api.cf.br10.hana.ondemand.com",
+        "org:Petroleo_Brasileiro_S.A.-_Petrobras_devcfpb",
+        "space:PetrobrasDEV"
+      ],
+      "plan": "application",
+      "credentials": {
+        "apiurl": "https://api.authentication.br10.hana.ondemand.com",
+        "clientid": "sb-gfex!t302",
+        "clientsecret": "865c4a55-174b-4838-b6ad-825877199283$CIjV6KNKtSX3LK5o32pvhDplAgMvucoPxwYAAjOhXW0=",
+        "credential-type": "binding-secret",
+        "identityzone": "devcfpb",
+        "identityzoneid": "53636f10-d5bd-4c78-a821-86724c9ef15f",
+        "sburl": "https://internal-xsuaa.authentication.br10.hana.ondemand.com",
+        "serviceInstanceId": "0019d9e2-e86d-41fb-989d-ba647412a118",
+        "service_key_name": "key",
+        "subaccountid": "53636f10-d5bd-4c78-a821-86724c9ef15f",
+        "tenantid": "53636f10-d5bd-4c78-a821-86724c9ef15f",
+        "tenantmode": "dedicated",
+        "uaadomain": "authentication.br10.hana.ondemand.com",
+        "url": "https://devcfpb.authentication.br10.hana.ondemand.com",
+        "verificationkey": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt4ZslxWcyqoe66ZHwmMJ\npew/+WNfbiZrIDMxx6HdTbj5Pc9koIMiXZcIYEV/M44VF5WmdBMhJ4WxX0oj7g2l\nWrdSfAeK5M4Ucll6SLyuVSQsmTJjXXB+Y/9kWwgRgEeF1EQgKNv/qbXQd70ocIH5\nzMXXWuPqh0jMv8aTOIww9Pv/JOtSrEef9ObxFKad4UodG29tEHeph0CtOtSDgX8X\nPZ/PZWzLydhl0Q09gHnNUIL21+V7UlGIn/2nhMi5tWDAt9v0QACwp/XAdmNNbyeg\nTb0tZSANOOdw/SUvkIDVu4clazxJK4f9VNfh4oyxnLeYzXTKN9Ziy1O+x0TDduR1\ndwIDAQAB\n-----END PUBLIC KEY-----",
+        "xsappname": "gfex!t302",
+        "zoneid": "53636f10-d5bd-4c78-a821-86724c9ef15f"
+      }
+    }
+  ]
+    },
+    "destinations": [
+      {
+        "name": "CAP_GFEX",
+        "url": "https://petroleo-brasileiro-s-a---petrobras-devcfpb-petrobrasde22ed16fc.cfapps.br10.hana.ondemand.com",
+        "forwardAuthToken": true
+      }
+    ]
+  }
+  

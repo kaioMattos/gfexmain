@@ -10,8 +10,8 @@
     {
       "authenticationType": "xsuaa",
       "csrfProtection": false,
-      "source": "^/gfexs42Destination(.*)$",
-      "destination": "gfexs42Destination",
+      "source": "^/gfexDestination(.*)$",
+      "destination": "CAP_GFEX",
       "target": "$1"
     },
     {

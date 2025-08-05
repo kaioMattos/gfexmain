@@ -3,13 +3,13 @@ import { CircularProgress, Typography, Box, Grid } from '@mui/material';
 import Head from '../../components/head';
 import IndicatorMkt from './indicators/Marketing';
 import IndicatorPriceAta from './indicators/PriceAta';
-import { getCountIndicator, getTableData, postRecogMaterial } from "../../api";
+import { postRecogMat } from "../../api";
 import { useDashboard } from '../../useContext';
 import TableInfo from '../../components/table/TableInfo';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { TfiSave } from "react-icons/tfi";
-import { _assembleOrFilterGeneric, getDateNow } from '../../utils';
+import { _assembleOrFilterGeneric, getDateIsoString } from '../../utils';
 import "./styles.css";
 
 const PAGE_SIZE = 200000;
@@ -72,7 +72,7 @@ const Marketing = () => {
       const tecInfo = selectedAction === 'Comercializo' ? 'FVL' : 'NAP';
       const aEntry = selectedMaterials.map((material) => ({
         "Nm": material.matnr,
-        "DataCriacao": getDateNow(),
+        "DataCriacao": null,
         "UsuarioCriador": "EMERSON",
         "NmReconhecido": recog,
         "AtaPrecoPreenchida": priceAta,
@@ -85,8 +85,7 @@ const Marketing = () => {
           "Descricao": null
         }
       }));
-      console.log(aEntry);
-      aPromises = aEntry.map((oEntry) => (postRecogMaterial(oEntry)));
+      aPromises = aEntry.map((oEntry) => (postRecogMat(oEntry)));
       const resolvedPromises = await Promise.all(aPromises);
       loadData(false);
     }

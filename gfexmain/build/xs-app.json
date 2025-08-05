@@ -6,6 +6,13 @@
   },
   "routes": [
     {
+      "authenticationType": "xsuaa",
+      "csrfProtection": false,
+      "source": "^/gfexDestination/(.*)$",
+      "destination": "CAP_GFEX",
+      "target": "$1"
+    },
+    {
       "authenticationType": "none",
       "csrfProtection": false,
       "source": "^/gfexs42Destination/(.*)$",

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Typography, Box, Grid, Button, TextField, IconButton  } from '@mui/material';
+import React, { useState } from "react";
+import { Typography, Box, Grid, Button, TextField, IconButton } from '@mui/material';
 import { useDashboard } from '../../../../useContext';
 import { MdOutlineListAlt } from "react-icons/md";
 // import ListValueModal from './components/modal/ListValue_Modal';
 import AutoCompleteInfoTec from '../../../../components/modal/AutoCompleteInfoTec';
-import { putInfoTec, postInfoTec, putMaterial } from '../../../../api';
+import { putInfoTec, postInfoTecCarac, putMaterial } from '../../../../api';
 import FileUploadComponent from '../../../../components/input/FileUpload'
 import { CgAttachment } from "react-icons/cg";
 import CustomizedTables from '../../../../components/table/InfoTecCarac';
@@ -19,31 +19,42 @@ export default function Detail() {
   };
 
   const saveTecInfo = async () => {
-    const oEntry = {
+    const status = selectedMaterialsMastDet.fields.every((item) => (item.Agreed)) ? 'VLD' : 'AAP'
+    const oEntryMain = {
       "Nm": selectedMaterialsMastDet.matnr,
-      "InformacoesTecnicas": "VLD"
+      "Classe": "",
+      "Fabricante": "",
+      "Status": ""
     };
-    
-    const oEntryFields = selectedMaterialsMastDet.fields
-      .filter((item) => (item.hasOwnProperty('NovoValor') && item.NovoValor !== ''))
-      .map((item) => ({
-        "Nm": selectedMaterialsMastDet.matnr,
-        "Classe": item.Classe,
-        "PosCarac": item.PosCarac,
-        "PosValor": item.hasOwnProperty('PosValor') ? item.PosValor : '',
-        "Valor": item.NovoValor
-      }));
-      let aPromises = [];
-    console.log(selectedMaterialsMastDet)
-    if (selectedMaterialsMastDet.InformacoesTecnicas === 'Validar') {
-      aPromises = oEntryFields.map((oEntry) => (postInfoTec(oEntry)));
-    }else{
-      aPromises = oEntryFields.map((oEntry) => (putInfoTec(oEntry)));
-      
+    const oEntryReconhecimento = {
+      "Nm": selectedMaterialsMastDet.matnr,
+      "InformacoesTecnicas": status
+    };
+    const oEntryCarac = selectedMaterialsMastDet.fields
+      // .filter((item) => (item.hasOwnProperty('NovoValor') && item.NovoValor !== ''))
+      .map((item) => (
+        {
+          "Nm": selectedMaterialsMastDet.matnr,
+          "PosCarac": (item.Carac === 'PartNumber' || item.Carac === 'Fabricante') ? '' : item.PosCarac,
+          "PosValor": (item.Carac === 'PartNumber' || item.Carac === 'Fabricante') ? '' :
+            item.Agreed ? item.PosValor : item.NovoValor,
+          "Concorda": item.Agreed,
+          "DadoMestre": (item.Carac === 'PartNumber' || item.Carac === 'Fabricante') ? true : false,
+          "NomeCaracDm": (item.Carac === 'PartNumber' || item.Carac === 'Fabricante') ? item.Carac : '',
+          "ValorCaracDm": (item.Carac === 'PartNumber' || item.Carac === 'Fabricante') ? item.NovoValor : ''
+        }));
+    let aPromises = [];
+    console.log(oEntryReconhecimento);
+    console.log(oEntryCarac);
+    try {
+      aPromises.push(putMaterial(oEntryReconhecimento));
+      aPromises.push(...oEntryCarac.map((oEntry) => (postInfoTecCarac(oEntry))));
+      const resolvedPromises = await Promise.all(aPromises);
+    } catch (e) {
+
+    } finally {
+      await loadData();
     }
-    aPromises.push(putMaterial(oEntry));
-    const resolvedPromises = await Promise.all(aPromises);
-    await loadData();
   }
   const handleInput = (data, event) => {
     const oValue = selectedMaterialsMastDet.fields
@@ -52,8 +63,8 @@ export default function Detail() {
     setFieldValueMatSelect(oValue);
   }
   return (
-   
-           
+
+
     <>
       <Grid container sx={{
         border: '1px solid rgb(0,133,66)', borderRadius: '8px', backgroundColor: 'white'
@@ -70,8 +81,8 @@ export default function Detail() {
           </Grid>
         </Grid>
         <Grid item size={12} sx={{ padding: '1rem' }}>
-          
-        <CustomizedTables data={selectedMaterialsMastDet.fields}/>
+
+          <CustomizedTables data={selectedMaterialsMastDet.fields} />
           {/* <Grid container spacing={2} sx={{ color: 'rgb(0,136,66)' }}>
             <Grid item size={3} ><Typography sx={{ fontSize: '1rem', fontFamily: 'PetrobrasSans_Bd' }}>Carac</Typography></Grid>            
             <Grid item size={4} ><Typography sx={{ fontSize: '1rem', fontFamily: 'PetrobrasSans_Bd' }}>Valor Proposto</Typography></Grid>
@@ -122,6 +133,6 @@ export default function Detail() {
           </div>
         </Grid>
       </Grid>
-      </>
+    </>
   );
 }

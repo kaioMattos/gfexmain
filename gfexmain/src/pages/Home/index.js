@@ -123,7 +123,7 @@ export default function MaterialManagementPlatform() {
   // Função para carregar dados
   const loadMaterials = useCallback(async () => {
     setLoading(true)
-    
+
     try {
       const result = await fetchMaterials(page, rowsPerPage, {
         searchTerm,
@@ -141,9 +141,9 @@ export default function MaterialManagementPlatform() {
 
   // Carregar dados quando os filtros mudarem
   useEffect(() => {
-    loadMaterials();    
+    loadMaterials();
   }, [loadMaterials])
-  
+
   // Reset da página quando filtros mudarem
   useEffect(() => {
     setPage(0)
@@ -242,8 +242,8 @@ export default function MaterialManagementPlatform() {
               <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
                 Lista de Materiais
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{fontWeight:'bold', fontSize:'0.975rem'}} >
-                <span className="destTotalMat">{totalCount.toLocaleString()}</span> materiais encontrados 
+              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 'bold', fontSize: '0.975rem' }} >
+                <span className="destTotalMat">{totalCount.toLocaleString()}</span> materiais encontrados
               </Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -324,7 +324,7 @@ export default function MaterialManagementPlatform() {
                       <TableCell>
                         <Chip
                           sx={{
-                            width:'172px',
+                            width: '172px',
                             bgcolor:
                               material.NmReconhecido === 'Comercializo' ? "success.light" :
                                 material.NmReconhecido === 'Não Comercializo' ? "error.light" : "warning.light",
@@ -333,14 +333,14 @@ export default function MaterialManagementPlatform() {
                               material.NmReconhecido === 'Comercializo' ? "success.main" :
                                 material.NmReconhecido === 'Não Comercializo' ? "error.main" : "warning.main"
                           }}
-                          label={material.NmReconhecido !== 'Comercializo' && 
+                          label={material.NmReconhecido !== 'Comercializo' &&
                             material.NmReconhecido !== 'Não Comercializo' ?
-                            'Pendente Avaliação':material.NmReconhecido} size="small" variant="outlined" />
+                            'Pendente Avaliação' : material.NmReconhecido} size="small" variant="outlined" />
                       </TableCell>
                       <TableCell>
                         <Chip
                           sx={{
-                            width:'172px',
+                            width: '172px',
                             bgcolor:
                               material.AtaPrecoPreenchida === 'Preenchida' ? "success.light" :
                                 material.AtaPrecoPreenchida === 'Não Aplicável' ? "greyInfo.light" :
@@ -356,28 +356,35 @@ export default function MaterialManagementPlatform() {
                                   material.AtaPrecoPreenchida === 'Preencher' ? "warning.main" : "",
                           }}
                           label={material.AtaPrecoPreenchida === 'Preencher' ?
-                            'Pendente Avaliação':material.AtaPrecoPreenchida} size="small" variant="outlined" />
+                            'Pendente Avaliação' : material.AtaPrecoPreenchida} size="small" variant="outlined" />
                       </TableCell>
                       <TableCell>
                         <Chip
                           sx={{
-                            width:'172px',
+                            width: '172px',
                             bgcolor:
                               material.InformacoesTecnicas === 'Validada' ? "success.light" :
                                 material.InformacoesTecnicas === 'Não Aplicável' ? "greyInfo.light" :
-                                  material.InformacoesTecnicas === 'Validar' ? "warning.light" : "",
+                                  material.InformacoesTecnicas === 'Validar' ? "warning.light" :
+                                    material.InformacoesTecnicas === 'Aguardando Avaliação Petrobrás'
+                                      ? "info.light" : "",
                             color:
                               material.InformacoesTecnicas === 'Validada' ||
+                                material.InformacoesTecnicas === 'Aguardando Avaliação Petrobrás' ||
                                 material.InformacoesTecnicas === 'Não Aplicável' ||
                                 material.InformacoesTecnicas === 'Validar' ? 'white' : '',
 
                             borderColor:
                               material.InformacoesTecnicas === 'Validada' ? "success.main" :
                                 material.InformacoesTecnicas === 'Não Aplicável' ? "greyInfo.main" :
-                                  material.InformacoesTecnicas === 'Validar' ? "warning.main" : "",
+                                  material.InformacoesTecnicas === 'Validar' ? "warning.main" :
+                                    material.InformacoesTecnicas === 'Aguardando Avaliação Petrobrás' ?
+                                      "info.main" : "",
                           }}
-                          label={material.InformacoesTecnicas === 'Validar' ?
-                          'Pendente Avaliação':material.InformacoesTecnicas} size="small" variant="outlined" />
+                          label={
+                            material.InformacoesTecnicas === 'Validar' ? 'Pendente Avaliação' :
+                              material.InformacoesTecnicas === 'Aguardando Avaliação Petrobrás' ? 'Em Análise(Petro)' :
+                                material.InformacoesTecnicas} size="small" variant="outlined" />
                       </TableCell>
 
                     </TableRow>

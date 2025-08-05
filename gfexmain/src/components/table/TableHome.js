@@ -197,7 +197,6 @@ export default function MainTableMaterial({materials, loading, loadData}) {
     const aValues = JSON.parse(objHana[propObjHana]);
     const aFiltersValues = aValues.filter((item) => (item.status))
       .map((item) => (`${_assembleFilterGeneric(propOfilter, item[propObjHana])} or`));
-    // console.log(aFiltersValues)
     return aFiltersValues.join('').slice(0, -3);
   };
   const PAGE_SIZE = 200000;

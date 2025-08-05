@@ -5,6 +5,7 @@ export const DashboardContext = createContext();
 
 
 export const DashboardContextProvider = (props) => {
+  const [user, setUser] = useState(null);
   const [supplier, setSupplier] = useState({ validatedPetro: null });
   const [selectedMaterials, setSelectedMaterials] = useState(null);
   const [selectedMaterialsMastDet, setSelectedMaterialsMastDet] = useState({
@@ -57,46 +58,52 @@ export const DashboardContextProvider = (props) => {
       fields:oEntry
     }));
   }
-  const setSupplierContext = (oSupplier) => {
+  const setSupplierContext = (oSupplier, oSupplierAriba) => {
+    const userPetro = (Object.keys(oSupplier).length === 0)
     const permission = oSupplier !== undefined ? oSupplier.validatedPetro : 'nao_cadastrado'
-    setSupplier({ ...oSupplier, validatedPetro: permission });
+    setSupplier({ 
+      ...oSupplier,
+      ...oSupplierAriba, 
+      validatedPetro: permission,
+      userPetro:userPetro
+     });
   }
   const setSelectedMaterialsContext = (aValues) => {
     setSelectedMaterials(aValues);
   }
-
-
   const loadData = useCallback(async () => {
     setMaterials([]);
 
     try {
       setLoadingPage(true);
-      if (Object.keys(supplier).length > 1) {
+      if (Object.keys(supplier).length > 1 && !supplier.userPetro) {
         const sFiltersClasses = _assembleOrFilterGeneric(supplier, 'classDesc', 'class', 'class');
         const sFiltersManufactureres = _assembleOrFilterGeneric(supplier, 'mfrnr', 'manufacturer', 'text');
-        const sFilter = `fornecedorInex eq '10097577'and (${sFiltersClasses}) and (${sFiltersManufactureres})`
+        const sFilter = `fornecedorInex eq '10097577' and (${sFiltersClasses}) and (${sFiltersManufactureres})`
         const countRecog = await getCountIndicator({
-          $filter: `${sFilter} and NmReconhecido eq 'Comercializo'`
+          filter: `${sFilter} and NmReconhecido eq 'Comercializo'`
         });
         const countNotRecog = await getCountIndicator({
-          $filter: `${sFilter} and NmReconhecido eq 'Não Comercializo'`
+          filter: `${sFilter} and NmReconhecido eq 'Não Comercializo'`
         });
         const countNotIdentify = await getCountIndicator({
-          $filter: `${sFilter} and (NmReconhecido ne 'Não Comercializo' and NmReconhecido ne 'Comercializo')`
+          filter: `${sFilter} and (NmReconhecido ne 'Não Comercializo' and NmReconhecido ne 'Comercializo')`
         });
 
         const countPriceAta = await getCountIndicator({
-          $filter: `${sFilter} and AtaPrecoPreenchida eq 'Preenchido' and NmReconhecido eq 'Comercializo'`
+          filter: `${sFilter} and AtaPrecoPreenchida eq 'Preenchido' and NmReconhecido eq 'Comercializo'`
         });
-
         const countPriceAtaNeedToFill = await getCountIndicator({
-          $filter: `${sFilter} and AtaPrecoPreenchida eq 'Preencher' and NmReconhecido eq 'Comercializo'`
+          filter: `${sFilter} and AtaPrecoPreenchida eq 'Preencher' and NmReconhecido eq 'Comercializo'`
         });
         const countTecInfo = await getCountIndicator({
-          $filter: `${sFilter} and InformacoesTecnicas eq 'Validada'`
+          filter: `${sFilter} and InformacoesTecnicas eq 'Validada'`
         });
         const countTecInfoNeedToFill = await getCountIndicator({
-          $filter: `${sFilter} and InformacoesTecnicas eq 'Validar'`
+          filter: `${sFilter} and InformacoesTecnicas eq 'Validar'`
+        });
+        const countTecInfoAwaitPetro = await getCountIndicator({
+          filter: `${sFilter} and InformacoesTecnicas eq 'Aguardando Avaliação Petrobrás'`
         });
         setCountIndicators({
           ataPreco: {
@@ -112,9 +119,9 @@ export const DashboardContextProvider = (props) => {
           },
           informacoesTecnicas: {
             approved: countTecInfo,
-            awaitApproval: 0,
+            awaitApproval: countTecInfoAwaitPetro,
             notIdentify: countTecInfoNeedToFill,
-            total: countTecInfo + 0 + countTecInfoNeedToFill
+            total: countRecog
           },
           comercializacao: {
             recog: countRecog,
@@ -123,17 +130,21 @@ export const DashboardContextProvider = (props) => {
             notIdentify: countNotIdentify,
           }
         });
-
-        const _items = await getTableData({
+        const order = { 'Comercializo': 1, 'Não Comercializo': 2, 'Falta Identificação': 3 };
+        
+        const aResultMaterials = await getTableData({
           $top: 200000,
-          $filter: sFilter
+          filter: sFilter
         });
-        const itemsWithIds = _items.map((item, index) => {
+         aResultMaterials.map((item, index) => {
           item.id = index;
           return item;
-        });
-        setMaterials(itemsWithIds);
-        updateSelectedMaterials(itemsWithIds);
+        })
+        aResultMaterials.sort((a, b) => {
+          return order[a.NmReconhecido] - order[b.NmReconhecido];
+        });;
+        setMaterials(aResultMaterials);
+        updateSelectedMaterials(aResultMaterials);
       }
     } finally {
       setLoadingPage(false);
@@ -149,10 +160,10 @@ export const DashboardContextProvider = (props) => {
 
 
   return <DashboardContext.Provider value={{
-    supplier, loadingPage, countIndicators, materials, setSupplierContext, setLoadingPage,
+    user, supplier, loadingPage, countIndicators, materials, setSupplierContext, setLoadingPage,
     selectedMaterials, setSelectedMaterialsContext, selectedMaterialsMastDet,
     setSelectedMaterialsMastDet, cacheFieldValues, setCacheFieldValues, setFieldValueMatSelect,
-    loadData, setAFieldsValueMatSelect
+    loadData, setAFieldsValueMatSelect, setUser
   }}>
     {props.children}
   </DashboardContext.Provider>

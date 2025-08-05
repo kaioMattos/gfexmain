@@ -55,9 +55,7 @@ export default function SelectFile({ open, onClose, data }) {
 
   const handleSave = () => {
     // Aqui você pode implementar a lógica para salvar o arquivo selecionado
-    console.log('Arquivo salvo:', files.find(file => file.id === selectedFileId));
-    console.log(data);
-    console.log(selectedMaterialsMastDet);
+   
     const oValue = selectedMaterialsMastDet.fields
     .filter((item) => item.PosCarac === data.PosCarac)[0]
     oValue['fileName'] = files.find(file => file.id === selectedFileId).name

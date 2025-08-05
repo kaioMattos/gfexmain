@@ -11,14 +11,13 @@ const { setSelectedMaterialsMastDet } = useDashboard();
   const [selectedCard, setSelectedCard] = useState(0);
   const handleSelectedCard = (index, item) => {
     setSelectedCard(index);
-    loadDataDetail(item)
+    loadDataDetail(item);
    
   };
   const loadDataDetail = async (item) => {
-    console.log(item)
     const infoMaterial = await getTecInfoMaterial({      
-      $filter: `Nm eq '${item.matnr}'` 
-
+      filter: `Nm eq '${item.matnr}'`,
+      expand:''
     })
     setSelectedMaterialsMastDet({
       matnr:item.matnr,

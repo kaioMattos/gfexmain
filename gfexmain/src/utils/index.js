@@ -4,7 +4,6 @@ const _assembleOrFilterGeneric = (objHana, propOfilter, propObjHana, propItem) =
   const aValues = JSON.parse(objHana[propObjHana]);
   const aFiltersValues = aValues.filter((item) => (item.status))
     .map((item) => (`${_assembleFilterGeneric(propOfilter, item[propItem])} or`));
-  // console.log(aFiltersValues)
   return aFiltersValues.join('').slice(0, -3);
 };
 
@@ -19,4 +18,13 @@ const getDateNow = () => {
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`
 }
 
-export {_assembleOrFilterGeneric, getDateNow}
+const getDateIsoString = () => {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+const mm = String(today.getMonth() + 1).padStart(2, '0');
+const dd = String(today.getDate()).padStart(2, '0');
+const edmDate = `${yyyy}-${mm}-${dd}`; // "2025-07-22"
+  return edmDate
+}
+
+export {_assembleOrFilterGeneric, getDateNow, getDateIsoString}

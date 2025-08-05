@@ -7,7 +7,7 @@ import { getTecInfoMaterial } from "../../api";
 
 const filter = createFilterOptions();
 
-export default function FreeSoloCreateOption({ data }) {
+export default function AutoCompleteInfoTec({ data }) {
   const [value, setValue] = useState(null);
   const [loading, setLoading] = useState(false);
   const { cacheFieldValues, setCacheFieldValues,
@@ -21,12 +21,12 @@ export default function FreeSoloCreateOption({ data }) {
       if (!findedInCache) {
         const filter = `Nm eq '${oEntry.Nm}' and Carac eq '${oEntry.Carac}'`
         const valuesFieldTec = await getTecInfoMaterial({
-          $filter: filter,
-          $expand: 'toChar4Class'
+          filter: `Nm eq '${oEntry.Nm}' and Carac eq '${oEntry.Carac}'`,
+          expand: 'toChar4Class'
         });
         findedInCache = {
           field: oEntry.Carac,
-          values: [...valuesFieldTec[0]?.toChar4Class.results || valuesFieldTec]
+          values: [...valuesFieldTec[0]?.toChar4Class || valuesFieldTec]
         }
         setCacheFieldValues([...cacheFieldValues, findedInCache])
       }
@@ -49,6 +49,7 @@ export default function FreeSoloCreateOption({ data }) {
   }, []);
   return (
     <Autocomplete
+      disabled = {data.Agreed}
       loading={loading}
       value={value}
       size="small"
@@ -71,7 +72,7 @@ export default function FreeSoloCreateOption({ data }) {
         }
         const oValue = selectedMaterialsMastDet.fields
         .filter((item)=>item.Carac === data.Carac && item.PosCarac === data.PosCarac)[0]
-        oValue['NovoValor'] = valuePropous.Valor
+        oValue['NovoValor'] = valuePropous.PosValor
         setFieldValueMatSelect(oValue);
 
       }}

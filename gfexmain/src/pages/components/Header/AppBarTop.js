@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+
 import {
   AppBar, Toolbar, Button, Box, IconButton, Menu,
   MenuItem as MenuItemComponent, Avatar,
@@ -13,9 +14,22 @@ import { useLocation, useNavigate } from "react-router-dom";
 import logopetrobras from '../../../assets/logopetrobras.png';
 import logoGFEX from  '../../../assets/logoGFEX.png';
 import logoSimpleGfex from '../../../assets/logoSimpleGfex.png';
- 
+import UserInfoModal from '../../../components/modal/UserInfo';
+import { useDashboard } from '../../../useContext';
+
+
 export default function AppBarTop({value:{ setDrawerOpen, anchorEl, setAnchorEl}}) {
+  const [openUserInfo, setopenUserInfo] = useState(false);
+   const { supplier } = useDashboard();
  
+
+   const handleCloseUserInfo = () => {
+    setopenUserInfo(false);
+  };
+  const setOpenUserInfoDialog = () => {
+    setopenUserInfo(true);
+    handleMenuClose();
+  }
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
@@ -42,7 +56,9 @@ export default function AppBarTop({value:{ setDrawerOpen, anchorEl, setAnchorEl}
        
 
         <IconButton onClick={handleMenuClick} sx={{ color: "text.primary" }}>
-          <Avatar sx={{ width: 36, height: 36, bgcolor: "secondary.main", fontSize: "0.895rem" }}>E</Avatar>
+          <Avatar sx={{ width: 36, height: 36, bgcolor: "secondary.main", fontSize: "0.895rem" }}>
+          {supplier.email.split(" ")[0][0].toUpperCase()}
+          </Avatar>
         </IconButton>
       </Box>
       <Menu
@@ -52,7 +68,7 @@ export default function AppBarTop({value:{ setDrawerOpen, anchorEl, setAnchorEl}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <MenuItemComponent onClick={handleMenuClose}>
+        <MenuItemComponent onClick={() => { setOpenUserInfoDialog() }} >
           <AccountCircle sx={{ mr: 1 }} />
           Meu Perfil
         </MenuItemComponent>
@@ -60,6 +76,7 @@ export default function AppBarTop({value:{ setDrawerOpen, anchorEl, setAnchorEl}
       </Menu>
       <img src={logopetrobras} style={{ height: '30px' }} />
     </Toolbar>
+    <UserInfoModal open={openUserInfo} handleClose={() => handleCloseUserInfo()} data={supplier}/>
   </AppBar>
   );
 }

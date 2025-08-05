@@ -4,6 +4,6 @@ applications:
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack
   random-route: true
   services:
-  - gfex-xsuaa
+  - ysmm-gfex-xsuaa
   - gfexs42Destination
   - gfexs42Connectivity

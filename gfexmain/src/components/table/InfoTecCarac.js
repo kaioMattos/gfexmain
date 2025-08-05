@@ -80,7 +80,8 @@ export default function CustomizedTables({ data }) {
   return (
     <>
       <Grid container >
-        <Grid item size={12} container><Typography>Concordar com todos ?</Typography> <CustomUISwitch data='all' dataRow={false} /></Grid>
+        <Grid item size={12} container><Typography>Concordar com todos ?</Typography> <CustomUISwitch data='all'
+         dataRow={{Agreed:data.every((item)=>item.Agreed)}} /></Grid>
         {/* <Grid item size={12} container><Typography>Replicar Evidências</Typography> <FileUploadComponent /></Grid> */}
       </Grid>
       <SelectCarac open={openDialogSelecCarac} onClose={() => handleCloseDialogCarac()} data={rowSelected} />
@@ -116,18 +117,26 @@ export default function CustomizedTables({ data }) {
                 <TableCell align="left" sx={{ padding: '7px' }}>
                   {row.Carac === 'PartNumber' || row.Carac === 'Fabricante' ? (
                     <TextField
+                    onChange={(event) => {
+                      
+                      const oValue = selectedMaterialsMastDet.fields
+                      .filter((item)=>item.Carac === row.Carac && item.PosCarac === row.PosCarac)[0]
+                      oValue['NovoValor'] = event.target.value
+                      setFieldValueMatSelect(oValue);
+              
+                    }}
                       required
                       id="outlined-hidden-label-normal"
-                      defaultValue=""
                       variant="outlined"
                       size="small"
                       sx={{ width: '80%' }}
-
+                      disabled={row.Agreed}
+                    
                     />) : (<AutoCompleteInfoTec data={row} />)}
                 </TableCell >
                 <TableCell align="left" sx={{ padding: '7px' }}>
                   <Tooltip title="Escolher Arquivo">
-                    <IconButton onClick={() => { setOpenDialog(row) }}>
+                    <IconButton onClick={() => { setOpenDialog(row) }}  disabled={row.Agreed}>
                       <IoIosAttach />
                     </IconButton>
                   </Tooltip>
@@ -137,17 +146,18 @@ export default function CustomizedTables({ data }) {
                       <IoDuplicateOutline />
                     </IconButton>
                   </Tooltip>
-                  {row.fileName}
+                 
+                  
                   {row.fileName !== undefined && row.fileName !== '' ? (
                     <>
                       <Tooltip title="Deletar Arquivo">
-                        <IconButton onClick={() => { deleteFile(row) }} color="error">
+                        <IconButton disabled={row.Agreed} onClick={() => { deleteFile(row) }} color="error">
                           <MdDelete />
                         </IconButton>
                       </Tooltip>
                     </>
                   ):(<></>)}
-
+                <p>{row.fileName}</p>
                 </TableCell >
               </TableRow >
             ))}
