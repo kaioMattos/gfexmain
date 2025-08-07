@@ -3,10 +3,7 @@ import React, { useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { getUserHana, getUserAzureAriba } from "./api";
 import { useDashboard } from './useContext';
-import Header from './components/header';
-import NewHeader from './pages/components/Header'
-import NavLink from './components/breadcrumbs';
-import Home from './pages/Main';
+import Header from './components/Header'
 import Marketing from './pages/Marketing';
 import Report from './pages/Report'
 import TecInfo from './pages/TecInfo';
@@ -32,9 +29,7 @@ const App = () => {
       userAzure.attributes['xs.saml.groups']:[]
     const userPetro = groups.includes('Petrobras');
     const userS4 = !userPetro ? await getUserHana(process.env.REACT_APP_SUPPLIER_TEST) : {};
-
     // const usersS4 = mockUser;
-
     try {
       if (isFirstLoad) {
         await setSupplierContext(userS4, userAzure);
@@ -59,13 +54,11 @@ const App = () => {
           <CircularProgress disableShrink={loadingPage} />
         </div>
       ) : (<>
-        {supplier.validatedPetro === 'concluido' || supplier.userPetro ? (
-          
+        {supplier.validatedPetro === 'concluido' || supplier.userPetro ? ( 
             <>
               <CssBaseline />
               <Box sx={{ flexGrow: 1, bgcolor: "background.default", minHeight: "100vh" }}>
-                {/* Header */}
-                <NewHeader />
+                <Header />
                 {loadingPage ? (
                   <div className="initLoading">
                     <CircularProgress disableShrink={loadingPage} />
@@ -90,9 +83,7 @@ const App = () => {
       </>
       )}
     </ThemeProvider>
-
   )
-
 }
 
 

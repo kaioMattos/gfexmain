@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect } from "react"
 import {
   Typography, Card, CardContent,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
@@ -15,13 +15,9 @@ import {
   KeyboardArrowLeft, KeyboardArrowRight,
 } from "@mui/icons-material";
 
-import CssBaseline from "@mui/material/CssBaseline";
 import { useDashboard } from '../../useContext';
-import { getCountIndicator, getTableData } from '../../api';
-import { _assembleOrFilterGeneric } from '../../utils';
-
-import NewHeader from '../components/Header'
 import Indicators from "./Indicators";
+
 function TablePaginationActions(props) {
   const { count, page, rowsPerPage, onPageChange } = props
 
