@@ -8,20 +8,20 @@ const urlS42YapiMat = "gfexs42Destination/sap/opu/odata/sap/YAPI_GFEX_RECMAT_O2"
 const urlS42YapiInfoTec = "gfexs42Destination/sap/opu/odata/sap/YAPI_GFEX_IT_APPROVAL_O2";
 
 const instanceCap = axios.create({
-  baseURL:urlCapGfex
+  baseURL: urlCapGfex
 });
 
 const instance = axios.create({
-  baseURL:urlS42Yesb
+  baseURL: urlS42Yesb
 });
 const instanceYapiSup = axios.create({
-  baseURL:urlS42YapiSup
+  baseURL: urlS42YapiSup
 });
 const instanceYapiMat = axios.create({
-  baseURL:urlS42YapiMat
+  baseURL: urlS42YapiMat
 });
 
-export const getTableData = async (params = { $top: 100, $skip: 0, filter:'' }) => {
+export const getTableData = async (params = { $top: 100, $skip: 0, filter: '' }) => {
   const url = `/ConsumerMaterial?$filter=${params.filter}`
   const { data } = await instanceCap.get(url);
   return data.value;
@@ -47,7 +47,7 @@ export const getDataSugg = async () => {
 export const getUserHana = async (user) => {
   const url = `/SuppliersGFEX('${user}')`;
   const { data } = await instanceCap.get(url);
-  return  data;
+  return data;
 };
 
 
@@ -61,27 +61,35 @@ export const postRecogMat = async (oEntry) => {
   }
 }
 
-export const getTableCount = async (params = { $filter:'' }) => {
-  const { data } = await instanceCap.get("/ConsumerMaterial/$count?sap-client=220",{
+export const putRecogMat  = async (oEntry) => {
+
+  try {
+    const response = await instanceCap.patch(`/ReconhecimentoMaterial('${oEntry.Nm}')?sap-client=220`, {
+      ...oEntry
+    });
+    console.log('OData request successful:', response.data);
+  } catch (error) {
+    console.error('Error making OData request:', error);
+  }
+}
+
+export const getTableCount = async (params = { $filter: '' }) => {
+  const { data } = await instanceCap.get("/ConsumerMaterial/$count?sap-client=220", {
     params
   });
   return data;
 };
 
-export const getUserAzureAriba = async () => {
+export const getUserLogged= async () => {
   const url = `/GetAutorization`;
   const { data } = await instanceCap.get(url);
-  return  data;
+  return data;
 };
 
-export const getUserLogged = async () => {
- 
-  const { data } = await axios.get(userApi);
-  return data.d?.results || data.d || data.value;
-};
+
 
 export const getUserLoggedWithAttr = async () => {
-  const { data } = await axios.get(userApi,"/attributes");
+  const { data } = await axios.get(userApi, "/attributes");
   return data.d?.results || data.d || data.value;
 };
 
@@ -92,6 +100,37 @@ export const getTecInfoMaterial = async ({ filter, expand }) => {
   return data.d?.results || data.d || data.value;
 };
 
+export const postInfoTecMain = async (oEntry) => {
+
+  try {
+    const response = await instanceCap.post(`/MainApproval?sap-client=220`, {
+      ...oEntry
+    });
+    return response
+  } catch (error) {
+    console.error('Error making OData request:', error);
+  }
+}
+export const putInfoTecMain = async (oEntry) => {
+
+  try {
+    const response = await instanceCap.put(`/MainApproval(IdModificacao='${oEntry.IdModificacao}')?sap-client=220`, {
+      ...oEntry
+    });
+    console.log('OData request successful:', response.data);
+  } catch (error) {
+    console.error('Error making OData request:', error);
+  }
+}
+export const getTecInfoMain = async (params = { $top: 100, $skip: 0, filter: '' }) => {
+  try {
+    const url = `/MainApproval?$filter=${params.filter}`
+    const { data } = await instanceCap.get(url);
+    return data.value;
+  } catch (error) {
+    console.error('Error making OData request:', error);
+  }
+};
 export const postInfoTecCarac = async (oEntry) => {
 
   try {
@@ -115,19 +154,9 @@ export const putInfoTec = async (oEntry) => {
   }
 }
 
-export const putMaterial = async (oEntry) => {
-  
-  try {
-    const response = await instanceCap.patch(`/ReconhecimentoMaterial('${oEntry.Nm}')?sap-client=220`, {
-      ...oEntry
-    });
-    console.log('OData request successful:', response.data);
-  } catch (error) {
-    console.error('Error making OData request:', error);
-  }
-}
 
-export const getUsersS4Data = async (params = {  }) => {
+
+export const getUsersS4Data = async (params = {}) => {
   const { data } = await instance.get("/CentralConsumer?sap-client=220", {
     params
   });

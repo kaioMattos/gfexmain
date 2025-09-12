@@ -185,49 +185,7 @@ export default function Indicators({ dataIndicator }) {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12} sm={6} md={3}>
-        <Card>
-          <CardContent sx={{ p: 3 }}>
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
-              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, fontSize:'0.975rem' }}>
-                Ata de Preço
-              </Typography>
-              <AttachMoney sx={{ color: "text.secondary", width: 32, height: 32 }} />
-            </Box>
-            <Typography variant="h4" sx={{ color: "success.main", mb: 1, fontWeight: 700 }}>
-              {dataIndicator.ataPreco.filled}
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, mb: 2 }}>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, marginTop: '16%' }}>
-                <PendingActions sx={{ fontSize: 14, color: "warning.main" }} />
-                <Typography variant="body2" sx={{ color: "warning.main", fontWeight: 500 }}>
-                  {dataIndicator.ataPreco.notFilled} Pendentes
-                </Typography>
-              </Box>
-            </Box>
-            <Box sx={{ display: "flex", gap: 1 }}>
-            <Tooltip title="Preenchidos">
-              <Chip
-                label={`${Math.round((dataIndicator.ataPreco.filled / dataIndicator.ataPreco.total) * 100)}%`}
-                size="small"
-                variant="outlined"
-                sx={{ bgcolor: "success.light", color: "white", borderColor: "success.main" }}
-              />
-              </Tooltip>
-              {/* {indicators.ataPreco.notFilled > 0 && ( */}
-              <Tooltip title="Pendente avalidação">
-              <Chip
-                label={`${Math.round((dataIndicator.ataPreco.notFilled / dataIndicator.ataPreco.total) * 100)}%`}
-                size="small"
-                variant="outlined"
-                sx={{ bgcolor: "warning.light", color: "white", borderColor: "warning.main" }}
-              />
-              </Tooltip>
-              {/* )} */}
-            </Box>
-          </CardContent>
-        </Card>
-      </Grid>
+      
     </Grid>
   );
 }

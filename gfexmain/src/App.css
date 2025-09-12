@@ -60,3 +60,13 @@
 .css-1g6aryt:last-child{
   padding-bottom: 1px !important;
 }
+
+.css-96k7ek:last-child{
+    padding-bottom: 5px !important;
+}
+
+.initLoading {
+  padding-top: 15%;
+  padding-inline: 6%;
+  text-align: center;
+}

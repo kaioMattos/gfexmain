@@ -7,7 +7,7 @@ import { getTecInfoMaterial } from "../../api";
 
 const filter = createFilterOptions();
 
-export default function AutoCompleteInfoTec({ data }) {
+export default function AutoCompleteInfoTec({ data, eChange }) {
   const [value, setValue] = useState(null);
   const [loading, setLoading] = useState(false);
   const { cacheFieldValues, setCacheFieldValues,
@@ -49,6 +49,7 @@ export default function AutoCompleteInfoTec({ data }) {
   }, []);
   return (
     <Autocomplete
+    sx={{ mb: 1, flexGrow: 1}}
       disabled = {data.Agreed}
       loading={loading}
       value={value}
@@ -74,6 +75,7 @@ export default function AutoCompleteInfoTec({ data }) {
         .filter((item)=>item.Carac === data.Carac && item.PosCarac === data.PosCarac)[0]
         oValue['NovoValor'] = valuePropous.PosValor
         setFieldValueMatSelect(oValue);
+        eChange(data, valuePropous.PosValor)
 
       }}
       filterOptions={(options, params) => {
@@ -117,7 +119,8 @@ export default function AutoCompleteInfoTec({ data }) {
         );
       }}
       renderInput={(params) => (
-        <TextField sx={{width: '80%'}}{...params} placeholder="Pesquisar" />
+        <TextField                                         size="small"
+ sx={{ mb: 1, flexGrow: 1,}}{...params} placeholder="Pesquisar" />
       )}
     />
   );

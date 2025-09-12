@@ -1,49 +1,58 @@
-import React, { useState, useEffect } from 'react';
+import { Box, Typography, Link, Paper } from '@mui/material';
 
-const TelaErroPermissao = (textTitle, textBody) => {
-  
-
+const TelaErroPermissao = ({ textTitle = "Falta de Permissão", textBody }) => {
   return (
-    <div style={styles.container}>
-        <div style={styles.erroContainer}>
-          <h1 style={styles.mensagemErro}>Falta de Permissão</h1>
-          <p style={styles.descricaoErro}>
-            Você não tem permissão para acessar este recurso. Por favor, entre em
-            contato com o administrador ou acompanhe a solicitação no 
-          </p>
-          <a href="https://devcfpb.launchpad.cfapps.br10.hana.ondemand.com/5733c7d4-3ca3-4cfe-b2f8-9e81d2bcbb26.gfexpetrobrasfornmanager.gfexpetrobrasfornmanager-0.0.7/index.html" 
-          target="_blank" rel="noopener noreferrer">Wizard Guide GFEX</a>
-        </div>
-    </div>
+    <Box
+      sx={{
+        height: '100vh',
+        bgcolor: 'background.default',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        p: 2,
+      }}
+      role="alert"
+      aria-live="assertive"
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          p: 4,
+          maxWidth: 420,
+          width: '100%',
+          textAlign: 'center',
+          bgcolor:  '#f8d7da',
+          color: (theme) => theme.palette.error.main,
+          borderRadius: 2,
+          border: (theme) => `2px solid ${theme.palette.error.main}`,
+        }}
+      >
+        <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
+          {textTitle}
+        </Typography>
+        <Typography variant="body1" mb={2} sx={{ lineHeight: 1.6 }}>
+          {textBody ? (
+            textBody
+          ) : (
+            <>
+              Você não tem permissão para acessar este recurso. Por favor, entre em contato com o administrador ou acompanhe sua {' '}
+              <Link
+                href="https://devcfpb.launchpad.cfapps.br10.hana.ondemand.com/5733c7d4-3ca3-4cfe-b2f8-9e81d2bcbb26.gfexpetrobrasfornmanager.gfexpetrobrasfornmanager-0.0.7/index.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                underline="hover"
+                color="info.main" 
+                fontWeight="medium"
+              >
+                Solicitação de Acesso GFEX
+              </Link>
+              .
+            </>
+          )}
+        </Typography>
+      </Paper>
+    </Box>
   );
-};
-
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    backgroundColor: '#f4f4f4',
-  },
-  erroContainer: {
-    textAlign: 'center',
-    backgroundColor: '#f8d7da',
-    padding: '20px',
-    borderRadius: '8px',
-    border: '1px solid #f5c6cb',
-    color: '#721c24',
-    maxWidth: '400px',
-    width: '100%',
-  },
-  mensagemErro: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-  },
-  descricaoErro: {
-    fontSize: '16px',
-    marginTop: '10px',
-  },
 };
 
 export default TelaErroPermissao;

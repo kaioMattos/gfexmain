@@ -1,7 +1,7 @@
 const _assembleFilterGeneric = (propFilter, value) => (` ${propFilter} eq '${value}'`);
 
 const _assembleOrFilterGeneric = (objHana, propOfilter, propObjHana, propItem) => {
-  const aValues = JSON.parse(objHana[propObjHana]);
+  const aValues = objHana[propObjHana];
   const aFiltersValues = aValues.filter((item) => (item.status))
     .map((item) => (`${_assembleFilterGeneric(propOfilter, item[propItem])} or`));
   return aFiltersValues.join('').slice(0, -3);

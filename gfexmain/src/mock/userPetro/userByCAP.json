@@ -1,0 +1,4 @@
+{
+  "@odata.context": "$metadata#Edm.String",
+  "value": "{\"email\":\"kaio.mattos.prestserv@petrobras.com.br\",\"attributes\":{\"xs.saml.groups\":[\"Petrobras\"],\"xs.rolecollections\":[\"YSSF_Monitor_Replicacao\",\"_DMSDEV\",\"Petrobras Employee\",\"ZF_EMPREGADO\",\"_BASDEV\",\"_LHPDEV\",\"fornecedor_gfex\",\"MembrosPetrobras\"]}}"
+}

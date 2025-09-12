@@ -1,38 +1,29 @@
 import { Route, Routes } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { getUserHana, getUserAzureAriba } from "./api";
+import { getUserLogged } from "./api";
 import { useDashboard } from './useContext';
 import Header from './components/Header'
 import Marketing from './pages/Marketing';
 import Report from './pages/Report'
-import TecInfo from './pages/TecInfo';
-import ValidarTecInfo from './pages/TecInfo/ValidarTecInfo';
 import TelaErroPermissao from './pages/NotPermission';
 import "./App.css";
 import theme from './StylesTheme';
 import { CssBaseline, Box, CircularProgress } from "@mui/material";
-import MaterialManagementPlatform from './pages/Home';
-import InformacoesTecnicas from './pages/InfoTec';
-import mockUser from './mock/user.json'
-import mockUserAriba from './mock/userAriba.json'
-
+import HomePage from './pages/Home';
+import TecInfoPage from './pages/TecInfo';
+import mockUserPetro from './mock/userPetro/userByCAP.json'
+import mockUserSupplier from './mock/userSupplier/TesteBoxfile/userByCAP.json'
 const App = () => {
 
   const loadInitData = async (isFirstLoad) => {
     setLoadingPage(true);
-    // const resultUserAriba = await getUserAzureAriba();
-    const resultUserAriba = mockUserAriba;
-    const userAzure = JSON.parse(resultUserAriba.value);
-  
-    const groups = userAzure.attributes.hasOwnProperty('xs.saml.groups')?
-      userAzure.attributes['xs.saml.groups']:[]
-    const userPetro = groups.includes('Petrobras');
-    const userS4 = !userPetro ? await getUserHana(process.env.REACT_APP_SUPPLIER_TEST) : {};
-    // const usersS4 = mockUser;
+    const resultUser = await getUserLogged();
+    // const resultUserAriba = mockUserSupplier;
+    const user = JSON.parse(resultUser.value);
     try {
       if (isFirstLoad) {
-        await setSupplierContext(userS4, userAzure);
+        await setSupplierContext(user);
       }
     } finally {
       setLoadingPage(false);
@@ -67,10 +58,9 @@ const App = () => {
                   <>
                     <Routes>
                       <Route path='/index.html' element={
-                        supplier.userPetro?<Report />:<MaterialManagementPlatform />
+                        supplier.userPetro?<Report />:<HomePage />
                       } />
-                      <Route path='/TecInfo' element={<TecInfo />} />
-                      <Route path='/ValidarDadosTec' element={<ValidarTecInfo />} />
+                      <Route path='/TecInfo' element={<TecInfoPage />} />
                       <Route path='/Marketing' element={<Marketing />} />
                       <Route path='/Report' element={<Report />} />
                     </Routes>
@@ -85,6 +75,5 @@ const App = () => {
     </ThemeProvider>
   )
 }
-
 
 export default App;

@@ -1,21 +1,17 @@
 import { useState, useEffect } from "react"
 import {
-  Typography, Card, CardContent, TextField, Box,
-  MenuItem, FormControl, InputLabel,
+  Typography, Card, CardContent, Box,
   Container, Grid,
   MenuItem as MenuItemComponent,
-  InputAdornment, Button, CircularProgress
+  Button, CircularProgress
 } from "@mui/material";
 import {
-  Search,
   Download,
-  CorporateFare,
   Engineering
 } from "@mui/icons-material";
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import FornecedorCard from './FornecedorCard';
-import { getUserHana, getCountIndSugg, getDataSugg } from "../../api";
+import { getCountIndSugg, getDataSugg } from "../../api";
 import { _assembleOrFilterGeneric } from '../../utils';
 
 
@@ -69,7 +65,6 @@ export default function ReportPage() {
     }, [])
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      {/* Filtros e Busca */}
       <Card sx={{ mb: 3 }}>
         <CardContent sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>

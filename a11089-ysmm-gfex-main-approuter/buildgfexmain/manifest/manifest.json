@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "GFEx",
+  "name": "GFEx - Gestão de Fornecedores Exclusivos",
   "icons": [
     {
       "src": "favicon.ico",

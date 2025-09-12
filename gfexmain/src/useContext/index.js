@@ -58,14 +58,11 @@ export const DashboardContextProvider = (props) => {
       fields:oEntry
     }));
   }
-  const setSupplierContext = (oSupplier, oSupplierAriba) => {
-    const userPetro = (Object.keys(oSupplier).length === 0)
-    const permission = oSupplier !== undefined ? oSupplier.validatedPetro : 'nao_cadastrado'
+  const setSupplierContext = (oSupplierAriba) => {
+    const employeePetro = oSupplierAriba.attributes["xs.rolecollections"].includes('MembrosPetrobras');
     setSupplier({ 
-      ...oSupplier,
       ...oSupplierAriba, 
-      validatedPetro: permission,
-      userPetro:userPetro
+      userPetro:employeePetro
      });
   }
   const setSelectedMaterialsContext = (aValues) => {
@@ -77,9 +74,10 @@ export const DashboardContextProvider = (props) => {
     try {
       setLoadingPage(true);
       if (Object.keys(supplier).length > 1 && !supplier.userPetro) {
+        const sCnpj = _assembleOrFilterGeneric(supplier, 'fornecedorInex', 'cnpj', 'lifnr');
         const sFiltersClasses = _assembleOrFilterGeneric(supplier, 'classDesc', 'class', 'class');
         const sFiltersManufactureres = _assembleOrFilterGeneric(supplier, 'mfrnr', 'manufacturer', 'text');
-        const sFilter = `fornecedorInex eq '10097577' and (${sFiltersClasses}) and (${sFiltersManufactureres})`
+        const sFilter = ` (${sCnpj}) and (${sFiltersClasses}) and (${sFiltersManufactureres})`
         const countRecog = await getCountIndicator({
           filter: `${sFilter} and NmReconhecido eq 'Comercializo'`
         });

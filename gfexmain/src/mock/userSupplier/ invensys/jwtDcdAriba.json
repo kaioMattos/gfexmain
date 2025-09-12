@@ -1,0 +1,47 @@
+{
+  "jti": "6fd51c0388fc4fa48746d4091d0ac9be",
+  "ext_attr": {
+    "enhancer": "XSUAA",
+    "subaccountid": "53636f10-d5bd-4c78-a821-86724c9ef15f",
+    "zdn": "devcfpb"
+  },
+  "xs.system.attributes": {
+    "xs.rolecollections": [
+      "ysyard-criaragendfornecedor",
+      "satre-fornecedor-display-rc",
+      "YSARB-CONSULTANTE-BTP-EXT",
+      "ysfg-pleito-Supplier",
+      "palma-fornecedor-display-rc",
+      "GestaoPleitosFornecedor",
+      "ysyard-anexardoctostecnicos",
+      "ysyard-criartransportadora",
+      "ysyard-administracao-producao",
+      "Ariba Supplier"
+    ]
+  },
+  "given_name": "invensys_QAS",
+  "xs.user.attributes": {},
+  "family_name": "teste.com",
+  "sub": "0590a7c2-4524-48da-8def-f088321417db",
+  "scope": [
+    "openid"
+  ],
+  "client_id": "sb-gfex!t302",
+  "cid": "sb-gfex!t302",
+  "azp": "sb-gfex!t302",
+  "grant_type": "authorization_code",
+  "user_id": "0590a7c2-4524-48da-8def-f088321417db",
+  "origin": "petrobras.b2c.azure.ariba",
+  "user_name": "c1c62245-fc81-42c9-ad82-a17344c11c52",
+  "email": "invensys_QAS@teste.com",
+  "auth_time": 1757600564,
+  "rev_sig": "f4cd9ea6",
+  "iat": 1757600564,
+  "exp": 1757643764,
+  "iss": "https://devcfpb.authentication.br10.hana.ondemand.com/oauth/token",
+  "zid": "53636f10-d5bd-4c78-a821-86724c9ef15f",
+  "aud": [
+    "sb-gfex!t302",
+    "openid"
+  ]
+}

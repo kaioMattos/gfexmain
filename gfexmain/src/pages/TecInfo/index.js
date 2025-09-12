@@ -1,88 +1,273 @@
-import React, { useEffect, useState } from 'react';
-import { CircularProgress, Typography, Box, Grid } from '@mui/material';
-import { Button } from 'primereact/button';
-import Head from '../../components/head';
-import IndicatorTechInfo from './indicators/TechInfo';
-import { useDashboard } from '../../useContext';
-import TableInfo from '../../components/table/TableInfo';
-import { _assembleOrFilterGeneric } from '../../utils';
-import { LuSearchCheck } from "react-icons/lu";
-import Highlight from '../../components/Highlight';
-import { useNavigate } from 'react-router-dom';
-import "./styles.css";
+import { useState } from "react"
+import {
+  Box,
+  Card,
+  Typography,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Grid,
+  Alert,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Checkbox,
+} from "@mui/material"
+import {
+  CloudUpload,
+  AttachFile,
+  FolderOpen,
+  ContentCopy,
+} from "@mui/icons-material";
 
-const PAGE_SIZE = 200000;
+import MasterPage from './MasterDetail/Master';
+import DetailPage from './MasterDetail/Detail'
 
-const TecInfo = () => {
-  
-  
-  const navigate = useNavigate();
-  const { loadingPage, countIndicators, materials } = useDashboard();
-  
+export default function TecInfoPage() {
 
-  const GridHeaderTable = () => (
-   
-    <Grid>
-      <Button style={{ marginLeft: '10px' }} label="Validar" 
-      onClick={() => navigate('/ValidarDadosTec')}
-      icon={<LuSearchCheck size={20} />} outlined severity="info" aria-label="Search" />
-    </Grid>
-  );
-  useEffect(() => {
-    // loadData();
-  }, []);
+  const [proposedValues, setProposedValues] = useState({})
+  const [attachments, setAttachments] = useState({})
+  const [agreements, setAgreements] = useState({})
+
+  // Estados para modal de anexos
+  const [attachmentModalOpen, setAttachmentModalOpen] = useState(false)
+  const [currentCharacteristic, setCurrentCharacteristic] = useState("")
+  const [replicationModalOpen, setReplicationModalOpen] = useState(false)
+  const [selectedFileForReplication, setSelectedFileForReplication] = useState(null)
+  const [characteristicsForReplication, setCharacteristicsForReplication] = useState([])
+
+
+  const handleFileUpload = (event) => {
+    const files = Array.from(event.target.files || [])
+    if (files.length > 0) {
+      const newFiles = files.map((file) => ({
+        id: Date.now() + Math.random(),
+        name: file.name,
+        size: file.size,
+      }))
+
+      setAttachments((prev) => ({
+        ...prev,
+        [currentCharacteristic]: [...(prev[currentCharacteristic] || []), ...newFiles],
+      }))
+    }
+    setAttachmentModalOpen(false)
+  }
+
+  const handleUseExistingFile = (file, sourceCharacteristic) => {
+    const newFile = {
+      ...file,
+      id: Date.now() + Math.random(),
+    }
+
+    setAttachments((prev) => ({
+      ...prev,
+      [currentCharacteristic]: [...(prev[currentCharacteristic] || []), newFile],
+    }))
+    setAttachmentModalOpen(false)
+  }
+
+  const handleReplicateFile = () => {
+    if (!selectedFileForReplication) return
+
+    characteristicsForReplication.forEach((characteristic) => {
+      const newFile = {
+        ...selectedFileForReplication,
+        id: Date.now() + Math.random(),
+      }
+
+      setAttachments((prev) => ({
+        ...prev,
+        [characteristic]: [...(prev[characteristic] || []), newFile],
+      }))
+    })
+
+    setReplicationModalOpen(false)
+    setSelectedFileForReplication(null)
+    setCharacteristicsForReplication([])
+  }
+
+  // Obter todos os arquivos existentes
+  const getAllExistingFiles = () => {
+    const allFiles = []
+    Object.keys(attachments).forEach((characteristic) => {
+      if (attachments[characteristic]) {
+        attachments[characteristic].forEach((file) => {
+          allFiles.push({ ...file, characteristic })
+        })
+      }
+    })
+    return allFiles
+  }
 
   return (
-    <div className='bodyPage'>
-      <Head title="Informações Técnicas - Gfex" description="Informações Técnicas" />
-      {loadingPage ? (
-        <div className="initLoading">
-          <CircularProgress disableShrink={loadingPage} />
-        </div>
-      ) : (
-       <>
-          <Grid container>
-            <Box sx={{ paddingTop: '5px' }}>
-              <Typography variant='subtitle1' sx={{ color: 'rgb(0,142,145)', textAlign: 'left'}}>              
-                Olá EMERSON,
-              </Typography>
-              <Typography sx={{ color: 'rgb(0,142,145)', textAlign: 'left' }}>
-                Materiais comercializados <Highlight className="destTotalMat">{countIndicators.comercializacao.total}</Highlight>.
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid sx={{ textAlign: 'center', marginTop: '1.5%' }}>
+    <Box sx={{ p: 2, height: "calc(100vh - 60px)", display: "flex", flexDirection: "column" }}>
+      {/* Header */}
+      <Box sx={{ mb: 2 }}>
+        {/* <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
+            Informações Técnicas
+          </Typography> */}
+        <Typography variant="body2" sx={{ color: 'rgb(0,142,145)' }} >
+          Revise e aprove as informações técnicas dos materiais
+        </Typography>
+      </Box>
 
-            <Grid container spacing={3} style={{ marginTop: '1.5%' }}>
-              <Grid item size={12} >
-                <Grid style={{
-                  backgroundColor: 'white',
-                  padding: '1%',
-                  borderRadius: '6px',
-                  minHeight: '100%'
-                }} >
-                  <Grid item size={12}>
-                    <Box>
-                      <Typography sx={{ color: 'black', textAlign: 'left', padding: '8px' }}>
-                        Informações Técnicas
-                      </Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item size={12} style={{ borderTop: '3px solid rgb(0,142,145)', minHeight: '90%' }}>
-                    <Grid style={{ padding: '1%' }}>
-                      <IndicatorTechInfo approved={countIndicators.informacoesTecnicas.approved} revision={countIndicators.informacoesTecnicas.awaitApproval}
-                        notIdentify={countIndicators.informacoesTecnicas.notIdentify} />
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
+      <Box sx={{ display: "flex", gap: 2, flex: 1, minHeight: 0 }}>
+        <MasterPage setProposedValues={setProposedValues} setAttachments={setAttachments} setAgreements={setAgreements} />
+        <DetailPage
+          setAttachmentModalOpen={setAttachmentModalOpen}
+          setCurrentCharacteristic={setCurrentCharacteristic}
+          proposedValues={proposedValues} setProposedValues={setProposedValues}
+          attachments={attachments} setAttachments={setAttachments}
+          agreements={agreements} setAgreements={setAgreements}
+        />
+      </Box>
+
+      {/* Modal de Seleção de Anexo */}
+      <Dialog open={attachmentModalOpen} onClose={() => setAttachmentModalOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>
+          <Typography variant="h6" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <FolderOpen color="primary" />
+            Anexar Arquivo para: {currentCharacteristic}
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <Grid container spacing={3}>
+            {/* Novo Arquivo */}
+            <Grid item xs={12} md={6}>
+              <Card variant="outlined" sx={{ height: "100%", p: 2 }}>
+                <Typography variant="h6" gutterBottom color="primary.main">
+                  📤 Novo Arquivo
+                </Typography>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Fazer upload de um novo arquivo
+                </Typography>
+                <Button variant="contained" component="label" startIcon={<CloudUpload />} fullWidth sx={{ mt: 2 }}>
+                  Selecionar Arquivo
+                  <input
+                    type="file"
+                    hidden
+                    multiple
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xlsx,.xls"
+                    onChange={handleFileUpload}
+                  />
+                </Button>
+              </Card>
+            </Grid>
+
+            {/* Arquivos Existentes */}
+            <Grid item xs={12} md={6}>
+              <Card variant="outlined" sx={{ height: "100%", p: 2 }}>
+                <Typography variant="h6" gutterBottom color="secondary.main">
+                  🔄 Reutilizar Arquivo
+                </Typography>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Usar arquivo já anexado em outra característica
+                </Typography>
+
+                {getAllExistingFiles().length > 0 ? (
+                  <List dense sx={{ maxHeight: 200, overflow: "auto", mt: 1 }}>
+                    {getAllExistingFiles().map((file, index) => (
+                      <ListItem
+                        key={index}
+                        button
+                        onClick={() => handleUseExistingFile(file, file.characteristic)}
+                        sx={{
+                          border: "1px solid #e0e0e0",
+                          borderRadius: 1,
+                          mb: 1,
+                          "&:hover": {
+                            bgcolor: "action.hover",
+                          },
+                        }}
+                      >
+                        <ListItemIcon>
+                          <AttachFile color="secondary" />
+                        </ListItemIcon>
+                        <ListItemText primary={file.name} secondary={`De: ${file.characteristic}`} />
+                      </ListItem>
+                    ))}
+                  </List>
+                ) : (
+                  <Alert severity="info" sx={{ mt: 2 }}>
+                    Nenhum arquivo disponível para reutilização
+                  </Alert>
+                )}
+              </Card>
             </Grid>
           </Grid>
-          <TableInfo materials={materials.filter(item=>(item.NmReconhecido === 'Comercializo'))} loading={loadingPage} 
-          sActionHeader='validar Informações Técnicas'
-           HeaderTable={<GridHeaderTable/>}/>
-        </>)}</div>
-  );
-};
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setAttachmentModalOpen(false)}>Cancelar</Button>
+        </DialogActions>
+      </Dialog>
 
-export default TecInfo;
+      {/* Modal de Replicação */}
+      <Dialog open={replicationModalOpen} onClose={() => setReplicationModalOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>
+          <Typography variant="h6" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <ContentCopy color="primary" />
+            Replicar Arquivo
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" gutterBottom>
+            <strong>Arquivo:</strong> {selectedFileForReplication?.name}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" gutterBottom>
+            Selecione as características que também precisam deste arquivo:
+          </Typography>
+
+          {characteristicsForReplication.length > 0 ? (
+            <List>
+              {Object.keys(proposedValues)
+                .filter((char) => proposedValues[char])
+                .map((characteristic) => {
+                  const hasThisFile = attachments[characteristic]?.some(
+                    (f) => f.name === selectedFileForReplication?.name,
+                  )
+                  if (hasThisFile) return null
+
+                  return (
+                    <ListItem key={characteristic} dense>
+                      <ListItemIcon>
+                        <Checkbox
+                          checked={characteristicsForReplication.includes(characteristic)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setCharacteristicsForReplication((prev) => [...prev, characteristic])
+                            } else {
+                              setCharacteristicsForReplication((prev) => prev.filter((c) => c !== characteristic))
+                            }
+                          }}
+                        />
+                      </ListItemIcon>
+                      <ListItemText primary={characteristic} />
+                    </ListItem>
+                  )
+                })}
+            </List>
+          ) : (
+            <Alert severity="info">
+              Todas as características com propostas já possuem este arquivo ou não há características elegíveis.
+            </Alert>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setReplicationModalOpen(false)}>Cancelar</Button>
+          <Button
+            onClick={handleReplicateFile}
+            variant="contained"
+            disabled={characteristicsForReplication.length === 0}
+          >
+            Replicar para {characteristicsForReplication.length} característica(s)
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+
+  )
+}
