@@ -12,12 +12,15 @@ import logopetrobras from '../../assets/logopetrobras.png';
 import logoSimpleGfex from '../../assets/logoSimpleGfex.png';
 import UserInfoModal from '../../components/modal/UserInfo';
 import { useDashboard } from '../../useContext';
+import { useAuth } from '../../useContext/AuthContext';
+
 
 
 export default function AppBarTop({value:{ setDrawerOpen, anchorEl, setAnchorEl}}) {
   const [openUserInfo, setopenUserInfo] = useState(false);
    const { supplier } = useDashboard();
- 
+   const { user } = useAuth();
+  console.log(user)
 
    const handleCloseUserInfo = () => {
     setopenUserInfo(false);

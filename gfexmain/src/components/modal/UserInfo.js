@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Modal,
@@ -18,34 +17,21 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 350,           // mais estreita
-  maxHeight: "70vh",    // menos altura
+  width: 350,           
+  maxHeight: "70vh",    
   bgcolor: "background.paper",
   borderRadius: 3,
   boxShadow: 12,
-  p: 3,                 // padding menor
+  p: 3,           
   overflowY: "auto",
   outline: "none",
 };
-
-function stringToColor(string) {
-  let hash = 0;
-  for (let i = 0; i < string.length; i++) {
-    hash = string.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  let color = "#";
-  for (let i = 0; i < 3; i++) {
-    const value = (hash >> (i * 8)) & 0xff;
-    color += ("00" + value.toString(16)).slice(-2);
-  }
-  return color;
-}
 
 function stringAvatar(name) {
   return {
     sx: {
       bgcolor: "secondary.main",
-      width: 48,       // avatar menor
+      width: 48,   
       height: 48,
       fontSize: 24,
       fontWeight: "bold",
@@ -69,12 +55,6 @@ function getFirstAndSecondName(email) {
   return `${firstName} ${secondName}`.trim();
 }
 export default function UserInfoModal({ open, handleClose, data }) {
-  // const user = {
-  //   name: "João Silva",
-  //   email: "joao.silva@email.com",
-  //   groups: ["Finance", "HR", "IT Support"],
-  //   roles: ["Admin", "Editor", "User"],
-  // };
   const formatKey = (key) =>
     key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase());
 
@@ -92,9 +72,7 @@ export default function UserInfoModal({ open, handleClose, data }) {
             <CloseIcon fontSize="small" />
           </IconButton>
         </Box>
-
         <Divider sx={{ mb: 2 }} />
-
         <Grid container spacing={1}>
           {Object.entries(data).map(([key, value]) => {
             if (key !== "email") return null;
@@ -111,7 +89,6 @@ export default function UserInfoModal({ open, handleClose, data }) {
             );
           })}
         </Grid>
-
         {data.attributes['xs.saml.groups']?.length > 0 && (
           <>
             <Divider sx={{ my: 2 }} />

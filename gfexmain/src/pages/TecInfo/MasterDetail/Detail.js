@@ -1,4 +1,3 @@
-import { useState } from "react"
 import {
   Box,
   Card,
@@ -22,7 +21,7 @@ import {
 import AutoCompleteInfoTec from '../../../components/modal/AutoCompleteInfoTec';
 
 import { useDashboard } from '../../../useContext';
-import { putInfoTecMain, postInfoTecMain, postInfoTecCarac, putRecogMat } from '../../../api';
+import { putInfoTecCaracMain, postInfoTecMain, postInfoTecCarac, putRecogMat } from '../../../api';
 import { getDateNow } from '../../../utils';
 
 export default function DetailPage({
@@ -107,7 +106,7 @@ export default function DetailPage({
     let IdModificacao = '';
     try {
       if (selectedMaterialsMastDet.IdModificacao) {
-        const mainInfoUpdated = await putInfoTecMain({
+        const mainInfoUpdated = await putInfoTecCaracMain({
           IdModificacao: selectedMaterialsMastDet.IdModificacao,
           AtualizadoEm: getDateNow(),
           ...oEntryMain

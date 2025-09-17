@@ -1,11 +1,13 @@
 import React, { createContext, useState, useContext, useCallback } from 'react';
 import { _assembleOrFilterGeneric } from '../utils';
-import { getCountIndicator, getTableData } from '../api';
+import { getCountIndicator, getMaterial } from '../api';
+import { useAuth } from './AuthContext';
 export const DashboardContext = createContext();
 
 
 export const DashboardContextProvider = (props) => {
-  const [user, setUser] = useState(null);
+  const {user, setUser} = useAuth();
+  // const [user, setUser] = useState(null);
   const [supplier, setSupplier] = useState({ validatedPetro: null });
   const [selectedMaterials, setSelectedMaterials] = useState(null);
   const [selectedMaterialsMastDet, setSelectedMaterialsMastDet] = useState({
@@ -73,10 +75,10 @@ export const DashboardContextProvider = (props) => {
 
     try {
       setLoadingPage(true);
-      if (Object.keys(supplier).length > 1 && !supplier.userPetro) {
-        const sCnpj = _assembleOrFilterGeneric(supplier, 'fornecedorInex', 'cnpj', 'lifnr');
-        const sFiltersClasses = _assembleOrFilterGeneric(supplier, 'classDesc', 'class', 'class');
-        const sFiltersManufactureres = _assembleOrFilterGeneric(supplier, 'mfrnr', 'manufacturer', 'text');
+      if (Object.keys(user).length > 1 && user.profileType === 'fornecedor' && user.isRegistered) {
+        const sCnpj = _assembleOrFilterGeneric(user.infoS4H, 'fornecedorInex', 'cnpj', 'lifnr');
+        const sFiltersClasses = _assembleOrFilterGeneric(user.infoS4H, 'classDesc', 'class', 'class');
+        const sFiltersManufactureres = _assembleOrFilterGeneric(user.infoS4H, 'mfrnr', 'manufacturer', 'text');
         const sFilter = ` (${sCnpj}) and (${sFiltersClasses}) and (${sFiltersManufactureres})`
         const countRecog = await getCountIndicator({
           filter: `${sFilter} and NmReconhecido eq 'Comercializo'`
@@ -130,7 +132,7 @@ export const DashboardContextProvider = (props) => {
         });
         const order = { 'Comercializo': 1, 'Não Comercializo': 2, 'Falta Identificação': 3 };
         
-        const aResultMaterials = await getTableData({
+        const aResultMaterials = await getMaterial({
           $top: 200000,
           filter: sFilter
         });

@@ -3,11 +3,10 @@ import {
   Paper,
   Chip, Box,
   IconButton,
-  MenuItem as MenuItemComponent,
   TablePagination,
 } from "@mui/material"
 import {
-  Menu as MenuIcon, FirstPage, LastPage,
+  FirstPage, LastPage,
   KeyboardArrowLeft, KeyboardArrowRight
 } from "@mui/icons-material";
 
