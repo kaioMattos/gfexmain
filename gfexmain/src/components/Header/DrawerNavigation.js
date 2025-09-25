@@ -8,16 +8,15 @@ import {
   Dashboard, Inventory, Assignment, Engineering, Business, TableChart
 } from "@mui/icons-material";
 import { useNavigate } from 'react-router-dom';
-import { useDashboard } from '../../useContext';
+import { useAuth } from '../../useContext/AuthContext';
 
 export default function DrawerNavigation({ value: { drawerOpen, setDrawerOpen, currentPage, setCurrentPage } }) {
   // Itens do menu de navegação
   const navigate = useNavigate();
   const [navigationItems, setNavigationItems] = useState([])
-  const { supplier } = useDashboard();
+   const { user } = useAuth();
 
   const handleNavigationClick = (item) => {
-    console.log(item)
     if (item.path === '/contratos') {
       window.open('https://devcfpb.launchpad.cfapps.br10.hana.ondemand.com/d838ab8c-4fdf-4b31-8c9b-f026d60c7c7f.a11089ysmmgfexminutcont.a11089ysmmgfexminutcont-0.0.2/index.html', '_blank');
     } else {
@@ -28,7 +27,7 @@ export default function DrawerNavigation({ value: { drawerOpen, setDrawerOpen, c
   }
   const getItemsDrawer = () => {
     let items = []
-    if (supplier.userPetro) {
+    if (user.profileType === 'petrobras') {
       items = [{ text: "Relatório", icon: <TableChart />, path: "/Report" }]
     } else {
       items = [

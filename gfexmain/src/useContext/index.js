@@ -4,11 +4,8 @@ import { getCountIndicator, getMaterial } from '../api';
 import { useAuth } from './AuthContext';
 export const DashboardContext = createContext();
 
-
 export const DashboardContextProvider = (props) => {
   const {user, setUser} = useAuth();
-  // const [user, setUser] = useState(null);
-  const [supplier, setSupplier] = useState({ validatedPetro: null });
   const [selectedMaterials, setSelectedMaterials] = useState(null);
   const [selectedMaterialsMastDet, setSelectedMaterialsMastDet] = useState({
     matnr: null, fields: [],
@@ -60,13 +57,7 @@ export const DashboardContextProvider = (props) => {
       fields:oEntry
     }));
   }
-  const setSupplierContext = (oSupplierAriba) => {
-    const employeePetro = oSupplierAriba.attributes["xs.rolecollections"].includes('MembrosPetrobras');
-    setSupplier({ 
-      ...oSupplierAriba, 
-      userPetro:employeePetro
-     });
-  }
+
   const setSelectedMaterialsContext = (aValues) => {
     setSelectedMaterials(aValues);
   }
@@ -160,7 +151,7 @@ export const DashboardContextProvider = (props) => {
 
 
   return <DashboardContext.Provider value={{
-    user, supplier, loadingPage, countIndicators, materials, setSupplierContext, setLoadingPage,
+    user, loadingPage, countIndicators, materials, setLoadingPage,
     selectedMaterials, setSelectedMaterialsContext, selectedMaterialsMastDet,
     setSelectedMaterialsMastDet, cacheFieldValues, setCacheFieldValues, setFieldValueMatSelect,
     loadData, setAFieldsValueMatSelect, setUser

@@ -1,4 +1,4 @@
-import { Box, Typography, Link, Paper } from '@mui/material';
+import { Box, Typography, Link, Paper } from '@mui/material'; 
 
 const TelaErroPermissao = ({ textTitle = "Falta de Permissão", textBody }) => {
   return (

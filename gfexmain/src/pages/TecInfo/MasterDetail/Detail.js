@@ -112,10 +112,8 @@ export default function DetailPage({
           ...oEntryMain
         });
         IdModificacao = selectedMaterialsMastDet.IdModificacao
-        console.log(mainInfoUpdated)
       } else {
         const mainInfoCreated = await postInfoTecMain(oEntryMain);
-        console.log(mainInfoCreated);
         IdModificacao = mainInfoCreated.data.IdModificacao;
       }
       // aPromises.push(...oEntryMain.map((oEntry) => (postInfoTecMain(oEntry))));

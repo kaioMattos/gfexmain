@@ -14,7 +14,7 @@ import { saveAs } from 'file-saver';
 import { getCountIndSugg, getDataSugg } from "../../api";
 import { _assembleOrFilterGeneric } from '../../utils';
 import MetaUrl from '../../components/MetaUrl';
-
+import Header from '../../components/Header'
 
 export default function ReportPage() {
 
@@ -43,7 +43,6 @@ export default function ReportPage() {
     ).map(str => JSON.parse(str));
 
     const aMaterials = unique;
-    console.log(aMaterials);
     const aMaterialsRemap = aMaterials.map((item) => ({
       'Nm': item.matnr,
       'Texto Breve': item.maktx,
@@ -65,6 +64,8 @@ export default function ReportPage() {
       getCountMaterial();    
     }, [])
   return (
+    <>
+          <Header />
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <MetaUrl title="GFEx - Relatório Informações Técnicas" description="Gestão de Fornecedores Exclusivos" />
       <Card sx={{ mb: 3 }}>
@@ -104,5 +105,6 @@ export default function ReportPage() {
         </Typography>
       )}
     </Container>
+    </>
   )
 }

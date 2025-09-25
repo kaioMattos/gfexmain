@@ -117,3 +117,64 @@ export const putInfoTecCarac = async (oEntry) => {
     console.error('Error making OData request:', error);
   }
 }
+
+export const postSupplier = async (oEntry) => {
+
+  try {
+    const response = await instanceCap.post(`/SuppliersGFEX?sap-client=220`, {
+      ...oEntry
+    });
+    return response
+  } catch (error) {
+    console.error('Error making OData request:', error);
+  }
+}
+
+export const putSupplier = async (oEntry) => {
+
+  try {
+    const response = await instanceCap.put(`/SuppliersGFEX('${oEntry.eMail}')?sap-client=220`, {
+      ...oEntry
+    });
+    console.log('OData request successful:', response.data);
+  } catch (error) {
+    console.error('Error making OData request:', error);
+  }
+}
+
+export const postExclusivityLetter = async (oEntry) => {
+console.log(oEntry)
+  try {
+    const response = await axios.post(`/gfexDestination/uploadDocument`, oEntry);
+    return response
+  } catch (error) {
+    console.error('Error making OData request:', error);
+  }
+}
+
+export const deleteExclusivityLetter = async (oEntry) => {
+
+  try {
+    const response = await instanceCap.delete(`/ExclusiveCardGFEX(guid'${oEntry.id}')?sap-client=220`, {
+      ...oEntry
+    });
+    console.log('OData request successful:', response.data);
+  } catch (error) {
+    console.error('Error making OData request:', error);
+  }
+}
+
+export const getSupplier = async ({filter}) => {
+  const { data } = await instanceCap.get(`/CentralConsumer?$filter=${filter}`);
+  return data.value[0]
+};
+export const getManufacturer = async ({filter, expand}) => {
+  const { data } = await instanceCap.get(`/ManufacturerMaterial?$filter=${filter}&$expand=${expand}`);
+  return data.value
+};
+
+export const getClass = async ({filter}) => {
+  const { data } = await instanceCap.get(`/MaterialClass?$filter=${filter}`);
+
+  return data.d?.results || data.d || data.value;
+};

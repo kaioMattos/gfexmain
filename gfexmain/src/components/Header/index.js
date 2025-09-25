@@ -2,7 +2,7 @@ import AppBarTop from "./AppBarTop";
 import DrawerNavigation from "./DrawerNavigation";
 import { useState } from "react"
 
-export default function Header() {
+export default function Header({typeHeader}) {
 
   // Estados da UI
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -11,7 +11,8 @@ export default function Header() {
   
   return (
    <>
-   <AppBarTop value={{drawerOpen,setDrawerOpen,anchorEl,setAnchorEl,currentPage,setCurrentPage}}/>
+   <AppBarTop typeHeader={typeHeader} value={{drawerOpen,setDrawerOpen,anchorEl,setAnchorEl,currentPage,setCurrentPage}}/>
+   
    <DrawerNavigation value={{drawerOpen,setDrawerOpen,anchorEl,setAnchorEl,currentPage,setCurrentPage}}/>
    </>
   );
