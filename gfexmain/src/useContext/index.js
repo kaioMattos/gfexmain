@@ -20,12 +20,6 @@ export const DashboardContextProvider = (props) => {
       notFilled: 0,
       total: 0
     },
-    minutaContratual: {
-      agree: 0,
-      notAgree: 0,
-      notIdentify: 0,
-      total: 0
-    },
     informacoesTecnicas: {
       approved: 0,
       notIdentify: 0,
@@ -101,12 +95,6 @@ export const DashboardContextProvider = (props) => {
             filled: countPriceAta,
             notFilled: countPriceAtaNeedToFill,
             total: countPriceAta + countPriceAtaNeedToFill
-          },
-          minutaContratual: {
-            agree: 0,
-            notAgree: 0,
-            notIdentify: 0,
-            total: 1
           },
           informacoesTecnicas: {
             approved: countTecInfo,

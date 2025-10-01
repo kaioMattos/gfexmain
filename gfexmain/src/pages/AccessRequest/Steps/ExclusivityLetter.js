@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import CustomDialog from '../../../components/modal/ModalAccess';
 import { v4 as uuidv4 } from 'uuid';
 import isEqual from 'lodash/isEqual';
 import { Grid, Button, TableCell, tableCellClasses, Alert } from '@mui/material';
@@ -41,13 +42,10 @@ export default function ExclusivityLetterForm() {
   console.log("Estado atual de supplier no render:", user); // <--- Adicione esta linha
   console.log("Estado atual de user.infoS4H.exclusivityLetter no render:", user.infoS4H.exclusivityLetter);
 
-
-  useEffect(() => {
-    window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: 'smooth'
-    });
-  }, []);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
+  const [dialogColor, setDialogColor] = useState("success");
+  const [dialogIcon, setDialogIcon] = useState("");
 
   // NOVO useEffect para recalcular o activeNextDisabled
   useEffect(() => {
@@ -77,6 +75,13 @@ export default function ExclusivityLetterForm() {
     if (!oFile) {
         console.log("Nenhum arquivo selecionado.");
         return;
+    }
+    if (oFile.type !== "application/pdf") {
+      setDialogMessage("Por favor, selecione apenas arquivos PDF.");
+      setDialogColor("red");
+      setDialogOpen(true);
+      setDialogIcon("error");
+      return;
     }
     
     const sFileBase64 = await readFile(oFile);
@@ -274,7 +279,7 @@ export default function ExclusivityLetterForm() {
             <VisuallyHiddenInput
                 type="file"
                 accept="application/pdf" // Aceita apenas arquivos PDF
-                onChange={(event) => addFile(event.target.files, rowData.id)} // <--- AQUI CHAMAMOS O addFile com o ID da linha!
+                onChange={(event) => { addFile(event.target.files, rowData.id); event.target.value = ""; }} // <--- AQUI CHAMAMOS O addFile com o ID da linha!
             />
         </Button>
     );
@@ -300,6 +305,13 @@ export default function ExclusivityLetterForm() {
           </DataTable>
         </div>
       </PrimeReactProvider>
+      <CustomDialog
+        open={dialogOpen}
+        handleClose={() => setDialogOpen(false)}
+        message={dialogMessage}
+        color={dialogColor}
+        icon={dialogIcon}
+      />
     </React.Fragment>
   );
 }

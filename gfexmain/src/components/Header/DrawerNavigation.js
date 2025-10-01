@@ -17,13 +17,11 @@ export default function DrawerNavigation({ value: { drawerOpen, setDrawerOpen, c
    const { user } = useAuth();
 
   const handleNavigationClick = (item) => {
-    if (item.path === '/contratos') {
-      window.open('https://devcfpb.launchpad.cfapps.br10.hana.ondemand.com/d838ab8c-4fdf-4b31-8c9b-f026d60c7c7f.a11089ysmmgfexminutcont.a11089ysmmgfexminutcont-0.0.2/index.html', '_blank');
-    } else {
+   
       setCurrentPage(item.text);
       setDrawerOpen(false);
       navigate(item.path);
-    }
+    
   }
   const getItemsDrawer = () => {
     let items = []
@@ -33,7 +31,6 @@ export default function DrawerNavigation({ value: { drawerOpen, setDrawerOpen, c
       items = [
         { text: "Dashboard", icon: <Dashboard />, path: "/index.html" },
         { text: "Comercialização", icon: <Inventory />, path: "/Marketing" },
-        { text: "Minuta Contratual", icon: <Assignment />, path: "/contratos" },
         { text: "Info. Técnicas", icon: <Engineering />, path: "/TecInfo" }
       ]
     }

@@ -71,7 +71,7 @@ export const wizardStyles = {
   },
   step: {
     '&:hover': {
-      cursor: 'pointer',
+     // cursor: 'pointer',
     },
     width: '10%',
     flex: 'initial',
