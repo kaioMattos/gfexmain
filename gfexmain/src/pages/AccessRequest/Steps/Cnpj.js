@@ -18,13 +18,6 @@ export default function CnpjForm() {
   const [state, setState] = useState({ error: false, inputCnpj: "" });
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: 'smooth'
-    });
-  }, []);
-
   const assembleManufacturer = async (sCnpj) => {
     const oData = await getManufacturer({
       filter: `DocumentId eq '${sCnpj}'`,

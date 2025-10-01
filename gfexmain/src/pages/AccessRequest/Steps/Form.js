@@ -28,7 +28,7 @@ const wizardStyles = {
   },
   step: {
     '&:hover': {
-      cursor: 'pointer',
+      //cursor: 'pointer',
     },
     width: '10%',
     flex: 'initial',
@@ -273,7 +273,7 @@ export default function FormWizardSteps() {
           {steps.map((label, index) => (
             <Step key={label} className={wizardStyles.step} sx={{
               '&:hover': {
-                cursor: 'pointer',
+                //cursor: 'pointer',
               },
               width: '10%',
               flex: 'initial',

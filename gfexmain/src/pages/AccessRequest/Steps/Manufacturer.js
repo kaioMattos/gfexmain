@@ -12,13 +12,6 @@ export default function ManufacturerForm() {
   const [toggleButton, setToggleButton] = useState(true);
   const { user, setManufacturer, setManufClass, setActiveNext } = useAuth();
 
-  useEffect(() => {
-    window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: 'smooth'
-    });
-  }, []);
-
   const toDoDeleteHandler = (oManufacturer) => {
     const updatedManufac = user.infoS4H.manufacturer.map((manufacturer) => {
       if (oManufacturer.text === manufacturer.text) {

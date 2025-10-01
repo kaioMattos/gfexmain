@@ -11,13 +11,6 @@ export default function ClassForm() {
   const [toggleButton, setToggleButton] = useState(true);
   const { user, setClass, setActiveNext } = useAuth();
 
-  useEffect(() => {
-    window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: 'smooth'
-    });
-  }, []);
-
   const manufacturerNameMap = user.infoS4H.manufacturer.reduce((acc, mfg) => {
       acc[mfg.ManufacturerNumber] = mfg.text; // Assumindo que mfg.text é o nome legível
       return acc;
