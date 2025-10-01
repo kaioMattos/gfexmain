@@ -101,6 +101,7 @@ export const postInfoTecCarac = async (oEntry) => {
     const response = await instanceCap.post(`/CaracApproval?sap-client=220`, {
       ...oEntry
     });
+    return response
   } catch (error) {
     console.error('Error making OData request:', error);
   }

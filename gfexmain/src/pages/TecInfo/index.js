@@ -32,6 +32,8 @@ export default function TecInfoPage() {
         id: Date.now() + Math.random(),
         name: file.name,
         size: file.size,
+        file: file, 
+        type:file.type
       }))
       setAttachments((prev) => ({
         ...prev,

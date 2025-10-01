@@ -5,7 +5,7 @@ import { useAuth } from './AuthContext';
 export const DashboardContext = createContext();
 
 export const DashboardContextProvider = (props) => {
-  const {user, setUser} = useAuth();
+  const { user, setUser } = useAuth();
   const [selectedMaterials, setSelectedMaterials] = useState(null);
   const [selectedMaterialsMastDet, setSelectedMaterialsMastDet] = useState({
     matnr: null, fields: [],
@@ -54,7 +54,7 @@ export const DashboardContextProvider = (props) => {
   const setAFieldsValueMatSelect = (oEntry) => {
     setSelectedMaterialsMastDet(prevState => ({
       ...prevState,
-      fields:oEntry
+      fields: oEntry
     }));
   }
 
@@ -106,7 +106,7 @@ export const DashboardContextProvider = (props) => {
             agree: 0,
             notAgree: 0,
             notIdentify: 0,
-            total: 1 
+            total: 1
           },
           informacoesTecnicas: {
             approved: countTecInfo,
@@ -122,25 +122,29 @@ export const DashboardContextProvider = (props) => {
           }
         });
         const order = { 'Comercializo': 1, 'Não Comercializo': 2, 'Falta Identificação': 3 };
-        
-        const aResultMaterials = await getMaterial({
-          $top: 200000,
-          filter: sFilter
-        });
-         aResultMaterials.map((item, index) => {
-          item.id = index;
-          return item;
-        })
-        aResultMaterials.sort((a, b) => {
-          return order[a.NmReconhecido] - order[b.NmReconhecido];
-        });;
-        setMaterials(aResultMaterials);
-        updateSelectedMaterials(aResultMaterials);
+
+
+       const aResultMaterials = await getMaterial({ $top: 200000, filter: sFilter });
+
+      aResultMaterials.forEach((item, index) => {
+        item.id = index;
+      });
+
+      aResultMaterials.sort((a, b) => {
+        const order = { 'Comercializo': 1, 'Não Comercializo': 2, 'Falta Identificação': 3 };
+        return order[a.NmReconhecido] - order[b.NmReconhecido];
+      });
+
+      setMaterials(aResultMaterials);
+
+      updateSelectedMaterials(aResultMaterials);
+
+      return aResultMaterials;  // **ADICIONAR ESSA LINHA**
       }
     } finally {
       setLoadingPage(false);
     }
-  })
+  }, [user])
 
   const updateSelectedMaterials = (aEntry) => {
     const aSelectedMaterials = selectedMaterials

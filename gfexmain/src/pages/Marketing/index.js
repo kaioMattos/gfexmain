@@ -17,7 +17,6 @@ import Header from '../../components/Header'
 export default function Marketing() {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(25)
-  const [materials_, setMaterials_] = useState([])
   const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(false)
   const [openDialogNotRecog, setOpenDialogNotRecog] = useState(false);
@@ -45,99 +44,89 @@ export default function Marketing() {
     if (status === 'Não Comercializo') return setOpenDialogNotRecog(true);
     if (selectedMaterials.length === 0) return;
 
-    let aPromises = [];
     const recog = status === 'Comercializo' ? 'CMR' : 'NCM';
     const priceAta = status === 'Comercializo' ? 'FPR' : 'NAP';
     const tecInfo = status === 'Comercializo' ? 'FVL' : 'NAP';
-    const { postRecog, putRecog } = selectedMaterials.reduce((acc, material) => {
-      const oMaterial = materials_.find((item, idx) => (item.id === material))
+
+    // Aqui, usar materials do contexto para garantir dados atualizados
+    const { postRecog, putRecog } = selectedMaterials.reduce((acc, materialId) => {
+      const oMaterial = materials.find(item => item.id === materialId);
+      if (!oMaterial) return acc;
+
       const oEntry = {
-        "Nm": oMaterial.matnr,
-        "DataCriacao": null,
-        "UsuarioCriador": "EMERSON",
-        "NmReconhecido": recog,
-        "AtaPrecoPreenchida": priceAta,
-        "InformacoesTecnicas": tecInfo
-      }
+        Nm: oMaterial.matnr,
+        DataCriacao: null,
+        UsuarioCriador: "EMERSON",
+        NmReconhecido: recog,
+        AtaPrecoPreenchida: priceAta,
+        InformacoesTecnicas: tecInfo
+      };
 
       if (oMaterial.NmReconhecido === 'Falta Identificação') {
-        acc.postRecog.push(oEntry)
+        acc.postRecog.push(oEntry);
       } else {
-        acc.putRecog.push(oEntry)
-
+        acc.putRecog.push(oEntry);
       }
-      return acc
 
-    }, { postRecog: [], putRecog: [] })
-    aPromises = postRecog.map((oEntry) => (postRecogMat(oEntry)));
-    aPromises = putRecog.map((oEntry) => (putRecogMat(oEntry)));
+      return acc;
+    }, { postRecog: [], putRecog: [] });
 
-    await Promise.all(aPromises);
-    loadData();
-    showSnackbar(`Materiais marcados como "${status}"`);
+    const promisesPost = postRecog.map(oEntry => postRecogMat(oEntry));
+    const promisesPut = putRecog.map(oEntry => putRecogMat(oEntry));
+    await Promise.all([...promisesPost, ...promisesPut]);
     setSelectedMaterials([]);
-  }
-
-  const fetchMaterials = async (page, pageSize, filters) => {
-    const allMaterials = materials === null ? [] : materials
-    const filteredMaterials = allMaterials.filter((material) => {
+    await loadData();
+    setPage(0);
+    showSnackbar(`Materiais marcados como "${status}"`);
+  };
+  const [filteredMaterials, setFilteredMaterials] = useState([]);
+  const loadMaterials = useCallback(() => {
+    if (!materials || materials.length === 0) {
+      setFilteredMaterials([]);
+      setTotalCount(0);
+      return;
+    }
+    const filtered = materials.filter((material) => {
       const matchesSearch =
-        !filters.searchTerm ||
-        material.maktx?.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        material.matnr?.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        material.classDesc?.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        material.mfrpn?.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        material.mfrnr?.toLowerCase().includes(filters.searchTerm.toLowerCase());
+        !searchTerm ||
+        material.maktx?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        material.matnr?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        material.classDesc?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        material.mfrpn?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        material.mfrnr?.toLowerCase().includes(searchTerm.toLowerCase());
 
       let matchesStatus = true;
-
-      if (filters.filterRecog === "comercializa") {
+      if (filterRecog === "comercializa") {
         matchesStatus = material.NmReconhecido === "Comercializo";
-      } else if (filters.filterRecog === "nao-comercializa") {
+      } else if (filterRecog === "nao-comercializa") {
         matchesStatus = material.NmReconhecido === "Não Comercializo";
-      } else if (filters.filterRecog === "pendente") {
+      } else if (filterRecog === "pendente") {
         matchesStatus = material.NmReconhecido !== "Comercializo" && material.NmReconhecido !== "Não Comercializo";
       }
-
       return matchesSearch && matchesStatus;
     });
-    const startIndex = page * pageSize
-    const endIndex = startIndex + pageSize
-    const paginatedMaterials = filteredMaterials.slice(startIndex, endIndex)
 
-    return {
-      materials: paginatedMaterials,
-      totalCount: filteredMaterials.length,
-      page,
-      pageSize,
-      totalPages: Math.ceil(filteredMaterials.length / pageSize),
-    }
-  }
+    setTotalCount(filtered.length);
 
-  const loadMaterials = useCallback(async () => {
-    setLoading(true)
+    const startIndex = page * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    const paginated = filtered.slice(startIndex, endIndex);
 
-    try {
-      const result = await fetchMaterials(page, rowsPerPage, {
-        searchTerm,
-        filterRecog,
-      })
-      setMaterials_(result.materials)
-      setTotalCount(result.totalCount)
-    } catch (error) {
-      console.error("Erro ao carregar materiais:", error)
-    } finally {
-      setLoading(false)
-    }
-  }, [page, rowsPerPage, searchTerm, filterRecog])
+    setFilteredMaterials(paginated);
+
+  }, [materials, page, rowsPerPage, searchTerm, filterRecog]);
 
   useEffect(() => {
     loadMaterials();
-  }, [loadMaterials])
+  }, [loadMaterials]);
 
   useEffect(() => {
-    setPage(0)
-  }, [searchTerm, filterRecog])
+    if (!materials) return; 
+
+    loadMaterials(); 
+  }, [materials, page, rowsPerPage, searchTerm, filterRecog]);
+
+
   return (
     <>
       <Header />
@@ -164,7 +153,7 @@ export default function Marketing() {
             <Card>
               <CardContent sx={{ p: 3 }}>
                 <Box sx={{ mb: 3, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <NotRecog open={openDialogNotRecog} onClose={() => handleCloseDialogNotRecog()} dataSelected={selectedMaterials} aMaterials={materials_} />
+                  <NotRecog open={openDialogNotRecog} onClose={() => handleCloseDialogNotRecog()} dataSelected={selectedMaterials} aMaterials={materials} />
 
                   <Box>
                     <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
@@ -224,11 +213,14 @@ export default function Marketing() {
                   </Typography>
                 </Box>
                 <TableMaterial
-                  materials={materials_}
-                  selectedMaterials={selectedMaterials} setSelectedMaterials={setSelectedMaterials}
+                  materials={filteredMaterials}
+                  selectedMaterials={selectedMaterials}
+                  setSelectedMaterials={setSelectedMaterials}
                   totalCount={totalCount}
-                  rowsPerPage={rowsPerPage} setRowsPerPage={setRowsPerPage}
-                  page={page} setPage={setPage}
+                  rowsPerPage={rowsPerPage}
+                  setRowsPerPage={setRowsPerPage}
+                  page={page}
+                  setPage={setPage}
                   isMultSelect={true}
                 />
               </CardContent>

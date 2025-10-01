@@ -21,16 +21,16 @@ import {
 import AutoCompleteInfoTec from '../../../components/modal/AutoCompleteInfoTec';
 
 import { useDashboard } from '../../../useContext';
-import { putInfoTecCaracMain, postInfoTecMain, postInfoTecCarac, putRecogMat } from '../../../api';
+import { putInfoTecCaracMain, postInfoTecMain, postInfoTecCarac, putRecogMat, postExclusivityLetter } from '../../../api';
 import { getDateNow } from '../../../utils';
 
 export default function DetailPage({
-  setAttachmentModalOpen, 
+  setAttachmentModalOpen,
   setCurrentCharacteristic,
   proposedValues, setProposedValues,
   attachments, setAttachments,
   agreements, setAgreements
- }) {
+}) {
   const { selectedMaterialsMastDet, setFieldValueMatSelect, loadData } = useDashboard();
 
   const handleProposedValueChange = (characteristic, value) => {
@@ -87,6 +87,28 @@ export default function DetailPage({
     oValue['Agreed'] = false;
     setFieldValueMatSelect(oValue);
   }
+  const getCaracFromPosCarac = (PosCarac)=>{
+    return selectedMaterialsMastDet.fields.find((item)=>item.PosCarac === PosCarac).Carac
+  }
+  const returnOdocumentFormData = (item) => {
+  const material = item.data;
+  const field = material.NomeCaracDm !== '' ? material.NomeCaracDm : getCaracFromPosCarac(material.PosCarac);
+  const findedAttach = attachments[field]?.[0];
+
+  if (!findedAttach || !findedAttach.file) {
+    console.warn("Arquivo não encontrado ou incompleto:", findedAttach);
+    return null;
+  }
+
+  const formData = new FormData();
+  formData.append('IdItemModificacao', material.IdItemModificacao);
+  // formData.append('file_name', findedAttach.name);
+  // formData.append('mime_type', findedAttach.type);
+  formData.append('file', findedAttach.file);
+  formData.append('typeFile', 'FileInfoTec');
+
+  return formData;
+};
 
 
   const handleSubmitProposal = async () => {
@@ -133,13 +155,20 @@ export default function DetailPage({
             "ValorCaracDm": (item.Carac === 'PartNumber' || item.Carac === 'Fabricante') ? item.NovoValor : ''
           }));
 
-      aPromises.push(...oEntryCarac.map((oEntry) => (postInfoTecCarac(oEntry))));
+      const caracPromises = oEntryCarac.map((oEntry) => postInfoTecCarac(oEntry));
+      const caracResponses = await Promise.all(caracPromises);
+      console.log(caracResponses)
+      const oEntryDocuments = caracResponses.filter((mat)=>(!mat.data.Concorda))
+      .map(returnOdocumentFormData)
+
+      const aPromiseExclusivityLetter = oEntryDocuments.map((oEntry) => (postExclusivityLetter(oEntry)))
+      
       aPromises.push(putRecogMat(oEntryReconhecimento));
     } catch (e) {
 
     } finally {
       await loadData();
-    } 
+    }
     setProposedValues({})
     setAttachments({})
     setAgreements({})
@@ -154,6 +183,28 @@ export default function DetailPage({
   const characteristicsNeedingAttachment = Object.keys(proposedValues).filter(
     (char) => proposedValues[char] && (!attachments[char] || attachments[char].length === 0),
   )
+
+  // 1. Verifica se todas as características estão validadas (todas concordam ou discordam)
+  const allCharacteristicsValidated = selectedMaterialsMastDet.fields.length > 0 &&
+    selectedMaterialsMastDet.fields.every(({ Carac }) => agreements[Carac] !== undefined);
+
+  // 2. Verifica se todas concordaram (todas com "agree")
+  const allAgreed = selectedMaterialsMastDet.fields.length > 0 &&
+    selectedMaterialsMastDet.fields.every(({ Carac }) => agreements[Carac] === "agree");
+
+  // 3. Pega as características discordadas
+  const disagreedChars = Object.entries(agreements)
+    .filter(([_, value]) => value === "disagree")
+    .map(([char]) => char);
+
+  // 4. Verifica se para todas discordadas tem proposta e anexo
+  const allDisagreedHaveProposalAndAttachment = disagreedChars.every((char) =>
+    proposedValues[char] && attachments[char] && attachments[char].length > 0
+  );
+
+  // 5. Habilitar botão enviar se todas concordaram OU se discordou mas propostas + anexos ok
+  const enableSend = allCharacteristicsValidated && (allAgreed || allDisagreedHaveProposalAndAttachment);
+
 
   return (
     <Card sx={{
@@ -514,20 +565,21 @@ export default function DetailPage({
                   )}
                 </Box>
 
-                {/* Botão de envio */}
                 <Button
                   variant="contained"
                   onClick={handleSubmitProposal}
-                  disabled={!allValidated || characteristicsNeedingAttachment.length > 0}
+                  disabled={!enableSend}
                   size="small"
                   sx={{ minWidth: 140, fontSize: "0.8rem", whiteSpace: 'nowrap' }}
                 >
-                  {!allValidated
-                    ? `⏳ Avaliar (${totalCharacteristics - validatedCharacteristics})`
-                    : characteristicsNeedingAttachment.length > 0
-                      ? `📎 Anexar (${characteristicsNeedingAttachment.length})`
-                      : "💾 Enviar"}
+                  {!allCharacteristicsValidated
+                    ? `⏳ Avaliar (${selectedMaterialsMastDet.fields.length - Object.keys(agreements).length})`
+                    : disagreedChars.length > 0 && !allDisagreedHaveProposalAndAttachment
+                      ? `📎 Anexar arquivo`
+                      : "💾 Enviar"
+                  }
                 </Button>
+
               </Box>
             </CardContent>
           )}

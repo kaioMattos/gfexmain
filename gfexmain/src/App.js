@@ -21,8 +21,8 @@ const App = () => {
 
   const loadInitData = async (isFirstLoad) => {
     setLoadPage(true);
-    const resultUser = await getUserLogged();
-    // const resultUser = mockUserSupplier;
+    // const resultUser = await getUserLogged();
+    const resultUser = mockUserSupplier;
     const user = JSON.parse(resultUser.value);
 
     try {

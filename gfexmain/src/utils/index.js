@@ -21,20 +21,19 @@ const getDateNow = () => {
 const getDateIsoString = () => {
   const today = new Date();
   const yyyy = today.getFullYear();
-const mm = String(today.getMonth() + 1).padStart(2, '0');
-const dd = String(today.getDate()).padStart(2, '0');
-const edmDate = `${yyyy}-${mm}-${dd}`; // "2025-07-22"
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  const edmDate = `${yyyy}-${mm}-${dd}`; // "2025-07-22"
   return edmDate
 }
 
-const removeDuplicatesFromArray = (arr)=>{
+const removeDuplicatesFromArray = (arr) => {
   return [...new Set(
-      arr.map(el => JSON.stringify(el))
+    arr.map(el => JSON.stringify(el))
   )].map(e => JSON.parse(e))
 }
-const base64ToBlob = (base64, mimeType) =>{
-      const base64Data = base64.replace(/^data:([^;]+);base64,/, '');
-
+const base64ToBlob = (base64, mimeType) => {
+  const base64Data = base64.replace(/^data:([^;]+);base64,/, '');
   const byteCharacters = atob(base64Data);
   const byteArrays = [];
 
@@ -53,9 +52,9 @@ const base64ToBlob = (base64, mimeType) =>{
   return new Blob(byteArrays, { type: mimeType });
 }
 
-const readFile = (file)=>{
+const readFile = (file) => {
   return new Promise((resolve, reject) => {
-    var fr = new FileReader();  
+    var fr = new FileReader();
     fr.onload = () => {
       resolve(fr.result)
     };
@@ -67,19 +66,20 @@ const getDateNowFrontFormated = (sTime, format) => {
   let sDate = '';
   const oDate = new Date(sTime);
   const year = oDate.getFullYear();
-  const month = (oDate.getMonth()+1) <= 9 ? `0${oDate.getMonth()+1}` : (oDate.getMonth()+1);
+  const month = (oDate.getMonth() + 1) <= 9 ? `0${oDate.getMonth() + 1}` : (oDate.getMonth() + 1);
   const day = oDate.getDate() <= 9 ? `0${oDate.getDate()}` : oDate.getDate();
   const hours = oDate.getHours() <= 9 ? `0${oDate.getHours()}` : oDate.getHours();
   const minutes = oDate.getMinutes() <= 9 ? `0${oDate.getMinutes()}` : oDate.getMinutes();
-  if(format === 'dataAtMinutes'){
+  if (format === 'dataAtMinutes') {
     sDate = `${day}-${month}-${year} ${hours}:${minutes}`
-  }else{
+  } else {
     sDate = `${day}-${month}-${year}`
   }
   return sDate
 }
 
 
-export {_assembleOrFilterGeneric, getDateNow, getDateIsoString, removeDuplicatesFromArray,
+export {
+  _assembleOrFilterGeneric, getDateNow, getDateIsoString, removeDuplicatesFromArray,
   readFile, getDateNowFrontFormated, base64ToBlob
 }

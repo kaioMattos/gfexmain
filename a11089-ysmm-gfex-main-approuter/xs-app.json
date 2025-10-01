@@ -14,8 +14,9 @@
       "destination": "CAP_GFEX",
       "target": "$1"
     },
+     
     {
-      "source": "^(.*)$",
+      "source": "^/(.*)$",
       "target": "$1",
       "authenticationType": "xsuaa",
       "localDir": "./buildgfexmain"
