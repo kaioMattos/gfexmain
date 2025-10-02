@@ -113,7 +113,7 @@ export default function Home() {
     <>
       <Header />
       <Container maxWidth="xl" sx={{ py: 4 }}>
-        <MetaUrl title="GFEx" description="Gestão de Fornecedores Exclusivos" />
+        <MetaUrl title="GFEX" description="Gestão de Fornecedores Exclusivos" />
         <Indicators dataIndicator={countIndicators} loading={loadingPage}/>
         <FilterMaterial
           searchTerm={searchTerm} setSearchTerm={setSearchTerm}

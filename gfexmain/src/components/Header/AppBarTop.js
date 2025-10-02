@@ -35,19 +35,19 @@ export default function AppBarTop({ typeHeader, value: { setDrawerOpen, anchorEl
   }
   return (
     <AppBar position="sticky" elevation={0} sx={{
-          backgroundColor: '#fff',
-          borderBottom: '4px solid #4CAF50', 
-        }}>
+      backgroundColor: '#fff',
+      borderBottom: '4px solid #4CAF50',
+    }}>
       <Toolbar sx={{ px: { xs: 2, sm: 3 } }}>
-        {typeHeader !== 'AccessReq'&& (<IconButton
+        {typeHeader !== 'AccessReq' && (<IconButton
           size="large"
           edge="start"
-          sx={{ mr: 2, color: "text.primary" }}
+          sx={{ mr: 1, color: "text.primary" }}
           onClick={() => setDrawerOpen(true)}
         >
           <MenuIcon />
         </IconButton>)}
-        
+
 
         <img src={logoSimpleGFEx} />
         <Typography
@@ -57,15 +57,15 @@ export default function AppBarTop({ typeHeader, value: { setDrawerOpen, anchorEl
             color: 'rgb(0,133,66)',
             flexGrow: 1,
             fontWeight: 600,
-            fontStyle: 'italic',
+            fontFamily: "PetrobrasSans_It",
             marginLeft: 1.5,
-            marginTop:'3px'
+            marginTop: '3px'
           }}
         >
           Gestão para Fornecedores Exclusivos
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
-        {typeHeader !== 'AccessReq'&& (<><Box sx={{ display: 'flex', marginInline: '10px' }}>
+        {typeHeader !== 'AccessReq' && (<><Box sx={{ display: 'flex', marginInline: '15px' }}>
 
 
           <IconButton onClick={handleMenuClick} sx={{ color: "text.primary" }}>
@@ -80,17 +80,17 @@ export default function AppBarTop({ typeHeader, value: { setDrawerOpen, anchorEl
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           transformOrigin={{ vertical: "top", horizontal: "right" }}
         >
-          <MenuItemComponent onClick={() => { setOpenUserInfoDialog() }} >
-            <AccountCircle sx={{ mr: 1 }} />
-            Meu Perfil
-          </MenuItemComponent>
+            <MenuItemComponent onClick={() => { setOpenUserInfoDialog() }} >
+              <AccountCircle sx={{ mr: 1 }} />
+              Meu Perfil
+            </MenuItemComponent>
 
-        </Menu></>)}
-        
-       
+          </Menu></>)}
+
+
         <img src={logopetrobras} style={{ height: '30px' }} />
       </Toolbar>
-      {typeHeader !== 'AccessReq'&& (<UserInfoModal open={openUserInfo} handleClose={() => handleCloseUserInfo()} data={user} />)}
+      {typeHeader !== 'AccessReq' && (<UserInfoModal open={openUserInfo} handleClose={() => handleCloseUserInfo()} data={user} />)}
     </AppBar>
   );
 }

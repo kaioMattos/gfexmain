@@ -475,7 +475,7 @@ export default function DetailPage({
                                 <Typography
                                   variant="caption"
                                   color="text.secondary"
-                                  sx={{ fontStyle: "italic", mt: 1, textAlign: 'center' }}
+                                  sx={{ fontFamily: "PetrobrasSans_It", mt: 1, textAlign: 'center' }}
                                 >
                                   {agreement === "agree"
                                     ? "✅ Valor validado."

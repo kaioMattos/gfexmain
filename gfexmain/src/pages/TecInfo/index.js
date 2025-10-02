@@ -93,7 +93,7 @@ export default function TecInfoPage() {
     <>
       <Header />
       <Box sx={{ p: 2, height: "calc(100vh - 60px)", display: "flex", flexDirection: "column" }}>
-        <MetaUrl title="Informações Técnicas - GFEx" description="Validar Informações Técnicas dos Materiais" />
+        <MetaUrl title="Informações Técnicas - GFEX" description="Validar Informações Técnicas dos Materiais" />
         <Box sx={{ mb: 2 }}>
           {/* <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
             Informações Técnicas

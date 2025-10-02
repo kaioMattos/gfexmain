@@ -67,7 +67,7 @@ export default function ReportPage() {
     <>
           <Header />
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      <MetaUrl title="GFEx - Relatório Informações Técnicas" description="Gestão de Fornecedores Exclusivos" />
+      <MetaUrl title="GFEX - Relatório Informações Técnicas" description="Gestão de Fornecedores Exclusivos" />
       <Card sx={{ mb: 3 }}>
         <CardContent sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>

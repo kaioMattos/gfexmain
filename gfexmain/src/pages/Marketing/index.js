@@ -131,7 +131,7 @@ export default function Marketing() {
     <>
       <Header />
       <Box sx={{ p: 2, height: "calc(100vh - 60px)" }}>
-        <MetaUrl title="Comercialização - GFEx" description="Comercializar Material" />
+        <MetaUrl title="Comercialização - GFEX" description="Comercializar Material" />
         {loadingPage ? (
           <div className="initLoading">
             <CircularProgress disableShrink={loadingPage} />

@@ -7,7 +7,7 @@ import { createTheme } from '@mui/material/styles';
   };
   const oThemeNewApp = {
     typography: {
-      fontFamily: '"Arial", "Helvetica", sans-serif;',
+      fontFamily: 'PetrobrasSans_Rg',
       h4: {
         fontWeight: 600,
         fontSize: "1.875rem",

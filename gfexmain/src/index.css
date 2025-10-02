@@ -30,6 +30,12 @@ body {
     url("./fonts/PetrobrasSans/PetrobrasSans_BdIt.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "PetrobrasSans_It"; 
+  src: local("PetrobrasSans_It"),
+    url("./fonts/PetrobrasSans/PetrobrasSans_It.ttf") format("truetype");
+}
+
 .font-face-ptRg {
   font-family: "PetrobrasSans_Rg" !important;
 }

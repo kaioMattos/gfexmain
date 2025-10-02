@@ -1,12 +1,13 @@
 {
   "files": {
-    "main.css": "./static/css/main.bba3873a.css",
-    "main.js": "./static/js/main.8aea45ae.js",
+    "main.css": "./static/css/main.ee4f2017.css",
+    "main.js": "./static/js/main.40ebae90.js",
     "static/js/488.5f3b15cb.chunk.js": "./static/js/488.5f3b15cb.chunk.js",
     "static/media/InterVariable-Italic.woff2": "./static/media/InterVariable-Italic.e295f70fe3e2df296c7b.woff2",
     "static/media/InterVariable.woff2": "./static/media/InterVariable.a0e477f2f1f9d2376fde.woff2",
     "static/media/primeicons.svg": "./static/media/primeicons.6ed59f962963a4a73af2.svg",
     "static/media/PetrobrasSans_BdIt.ttf": "./static/media/PetrobrasSans_BdIt.26389b977291b0c3ba71.ttf",
+    "static/media/PetrobrasSans_It.ttf": "./static/media/PetrobrasSans_It.f9e9c16469784237e92f.ttf",
     "static/media/PetrobrasSans_Rg.ttf": "./static/media/PetrobrasSans_Rg.5fa1c32fe92582588b55.ttf",
     "static/media/primeicons.eot": "./static/media/primeicons.ff0c4cd79b2ffca2de54.eot",
     "static/media/primeicons.woff": "./static/media/primeicons.8931fda1930c3bd21e96.woff",
@@ -14,12 +15,12 @@
     "static/media/primeicons.woff2": "./static/media/primeicons.024b32cc7bf399b1a847.woff2",
     "static/media/logopetrobras.png": "./static/media/logopetrobras.93386f605742d326e7b4.png",
     "index.html": "./index.html",
-    "main.bba3873a.css.map": "./static/css/main.bba3873a.css.map",
-    "main.8aea45ae.js.map": "./static/js/main.8aea45ae.js.map",
+    "main.ee4f2017.css.map": "./static/css/main.ee4f2017.css.map",
+    "main.40ebae90.js.map": "./static/js/main.40ebae90.js.map",
     "488.5f3b15cb.chunk.js.map": "./static/js/488.5f3b15cb.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.bba3873a.css",
-    "static/js/main.8aea45ae.js"
+    "static/css/main.ee4f2017.css",
+    "static/js/main.40ebae90.js"
   ]
 }
