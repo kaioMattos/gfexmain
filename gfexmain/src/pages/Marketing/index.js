@@ -13,6 +13,8 @@ import NotRecog from '../../components/modal/NotRecog'
 import TableMaterial from '../../components/Table/material'
 import FilterMaterial from '../../components/Table/material/Filter'
 import Header from '../../components/Header'
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 export default function Marketing() {
   const [page, setPage] = useState(0)
@@ -125,6 +127,98 @@ export default function Marketing() {
 
     loadMaterials(); 
   }, [materials, page, rowsPerPage, searchTerm, filterRecog]);
+const handleDownloadTemplate = () => {
+  const wsData = [
+    ["Material", "Comercializa"], // Cabeçalhos
+    ["123456", "Comercializo"],
+    ["789012", "Não Comercializo"]
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // Adiciona validação de dados (Combobox) na coluna B
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  for (let row = 1; row <= range.e.r; row++) {
+    const cellRef = XLSX.utils.encode_cell({ r: row, c: 1 }); // Coluna B
+    if (!ws[cellRef]) ws[cellRef] = { t: 's', v: "" };
+    ws[cellRef].s = {};
+  }
+
+  ws['!dataValidation'] = [{
+    type: 'list',
+    allowBlank: false,
+    sqref: `B2:B1000`,
+    formulas: ['"Comercializo,Não Comercializo"'],
+  }];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Modelo");
+
+  const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+  saveAs(new Blob([wbout], { type: "application/octet-stream" }), "modelo_comercializacao.xlsx");
+};
+const handleImportExcel = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  setLoading(true);
+  try {
+    const data = await file.arrayBuffer();
+    const workbook = XLSX.read(data);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+    const result = jsonData.map(row => {
+      const matnr = String(row.Material).trim();
+      const status = String(row.Comercializa).trim();
+
+      if (!matnr || !["Comercializo", "Não Comercializo"].includes(status)) return null;
+
+      return { matnr, status };
+    }).filter(Boolean);
+
+    const postRecog = [];
+    const putRecog = [];
+
+    result.forEach(({ matnr, status }) => {
+      const oMaterial = materials.find(item => item.matnr === matnr);
+      if (!oMaterial) return;
+
+      const recog = status === 'Comercializo' ? 'CMR' : 'NCM';
+      const priceAta = status === 'Comercializo' ? 'FPR' : 'NAP';
+      const tecInfo = status === 'Comercializo' ? 'FVL' : 'NAP';
+
+      const oEntry = {
+        Nm: matnr,
+        DataCriacao: null,
+        UsuarioCriador: "EMERSON",
+        NmReconhecido: recog,
+        AtaPrecoPreenchida: priceAta,
+        InformacoesTecnicas: tecInfo
+      };
+
+      if (oMaterial.NmReconhecido === 'Falta Identificação') {
+        postRecog.push(oEntry);
+      } else {
+        putRecog.push(oEntry);
+      }
+    });
+
+    const promisesPost = postRecog.map(oEntry => postRecogMat(oEntry));
+    const promisesPut = putRecog.map(oEntry => putRecogMat(oEntry));
+
+    await Promise.all([...promisesPost, ...promisesPut]);
+    await loadData();
+    setPage(0);
+
+    showSnackbar("Importação realizada com sucesso!");
+
+  } catch (error) {
+    console.error(error);
+    showSnackbar("Erro ao importar arquivo", "error");
+  }
+  setLoading(false);
+};
 
 
   return (
@@ -208,9 +302,24 @@ export default function Marketing() {
                   >
                     Não Comercializar
                   </Button>
+
+                  
                   <Typography variant="body2" color="text.secondary" sx={{ alignSelf: "center", ml: 2 }}>
                     {selectedMaterials.length} selecionado(s)
                   </Typography>
+                  <Button variant="outlined" color="primary" onClick={handleDownloadTemplate}>
+  Baixar Modelo
+</Button>
+
+<Button
+  variant="contained"
+  component="label"
+  color="secondary"
+>
+  Importar Excel
+  <input type="file" hidden accept=".xlsx, .xls" onChange={handleImportExcel} />
+</Button>
+
                 </Box>
                 <TableMaterial
                   materials={filteredMaterials}
