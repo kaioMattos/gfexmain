@@ -13,8 +13,9 @@ import NotRecog from '../../components/modal/NotRecog'
 import TableMaterial from '../../components/Table/material'
 import FilterMaterial from '../../components/Table/material/Filter'
 import Header from '../../components/Header'
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
+import { CloudUpload, CloudDownload } from "@mui/icons-material";
 
 export default function Marketing() {
   const [page, setPage] = useState(0)
@@ -50,7 +51,6 @@ export default function Marketing() {
     const priceAta = status === 'Comercializo' ? 'FPR' : 'NAP';
     const tecInfo = status === 'Comercializo' ? 'FVL' : 'NAP';
 
-    // Aqui, usar materials do contexto para garantir dados atualizados
     const { postRecog, putRecog } = selectedMaterials.reduce((acc, materialId) => {
       const oMaterial = materials.find(item => item.id === materialId);
       if (!oMaterial) return acc;
@@ -123,64 +123,125 @@ export default function Marketing() {
   }, [loadMaterials]);
 
   useEffect(() => {
-    if (!materials) return; 
+    if (!materials) return;
 
-    loadMaterials(); 
+    loadMaterials();
   }, [materials, page, rowsPerPage, searchTerm, filterRecog]);
-const handleDownloadTemplate = () => {
-  const wsData = [
-    ["Material", "Comercializa"], // Cabeçalhos
-    ["123456", "Comercializo"],
-    ["789012", "Não Comercializo"]
-  ];
-
-  const ws = XLSX.utils.aoa_to_sheet(wsData);
-
-  // Adiciona validação de dados (Combobox) na coluna B
-  const range = XLSX.utils.decode_range(ws['!ref']);
-  for (let row = 1; row <= range.e.r; row++) {
-    const cellRef = XLSX.utils.encode_cell({ r: row, c: 1 }); // Coluna B
-    if (!ws[cellRef]) ws[cellRef] = { t: 's', v: "" };
-    ws[cellRef].s = {};
+  const handleDownloadTemplate = async () => {
+  if (!materials || materials.length === 0) {
+    showSnackbar("Nenhum material disponível para exportar", "warning");
+    return;
   }
 
-  ws['!dataValidation'] = [{
-    type: 'list',
-    allowBlank: false,
-    sqref: `B2:B1000`,
-    formulas: ['"Comercializo,Não Comercializo"'],
-  }];
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet("Materiais");
 
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Modelo");
+  const headers = [
+    "Material",
+    "Descrição",
+    "Classe",
+    "Fabricante",
+    "Comercializa",
+    "Motivo Não Reconhecimento"
+  ];
 
-  const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-  saveAs(new Blob([wbout], { type: "application/octet-stream" }), "modelo_comercializacao.xlsx");
+  sheet.addRow(headers);
+  const headerRow = sheet.getRow(1);
+  headerRow.eachCell(cell => {
+    cell.font = { bold: true, size: 12 };
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "C6EFCE" } 
+    };
+    cell.alignment = { vertical: "middle", horizontal: "center" };
+    cell.border = {
+      top: { style: "thin" },
+      left: { style: "thin" },
+      bottom: { style: "thin" },
+      right: { style: "thin" }
+    };
+  });
+
+  materials.forEach(mat => {
+    sheet.addRow([
+      mat.matnr,
+      mat.maktx,
+      mat.classDesc || "",
+      mat.mfrnr || "",
+      (mat.NmReconhecido === "Comercializo" || mat.NmReconhecido === "Não Comercializo")
+        ? mat.NmReconhecido
+        : "Pendente Validação",
+      ""
+    ]);
+  });
+
+  const rowCount = materials.length;
+  for (let i = 2; i <= rowCount + 1; i++) {
+    sheet.getCell(`E${i}`).dataValidation = {
+      type: "list",
+      allowBlank: false,
+      formulae: ['"Comercializo,Não Comercializo"'],
+      showInputMessage: true,
+      promptTitle: "Seleção obrigatória",
+      prompt: "Escolha entre: Comercializo ou Não Comercializo"
+    };
+  }
+
+  sheet.columns.forEach(col => {
+    let maxLength = 0;
+    col.eachCell({ includeEmpty: true }, cell => {
+      const val = cell.value ? cell.value.toString() : "";
+      maxLength = Math.max(maxLength, val.length);
+    });
+    col.width = maxLength + 2;
+  });
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  saveAs(blob, "materiais_comercializacao.xlsx");
 };
-const handleImportExcel = async (e) => {
+
+
+
+
+  const handleImportExcel = async (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
   setLoading(true);
   try {
-    const data = await file.arrayBuffer();
-    const workbook = XLSX.read(data);
-    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+    const arrayBuffer = await file.arrayBuffer();
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(arrayBuffer);
 
-    const result = jsonData.map(row => {
-      const matnr = String(row.Material).trim();
-      const status = String(row.Comercializa).trim();
+    const worksheet = workbook.worksheets[0]; 
 
-      if (!matnr || !["Comercializo", "Não Comercializo"].includes(status)) return null;
+    const headerRow = worksheet.getRow(1);
+    const columnMap = {};
+    headerRow.eachCell((cell, colNumber) => {
+      const header = cell.value?.toString().trim().toLowerCase();
+      if (header === 'material') columnMap.material = colNumber;
+      else if (header === 'comercializa') columnMap.comercializa = colNumber;
+      else if (header === 'motivo não reconhecimento') columnMap.motivo = colNumber;
+    });
 
-      return { matnr, status };
-    }).filter(Boolean);
+    if (!columnMap.material || !columnMap.comercializa) {
+      throw new Error("Arquivo inválido: faltam colunas obrigatórias 'Material' e 'Comercializa'");
+    }
 
     const postRecog = [];
     const putRecog = [];
 
-    result.forEach(({ matnr, status }) => {
+    worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+      if (rowNumber === 1) return; 
+
+      const matnr = row.getCell(columnMap.material).value?.toString().trim();
+      const status = row.getCell(columnMap.comercializa).value?.toString().trim();
+      const motivo = columnMap.motivo ? row.getCell(columnMap.motivo).value?.toString().trim() : '';
+
+      if (!matnr || !['Comercializo', 'Não Comercializo'].includes(status)) return;
+
       const oMaterial = materials.find(item => item.matnr === matnr);
       if (!oMaterial) return;
 
@@ -194,7 +255,8 @@ const handleImportExcel = async (e) => {
         UsuarioCriador: "EMERSON",
         NmReconhecido: recog,
         AtaPrecoPreenchida: priceAta,
-        InformacoesTecnicas: tecInfo
+        InformacoesTecnicas: tecInfo,
+        MotivoNaoReconhecimento: motivo || null, 
       };
 
       if (oMaterial.NmReconhecido === 'Falta Identificação') {
@@ -212,12 +274,12 @@ const handleImportExcel = async (e) => {
     setPage(0);
 
     showSnackbar("Importação realizada com sucesso!");
-
   } catch (error) {
     console.error(error);
-    showSnackbar("Erro ao importar arquivo", "error");
+    showSnackbar("Erro ao importar arquivo: " + error.message, "error");
+  } finally {
+    setLoading(false);
   }
-  setLoading(false);
 };
 
 
@@ -284,43 +346,56 @@ const handleImportExcel = async (e) => {
                     gap: 2,
                     borderBottom: "1px solid #e2e8f0",
                     mb: 2,
+                    justifyContent: "space-between",
+                    flexWrap: "wrap"
                   }}
                 >
-                  <Button
-                    variant="contained"
-                    color="success"
-                    disabled={selectedMaterials.length === 0}
-                    onClick={() => handleComercializar("Comercializo")}
-                  >
-                    Comercializar
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    disabled={selectedMaterials.length === 0}
-                    onClick={() => handleComercializar("Não Comercializo")}
-                  >
-                    Não Comercializar
-                  </Button>
+                  <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      disabled={selectedMaterials.length === 0}
+                      onClick={() => handleComercializar("Comercializo")}
+                    >
+                      Comercializar
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      disabled={selectedMaterials.length === 0}
+                      onClick={() => handleComercializar("Não Comercializo")}
+                    >
+                      Não Comercializar
+                    </Button>
+                    <Typography variant="body2" color="text.secondary" sx={{ alignSelf: "center", ml: 2 }}>
+                      {selectedMaterials.length} selecionado(s)
+                    </Typography>
+                  </Box>
 
-                  
-                  <Typography variant="body2" color="text.secondary" sx={{ alignSelf: "center", ml: 2 }}>
-                    {selectedMaterials.length} selecionado(s)
-                  </Typography>
-                  <Button variant="outlined" color="primary" onClick={handleDownloadTemplate}>
-  Baixar Modelo
+                  {/* Importação e Exportação à direita */}
+                  <Box sx={{ display: "flex", gap: 2 }}>
+                    <Button
+  variant="outlined"
+  color="primary"
+  onClick={handleDownloadTemplate}
+  startIcon={<CloudDownload />}
+>
+  Exportar Excel
 </Button>
 
 <Button
   variant="contained"
   component="label"
   color="secondary"
+  startIcon={<CloudUpload />}
 >
   Importar Excel
   <input type="file" hidden accept=".xlsx, .xls" onChange={handleImportExcel} />
 </Button>
 
+                  </Box>
                 </Box>
+
                 <TableMaterial
                   materials={filteredMaterials}
                   selectedMaterials={selectedMaterials}
