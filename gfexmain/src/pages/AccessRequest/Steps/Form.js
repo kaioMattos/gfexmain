@@ -190,7 +190,7 @@ export default function FormWizardSteps() {
   };
   const handleClose = () => {
     setOpen(false);
-    setForm('edicao')
+    setForm('edicao');
   };
 
   const handleBack = () => {

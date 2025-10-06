@@ -24,7 +24,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 export default function CustomDialog({ 
   handleClose, 
   open,
-  message = "Sua solicitação foi enviada para o time Petrobrás avaliar", 
+  message = "Sua solicitação foi enviada para o time PETROBRAS avaliar", 
   color = "rgb(0, 133, 66)",
   icon = "success"
 }) {
