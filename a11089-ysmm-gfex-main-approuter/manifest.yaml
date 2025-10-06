@@ -5,5 +5,3 @@ applications:
   random-route: true
   services:
   - ysmm-gfex-xsuaa
-  - gfexs42Destination
-  - gfexs42Connectivity

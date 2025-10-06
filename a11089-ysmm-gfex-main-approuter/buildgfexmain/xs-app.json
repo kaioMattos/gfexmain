@@ -13,13 +13,6 @@
       "target": "$1"
     },
     {
-      "authenticationType": "none",
-      "csrfProtection": false,
-      "source": "^/gfexs42Destination/(.*)$",
-      "destination": "S42",
-      "target": "$1"
-    },
-    {
       "source": "^(.*)$",
       "target": "$1",
       "service": "html5-apps-repo-rt",
