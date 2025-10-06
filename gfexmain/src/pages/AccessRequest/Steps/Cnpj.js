@@ -4,7 +4,7 @@ import { PiUserCircleFill } from "react-icons/pi";
 import { useAuth } from '../../../useContext/AuthContext';
 
 import { getSupplier, getManufacturer, getClass } from '../../../api'
-import { CircularProgress, Collapse, Alert, Grid, List } from '@mui/material';
+import { CircularProgress, Collapse, Alert, Grid, List, Snackbar } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { _assembleOrFilterGeneric, removeDuplicatesFromArray } from '../../../utils';
 import { InputText } from 'primereact/inputtext';
@@ -14,9 +14,9 @@ import { wizardStyles } from './wizardStepCss';
 
 export default function CnpjForm() {
   const { user,  setActiveNext, setAssembleInitDataPerCnpj } = useAuth();
-  const [notFounded, setNotFounded] = useState(false);
   const [state, setState] = useState({ error: false, inputCnpj: "" });
   const [loading, setLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "error" });
 
   const assembleManufacturer = async (sCnpj) => {
     const oData = await getManufacturer({
@@ -74,17 +74,26 @@ export default function CnpjForm() {
           const aCollectionClass = await assembleClass(aCollectionManufacturer);
 
           setAssembleInitDataPerCnpj(aCollectionCnpj, aCollectionManufacturer, aCollectionClass);
-          setNotFounded(false);
+          setState(prev => ({ ...prev, inputCnpj: "", error: false }));
         } else {
-          setNotFounded(true);
+          setSnackbar({ open: true, message: "Fornecedor não encontrado", severity: "error" });
+          setState(prev => ({ ...prev, error: true }));
         }
-        setState({ inputCnpj: "" })
+      } catch (error) {
+        setSnackbar({ open: true, message: "Fornecedor não encontrado", severity: "error" });
+        setState(prev => ({ ...prev, error: true }));
       } finally {
         setLoading(false);
       }
 
     } else {
-      setState({ error: true });
+      if(sCnpj == ""){
+        setSnackbar({ open: true, message: "Digite um CNPJ válido", severity: "error" });
+      }
+      else{
+        setSnackbar({ open: true, message: "CNPJ já adicionado", severity: "error" });
+      }
+      setState(prev => ({ ...prev, error: true }));
     }
   };
 
@@ -143,9 +152,6 @@ export default function CnpjForm() {
         Tecle enter para Adicionar
       </small>
     </div>
-    <Collapse in={notFounded}>
-      <Alert sx={{ borderRadius: '6px', padding: '4px 10px' }} severity="error">Fornecedor não encontrado</Alert>
-    </Collapse>
   </Grid>
   <Grid item xs={12} className={wizardStyles.list} sx={{ mt: 2 }}>
     {/* Lista */}
@@ -177,6 +183,20 @@ export default function CnpjForm() {
 </Grid>
 
       </form>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={2000}
+        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))} 
+          severity={snackbar.severity} 
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </React.Fragment>
   );
 }

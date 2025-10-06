@@ -78,7 +78,17 @@ export default function DocumentLetterTable({aValues, justView, setExclusivityLe
         </LocalizationProvider>
       )
     }
-    return getDateNowFrontFormated(parseInt(data.expiredDate.slice(6, -2), 10), 'dateAtDay')
+
+    let timestamp;
+
+    // Caso seja string no formato "/Date(1696292400000)/"
+    if (typeof data.expiredDate === "string" && data.expiredDate.startsWith("/Date")) {
+      timestamp = parseInt(data.expiredDate.slice(6, -2), 10);
+    } else {
+      // Caso seja ISO string ou Date
+      timestamp = new Date(data.expiredDate).getTime();
+    }
+    return getDateNowFrontFormated(timestamp, "dateAtDay");
   }
   const removefile = (data)=>{
     const aExclusivityLetter = aValues
